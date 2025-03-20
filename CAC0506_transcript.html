@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I'm taking an introductory science cour... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0506</p>
+            <p><strong>UUID:</strong> ac1afc58-f66e-4f7f-91c2-7e4e94b7dd62</p>
+            <p><strong>Date:</strong> 2025-03-21 04:21:48 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I'm taking an introductory science course this semester, and we're starting to learn about radioactive isotopes. I've always been pretty intimidated by science, but I need to understand this for an upcoming assignment. Could you help me understand isotopic dating?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I'd be happy to help you understand isotopic dating! This is actually a fascinating topic that connects physics, chemistry, and even archaeology. Let's start with the basics of how isotopic dating works, particularly with carbon-14.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>That sounds good. I've heard of carbon dating before in documentaries, but I never really understood how scientists can figure out how old something is just by looking at its atoms.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a great starting point. Let me explain how this process begins. Cosmic rays continually bombard the Earth's atmosphere. This bombardment causes many atoms in the upper atmosphere to transmute. These transmutations result in many protons and neutrons being "sprayed out" into the environment.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Wait, what are cosmic rays exactly? And what does "transmute" mean?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Good questions! Cosmic rays are high-energy particles that come from space. "Transmute" means to change from one element to another. When these cosmic rays hit atoms in our upper atmosphere, they can change those atoms into different elements by altering their nuclear structure.</p><br><p>When this happens, protons and neutrons can be knocked loose. Most of the protons are stopped as they collide with other atoms in the upper atmosphere. These protons strip electrons from the atoms they collide with and thus become hydrogen atoms. The neutrons, however, continue for longer distances because they have no electric charge and therefore don't interact electrically with matter.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>So the neutrons can travel further because they don't have a charge... that makes sense. What happens to these neutrons then?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Eventually, many of these neutrons collide with atomic nuclei in the lower atmosphere. A particularly important reaction happens when a neutron collides with a nitrogen atom. When a nitrogen atom captures a neutron, it becomes an isotope of carbon by emitting a proton.</p><br><p>Specifically, this creates carbon-14, which is a radioactive isotope of carbon. The reaction looks like this: a nitrogen-14 atom plus a neutron produces carbon-14 plus a proton.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>Oh, so that's how carbon-14 is formed! I've heard of carbon-12 which I think is the normal carbon, right? How is carbon-14 different?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>You're absolutely right. Carbon-12 is indeed the most common isotope of carbon, making up about 99% of all carbon on Earth. Carbon-14 makes up less than one-millionth of 1 percent of the carbon in the atmosphere.</p><br><p>The difference between them is in their nuclei. Carbon-12 has six protons and six neutrons, while carbon-14 has six protons and eight neutrons. That's why we call it carbon-14 - the number represents the total number of protons and neutrons. Carbon-12 is stable, but carbon-14 is radioactive, which means it will eventually decay into another element.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>So both carbon-12 and carbon-14 are present in the atmosphere. But how does this help with dating things?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>That's where it gets interesting! Because both carbon-12 and carbon-14 are forms of carbon, they have the same chemical properties. Both of these isotopes, for example, chemically react with oxygen to form carbon dioxide, which is consumed by plants through the process of photosynthesis. This means that all plants contain a tiny quantity of radioactive carbon-14.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>So plants absorb both regular carbon-12 and radioactive carbon-14. But how do animals end up with carbon-14?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>All animals eat either plants or plant-eating animals; therefore, all animals, including humans, have a little carbon-14 in them. So we can see why all living things on Earth contain some carbon-14.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>That makes me a little nervous to hear I have radioactive material in my body right now...</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>That's a common reaction! But don't worry - the amount is incredibly small and not harmful. It's actually a natural part of all life on Earth. This radioactive isotope eventually decays back into nitrogen as it emits a beta particle. The reaction is basically the reverse of how it formed: carbon-14 decays to nitrogen-14 plus a beta particle (which is essentially an electron).</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>OK, so I understand how carbon-14 gets into living things. But I still don't understand how this helps determine the age of ancient objects.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>That's the key question! Here's how it works: Because plants absorb carbon dioxide while alive, any carbon-14 that decays is immediately replenished with fresh carbon-14 from the atmosphere. In this way, a radioactive equilibrium is reached in which there is a constant ratio of about 1 carbon-14 atom to every 100 billion carbon-12 atoms.</p><br><p>When a plant dies, replenishment of carbon-14 ends. Then the percentage of carbon-14 decreases at a constant rate determined by its half-life. The amount of carbon-12, however, does not change, because this isotope does not undergo radioactive decay. The longer a plant or other organism is dead, the less carbon-14 it contains relative to the constant amount of carbon-12.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>So it's like a clock that starts ticking down when something dies! That's actually pretty cool. So how fast does this carbon-14 disappear?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Exactly - it's like a molecular clock! The half-life of carbon-14 is about 5730 years. This means that half of the carbon-14 atoms now present in a plant or animal that dies today will decay in the next 5730 years. Half of the remaining carbon-14 atoms will then decay in the following 5730 years, and so on.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>So if I found something that only had half as much carbon-14 as a living plant, it would be about 5730 years old?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>That's exactly right! With this knowledge, scientists are able to calculate the age of carbon-containing artifacts, such as wooden tools or ancient skeletons. Their age is measured by their current level of radioactivity compared to living organisms. This process is known as carbon-14 dating.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Is there a limit to how old something can be for carbon dating to work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Yes, there is. Carbon-14 dating enables investigators to probe as far as 50,000 years into the past. Beyond this time span, there is too little carbon-14 remaining for accurate analysis. After many half-lives, the amount becomes too small to measure precisely.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>So if I have some piece of wood that's a million years old, carbon dating wouldn't work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>That's correct. For something that old, there would be virtually no carbon-14 left to measure. After about 50,000 years (which is roughly 9 half-lives), the amount of remaining carbon-14 is less than 0.2% of the original amount, making it extremely difficult to detect accurately with current technology.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>Is carbon dating perfectly accurate? Like if something is dated to 500 years, is it exactly 500 years?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>That's an important point. Because of fluctuations in cosmic ray bombardment rates over the centuries, carbon dating has an uncertainty of about 15 percent. This means, for example, that the straw of an old adobe brick dated to be 500 years old may really be only 425 years old on the low side or 575 years old on the high side. For many purposes, this is an acceptable level of uncertainty.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>Let me see if I can apply this. If an archaeologist finds an old wooden ax handle and extracts carbon from it that's only one-fourth as radioactive as a fresh tree branch, how old would the ax handle be?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>That's a great question to test your understanding! Let's think through this. If the radioactivity is one-fourth of the original, that means the carbon-14 has gone through two half-lives.</p><br><p>In the first half-life (5730 years), the radioactivity would drop to 1/2 of the original.<br>In the second half-life (another 5730 years), it would drop to 1/4 of the original.</p><br><p>So the ax handle would be approximately 11,460 years old (2 × 5730 years), assuming the ratio of C-14/C-12 was the same when the ax was made as it is in freshly cut wood today.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>That makes sense! But what about really old things like rocks? Carbon dating wouldn't work for those since they weren't alive, right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Excellent observation! Artifacts derived from nonliving materials can also be dated, but using different radioactive isotopes with much longer half-lives. The naturally occurring mineral isotopes uranium-238 and uranium-235, for example, decay very slowly and ultimately become lead—but not the common isotope lead-208.</p><br><p>Instead, uranium-238 decays to lead-206. Uranium-235, on the other hand, decays to lead-207. Thus, the lead-206 and lead-207 that now exist in a uranium-bearing rock were at one time uranium. Older rocks contain higher percentages of these trace isotopes.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>So for rocks, scientists look at how much uranium has turned into specific types of lead?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>That's right! If you know the half-lives of uranium isotopes and the percentage of lead isotopes in some uranium-bearing rock, you can calculate the date of the rock's formation. Rocks dated in this manner have been found to be as much as 3.7 billion years old. Samples from the Moon have been dated at 4.2 billion years, which is close to the estimated age of our solar system: 4.6 billion years.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>Wow, that's amazing that we can determine ages that far back! Who figured all this out initially?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Carbon-14 dating was developed by the American chemist Willard F. Libby at the University of Chicago in the 1950s. For this groundbreaking work, he received the Nobel Prize in Chemistry in 1960. His technique revolutionized archaeology and paleontology by giving scientists a reliable method to date organic materials.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>That's really fascinating! I never realized how physics, chemistry, and archaeology all connect together. It's amazing that cosmic rays hitting our atmosphere can eventually help us figure out how old ancient civilizations are. I feel like I understand this much better now - science isn't quite as intimidating when you can see how it all fits together in the real world.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>I'm glad you're seeing those connections! That's what makes science so powerful - it helps us understand everything from stars to ancient history. Is there anything else about isotopic dating that you'd like to explore further?</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>I think I'm good for now. Thanks for explaining it in a way that actually makes sense to me. Maybe science isn't as scary as I thought!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>You're very welcome! And you're absolutely right - science is all about curiosity and connections, not just memorizing facts. You've asked some excellent questions today that show you have good scientific intuition. Feel free to come back anytime you want to explore more concepts!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "ac1afc58-f66e-4f7f-91c2-7e4e94b7dd62", "classid": "conceptual-chemistry-0506", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I'm taking an introductory science course this semester, and we're starting to learn about radioactive isotopes. I've always been pretty intimidated by science, but I need to understand this for an upcoming assignment. Could you help me understand isotopic dating?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'd be happy to help you understand isotopic dating! This is actually a fascinating topic that connects physics, chemistry, and even archaeology. Let's start with the basics of how isotopic dating works, particularly with carbon-14.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds good. I've heard of carbon dating before in documentaries, but I never really understood how scientists can figure out how old something is just by looking at its atoms.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great starting point. Let me explain how this process begins. Cosmic rays continually bombard the Earth's atmosphere. This bombardment causes many atoms in the upper atmosphere to transmute. These transmutations result in many protons and neutrons being \"sprayed out\" into the environment.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, what are cosmic rays exactly? And what does \"transmute\" mean?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Good questions! Cosmic rays are high-energy particles that come from space. \"Transmute\" means to change from one element to another. When these cosmic rays hit atoms in our upper atmosphere, they can change those atoms into different elements by altering their nuclear structure.\n\nWhen this happens, protons and neutrons can be knocked loose. Most of the protons are stopped as they collide with other atoms in the upper atmosphere. These protons strip electrons from the atoms they collide with and thus become hydrogen atoms. The neutrons, however, continue for longer distances because they have no electric charge and therefore don't interact electrically with matter.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the neutrons can travel further because they don't have a charge... that makes sense. What happens to these neutrons then?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Eventually, many of these neutrons collide with atomic nuclei in the lower atmosphere. A particularly important reaction happens when a neutron collides with a nitrogen atom. When a nitrogen atom captures a neutron, it becomes an isotope of carbon by emitting a proton.\n\nSpecifically, this creates carbon-14, which is a radioactive isotope of carbon. The reaction looks like this: a nitrogen-14 atom plus a neutron produces carbon-14 plus a proton.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, so that's how carbon-14 is formed! I've heard of carbon-12 which I think is the normal carbon, right? How is carbon-14 different?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're absolutely right. Carbon-12 is indeed the most common isotope of carbon, making up about 99% of all carbon on Earth. Carbon-14 makes up less than one-millionth of 1 percent of the carbon in the atmosphere.\n\nThe difference between them is in their nuclei. Carbon-12 has six protons and six neutrons, while carbon-14 has six protons and eight neutrons. That's why we call it carbon-14 - the number represents the total number of protons and neutrons. Carbon-12 is stable, but carbon-14 is radioactive, which means it will eventually decay into another element.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So both carbon-12 and carbon-14 are present in the atmosphere. But how does this help with dating things?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's where it gets interesting! Because both carbon-12 and carbon-14 are forms of carbon, they have the same chemical properties. Both of these isotopes, for example, chemically react with oxygen to form carbon dioxide, which is consumed by plants through the process of photosynthesis. This means that all plants contain a tiny quantity of radioactive carbon-14.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So plants absorb both regular carbon-12 and radioactive carbon-14. But how do animals end up with carbon-14?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": All animals eat either plants or plant-eating animals; therefore, all animals, including humans, have a little carbon-14 in them. So we can see why all living things on Earth contain some carbon-14.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes me a little nervous to hear I have radioactive material in my body right now...", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a common reaction! But don't worry - the amount is incredibly small and not harmful. It's actually a natural part of all life on Earth. This radioactive isotope eventually decays back into nitrogen as it emits a beta particle. The reaction is basically the reverse of how it formed: carbon-14 decays to nitrogen-14 plus a beta particle (which is essentially an electron).", "image_summary": false, "feedback": null}, {"role": "user", "content": ": OK, so I understand how carbon-14 gets into living things. But I still don't understand how this helps determine the age of ancient objects.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's the key question! Here's how it works: Because plants absorb carbon dioxide while alive, any carbon-14 that decays is immediately replenished with fresh carbon-14 from the atmosphere. In this way, a radioactive equilibrium is reached in which there is a constant ratio of about 1 carbon-14 atom to every 100 billion carbon-12 atoms.\n\nWhen a plant dies, replenishment of carbon-14 ends. Then the percentage of carbon-14 decreases at a constant rate determined by its half-life. The amount of carbon-12, however, does not change, because this isotope does not undergo radioactive decay. The longer a plant or other organism is dead, the less carbon-14 it contains relative to the constant amount of carbon-12.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So it's like a clock that starts ticking down when something dies! That's actually pretty cool. So how fast does this carbon-14 disappear?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly - it's like a molecular clock! The half-life of carbon-14 is about 5730 years. This means that half of the carbon-14 atoms now present in a plant or animal that dies today will decay in the next 5730 years. Half of the remaining carbon-14 atoms will then decay in the following 5730 years, and so on.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if I found something that only had half as much carbon-14 as a living plant, it would be about 5730 years old?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! With this knowledge, scientists are able to calculate the age of carbon-containing artifacts, such as wooden tools or ancient skeletons. Their age is measured by their current level of radioactivity compared to living organisms. This process is known as carbon-14 dating.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Is there a limit to how old something can be for carbon dating to work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, there is. Carbon-14 dating enables investigators to probe as far as 50,000 years into the past. Beyond this time span, there is too little carbon-14 remaining for accurate analysis. After many half-lives, the amount becomes too small to measure precisely.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if I have some piece of wood that's a million years old, carbon dating wouldn't work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct. For something that old, there would be virtually no carbon-14 left to measure. After about 50,000 years (which is roughly 9 half-lives), the amount of remaining carbon-14 is less than 0.2% of the original amount, making it extremely difficult to detect accurately with current technology.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Is carbon dating perfectly accurate? Like if something is dated to 500 years, is it exactly 500 years?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an important point. Because of fluctuations in cosmic ray bombardment rates over the centuries, carbon dating has an uncertainty of about 15 percent. This means, for example, that the straw of an old adobe brick dated to be 500 years old may really be only 425 years old on the low side or 575 years old on the high side. For many purposes, this is an acceptable level of uncertainty.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Let me see if I can apply this. If an archaeologist finds an old wooden ax handle and extracts carbon from it that's only one-fourth as radioactive as a fresh tree branch, how old would the ax handle be?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question to test your understanding! Let's think through this. If the radioactivity is one-fourth of the original, that means the carbon-14 has gone through two half-lives.\n\nIn the first half-life (5730 years), the radioactivity would drop to 1/2 of the original.\nIn the second half-life (another 5730 years), it would drop to 1/4 of the original.\n\nSo the ax handle would be approximately 11,460 years old (2 \u00d7 5730 years), assuming the ratio of C-14/C-12 was the same when the ax was made as it is in freshly cut wood today.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense! But what about really old things like rocks? Carbon dating wouldn't work for those since they weren't alive, right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent observation! Artifacts derived from nonliving materials can also be dated, but using different radioactive isotopes with much longer half-lives. The naturally occurring mineral isotopes uranium-238 and uranium-235, for example, decay very slowly and ultimately become lead\u2014but not the common isotope lead-208.\n\nInstead, uranium-238 decays to lead-206. Uranium-235, on the other hand, decays to lead-207. Thus, the lead-206 and lead-207 that now exist in a uranium-bearing rock were at one time uranium. Older rocks contain higher percentages of these trace isotopes.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So for rocks, scientists look at how much uranium has turned into specific types of lead?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's right! If you know the half-lives of uranium isotopes and the percentage of lead isotopes in some uranium-bearing rock, you can calculate the date of the rock's formation. Rocks dated in this manner have been found to be as much as 3.7 billion years old. Samples from the Moon have been dated at 4.2 billion years, which is close to the estimated age of our solar system: 4.6 billion years.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's amazing that we can determine ages that far back! Who figured all this out initially?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Carbon-14 dating was developed by the American chemist Willard F. Libby at the University of Chicago in the 1950s. For this groundbreaking work, he received the Nobel Prize in Chemistry in 1960. His technique revolutionized archaeology and paleontology by giving scientists a reliable method to date organic materials.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's really fascinating! I never realized how physics, chemistry, and archaeology all connect together. It's amazing that cosmic rays hitting our atmosphere can eventually help us figure out how old ancient civilizations are. I feel like I understand this much better now - science isn't quite as intimidating when you can see how it all fits together in the real world.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm glad you're seeing those connections! That's what makes science so powerful - it helps us understand everything from stars to ancient history. Is there anything else about isotopic dating that you'd like to explore further?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I'm good for now. Thanks for explaining it in a way that actually makes sense to me. Maybe science isn't as scary as I thought!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're very welcome! And you're absolutely right - science is all about curiosity and connections, not just memorizing facts. You've asked some excellent questions today that show you have good scientific intuition. Feel free to come back anytime you want to explore more concepts!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742530908.030779, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0506_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

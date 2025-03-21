@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I'm supposed to be learning about chemi... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0605</p>
+            <p><strong>UUID:</strong> 551946eb-b2c2-46a3-a5eb-8b33fa509466</p>
+            <p><strong>Date:</strong> 2025-03-21 05:56:51 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I'm supposed to be learning about chemical bonding for my science class. I've always been kind of intimidated by chemistry, to be honest. I need to understand something called "covalent bonds."</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I completely understand that chemistry can feel intimidating at first. Let's explore covalent bonds together - it's actually a fascinating concept that helps explain how many substances around us form.</p><br><p>Let me start with a simple analogy. Imagine two children playing together and sharing their toys. The force that keeps these children together is their mutual attraction to the toys they share. In a similar fashion, two atoms can be held together by their mutual attraction for electrons they share.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>That's an interesting comparison. So atoms can share things like kids share toys?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>Exactly! Let's take fluorine as an example. A fluorine atom has a strong tendency to acquire an additional electron, which would fill its outer shell. When a fluorine atom encounters another fluorine atom, it can add that additional electron to its outer shell by grabbing onto the unpaired valence electron of the other fluorine atom.</p><br><p>This results in a situation where the two fluorine atoms are mutually attracted to the same two electrons. This type of electrical attraction, where atoms are held together by their mutual attraction for shared electrons, is called a covalent bond. The prefix "co-" signifies sharing, and "-valent" refers to the fact that it's valence electrons that are being shared.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Oh, I see. So instead of one atom completely taking electrons from another atom, they're kind of... sharing them? Does that mean both atoms are somewhat satisfied with this arrangement?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>That's an excellent observation! Yes, through this sharing arrangement, each fluorine atom achieves a filled valence shell. The two atoms are held together in a fluorine molecule by the attraction they both have for those two shared electrons.</p><br><p>The positive nuclear charge of each fluorine atom (which we can think of as the core of the atom) causes it to be attracted to the unpaired valence electron of its neighboring fluorine atom. Through this mutual attraction, they form what we call a covalent bond.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>So what do we call something that's made up of atoms held together by these covalent bonds?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>A substance composed of atoms held together by covalent bonds is called a covalent compound. The fundamental unit of most covalent compounds is a molecule, which we can formally define as any group of atoms held together by covalent bonds.</p><br><p>Using the element fluorine as an example, two fluorine atoms join together to form a fluorine molecule, represented as F₂. When writing electron-dot structures for covalent compounds, chemists often use a straight line to represent the two electrons involved in a covalent bond.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>Wait, what are electron-dot structures again? I think we covered those earlier but I'm still confused about them.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>No problem! Electron-dot structures, also called Lewis structures, are diagrams that show how the valence electrons are arranged among the atoms in a molecule. The dots represent electrons.</p><br><p>For the fluorine molecule (F₂), there are two frequently used ways of showing the electron-dot structure without using spheres to represent the atoms:</p><br><p>F:F or F—F</p><br><p>In both representations, the straight line represents two electrons—one from each atom. This is the bonding pair of electrons that forms the covalent bond.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>So in drawings of molecules, when I see a line between atoms, that represents a covalent bond?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>That's correct! And it's important to note that we now have two types of electron pairs to keep track of:<br>1. A nonbonding pair (also called a lone pair) refers to any pair that exists in the electron-dot structure of an individual atom.<br>2. A bonding pair refers to any pair that results from formation of a covalent bond.</p><br><p>The key difference is that in a nonbonding pair, both electrons originate in the same atom, while in a bonding pair, one electron comes from each atom participating in the bond.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>That makes sense. So which elements tend to form these covalent bonds? Is it all elements or just certain ones?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>That's a great question. Covalent bonds are formed when two atoms that both tend to gain electrons are brought into contact with each other. Atoms that tend to form covalent bonds are primarily atoms of the nonmetallic elements, which you'll find in the upper right corner of the periodic table (with the exception of the noble gas elements, which are very stable and tend not to form bonds).</p><br><p>This is different from ionic bonds, which we discussed earlier. Remember that an ionic bond is formed when an atom that tends to lose electrons makes contact with an atom that tends to gain them.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>I see. What about hydrogen? It's on the left side of the periodic table with the metals, but I know water has hydrogen in it. Does hydrogen form covalent bonds?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>That's an excellent observation! Yes, hydrogen is a special case. Unlike the other group 1 elements, hydrogen has a fairly strong attraction for an additional electron. Two hydrogen atoms, for example, covalently bond to form a hydrogen molecule, H₂.</p><br><p>In this case, two hydrogen atoms form a covalent bond as they share their unpaired electrons. Each hydrogen atom contributes one electron to the bond, resulting in a shared pair that both atoms are attracted to.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>I think I'm starting to understand. So how many covalent bonds can different atoms form? Is there a pattern to it?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>Yes, there is a pattern, and it's quite logical. The number of covalent bonds an atom commonly forms is equal to the number of additional electrons it can attract, which is the number of electrons needed to fill its valence shell.</p><br><p>For example:<br>- Hydrogen attracts only one additional electron, so it forms only one covalent bond.<br>- Oxygen attracts two additional electrons, so it forms two covalent bonds (as in water, H₂O).<br>- Nitrogen attracts three additional electrons, so it forms three covalent bonds.<br>- Carbon attracts four additional electrons, so it forms four covalent bonds.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>Wait, so in water (H₂O), the oxygen atom is forming two covalent bonds with hydrogen atoms? Can you explain how that works exactly?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Of course! In water (H₂O), the oxygen atom has two unpaired valence electrons. These two electrons pair with the unpaired valence electrons of two hydrogen atoms to form two covalent bonds.</p><br><p>Through this arrangement, the oxygen atom gains access to two additional electrons (one from each hydrogen atom), which helps fill its valence shell. Simultaneously, each hydrogen atom gains access to an additional electron from the oxygen atom, which helps fill its valence shell too. This mutual sharing satisfies both elements' need for a filled valence shell.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>That's really cool. I never thought about how the water molecules I drink every day are held together by these shared electrons. What about other molecules like ammonia or methane? How do they work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>I love your connection to everyday substances! Let's look at ammonia (NH₃) and methane (CH₄).</p><br><p>In ammonia (NH₃), a nitrogen atom forms three covalent bonds with three hydrogen atoms. Nitrogen attracts three additional electrons to fill its valence shell, which it gets by bonding with three hydrogen atoms. Each hydrogen atom, in turn, gets access to an additional electron by bonding to nitrogen.</p><br><p>In methane (CH₄), a carbon atom forms four covalent bonds with four hydrogen atoms. Carbon attracts four additional electrons to fill its valence shell, which it gets by bonding with four hydrogen atoms. Again, each hydrogen atom gets access to an additional electron.</p><br><p>Interestingly, the number of covalent bonds formed by these nonmetallic elements parallels the negative charge these ions tend to form. This makes sense because covalent-bond formation and negative-ion formation are both applications of the same concept: nonmetallic atoms tend to gain electrons until their valence shells are filled.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>I'm starting to see a pattern here. So there's a relationship between how many covalent bonds an element forms and the negative charge its ion would have?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Excellent insight! Yes, that's exactly right. Covalent bonds and the negative ions formed by nonmetals have something fundamental in common: both involve nonmetallic atoms gaining electrons until their valence shells are filled.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>Are there any unusual examples of covalent compounds that don't follow the typical pattern of small molecules?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>Absolutely! Diamond is a fascinating example of an unusual covalent compound. It consists of carbon atoms covalently bonded to one another in four directions, forming what we call a covalent crystal.</p><br><p>A covalent crystal is a highly ordered, three-dimensional network of covalently bonded atoms. This network of carbon atoms forms a very strong and rigid structure, which explains why diamonds are so hard.</p><br><p>Interestingly, because a diamond is a group of atoms held together only by covalent bonds, it can be characterized as a single molecule. Unlike most other molecules, a diamond molecule is large enough to be visible to the naked eye, so it's more appropriately referred to as a macromolecule.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>Wait, so a diamond is basically one giant molecule? That's mind-blowing! I thought molecules were always microscopic.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>Yes, that realization surprises many people! A diamond is essentially one giant molecule, a macromolecule where all the carbon atoms are connected by covalent bonds in a continuous network. Most naturally occurring diamonds formed deep within the Earth not millions, but billions of years ago.</p><br><p>Here's another interesting fact: astronomers have recently discovered an expired star that has a solid core made of diamond. This star-sized diamond measures about 4000 kilometers wide, which amounts to about 10 billion trillion trillion carats. It has been named "Lucy," after The Beatles song "Lucy in the Sky with Diamonds." In about 7 billion years, our own star, the Sun, is also likely to crystallize into a huge diamond ball.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>That's amazing! So, just to make sure I understand the basics: how many electrons make up a single covalent bond?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>Great question for checking your understanding. A single covalent bond consists of two electrons—one from each participating atom.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>Can atoms share more than just two electrons between them?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Yes, absolutely! It is possible to have more than two electrons shared between two atoms. When four electrons (two from each atom) are shared, we call this a double covalent bond, or simply a double bond.</p><br><p>For example, molecular oxygen (O₂) consists of two oxygen atoms connected by four shared electrons forming a double bond. Similarly, carbon dioxide (CO₂) consists of two double bonds connecting two oxygen atoms to a central carbon atom.</p><br><p>Some atoms can even form triple covalent bonds, in which six electrons—three from each atom—are shared. One example is molecular nitrogen (N₂). Any double or triple bond is often referred to as a multiple bond. Multiple bonds higher than these, such as quadruple covalent bonds, are not commonly observed.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>So if I see two lines between atoms in a molecular diagram, that's a double bond with four shared electrons, and three lines would be a triple bond with six shared electrons?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>That's exactly right! You're catching on quickly. The number of lines represents the number of electron pairs being shared between the atoms:<br>- A single line (—) represents a single bond (one shared pair, 2 electrons)<br>- A double line (=) represents a double bond (two shared pairs, 4 electrons)<br>- A triple line (≡) represents a triple bond (three shared pairs, 6 electrons)</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>I'm noticing a pattern with how many bonds each element forms. Is there a consistent rule for that?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Yes, there is a consistent pattern. Looking at electron-dot structures for various molecules, you'll notice that each element consistently forms the same number of bonds:<br>- Hydrogen forms one bond<br>- Oxygen forms two bonds<br>- Nitrogen forms three bonds<br>- Carbon forms four bonds</p><br><p>As we discussed earlier, this number of bonds is equal to the number of additional electrons the atom is able to attract as indicated by its position in the periodic table.</p><br><p>Additionally, the number of nonbonding lone pairs on atoms is also consistent:<br>- Hydrogen, aluminum, and carbon show no lone pairs<br>- Nitrogen has one lone pair<br>- Oxygen has two lone pairs<br>- Chlorine and fluorine have three lone pairs</p><br><p>These numbers of lone pairs allow each atom to have a filled shell of electrons.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>What happens in molecules that have a charge, like ions? Does that change how many bonds an atom forms?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>That's a sophisticated question! Yes, the pattern is different for charged atoms within a polyatomic ion.</p><br><p>A positively charged atom within a polyatomic ion has one additional covalent bond and one fewer lone pair compared to its neutral state. For example, the nitrogen atom of an ammonia molecule (NH₃) has three bonds and one lone pair. But if you add a hydrogen ion (H⁺) to ammonia, you create the ammonium ion (NH₄⁺). The nitrogen of the ammonium ion has four bonds and no lone pairs. This happens because the lone pair of ammonia reacted with a hydrogen ion to form the fourth bond.</p><br><p>Similarly, a negatively charged atom within a polyatomic ion has one fewer covalent bond and one additional lone pair compared to its neutral state. For example, the oxygen of a water molecule (H₂O) has two bonds and two lone pairs. If you remove a hydrogen ion (H⁺) from a water molecule, you create the hydroxide ion (OH⁻). The oxygen of the hydroxide ion has only one bond but three lone pairs. The additional lone pair was created as the hydrogen ion left the water molecule without an electron.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>This is starting to make sense. So if I see an electron-dot structure of something like the bicarbonate ion where one oxygen atom has only one covalent bond instead of the usual two, that would be because that oxygen is carrying a negative charge, right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>Exactly right! In a neutral molecule, you would expect each oxygen atom to have two bonds. If you see an oxygen atom with only one covalent bond, as in the bicarbonate ion, it's because that oxygen is carrying a negative charge.</p><br><p>Although it's bonded only once, it has three lone pairs, which, together with the two bonding electrons (the one bond it forms), fill its valence shell. This follows our pattern: a negatively charged atom has one fewer bond and one additional lone pair compared to its neutral state.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>Wow, I feel like I'm actually starting to understand chemistry! This isn't as intimidating as I thought it would be. So covalent bonds are all about sharing electrons, and there are patterns to how many bonds each element forms. Is there anything else I should know about covalent bonds?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>You're doing incredibly well! I'm thrilled to see your confidence growing. You've grasped the key concepts about covalent bonds:<br>1. They involve atoms sharing electrons to achieve filled valence shells<br>2. The number of bonds an atom forms relates to how many electrons it needs to fill its valence shell<br>3. We can have single, double, or triple bonds depending on how many electron pairs are shared<br>4. The patterns change in predictable ways when atoms carry charges</p><br><p>One more interesting fact is that covalent compounds exist throughout our universe. Spectroscopic studies of interstellar dust within our galaxy have revealed the presence of more than 120 kinds of molecules, such as hydrogen chloride (HCl), water (H₂O), acetylene (H₂C₂), formic acid (HCO₂H), methanol (CH₃OH), methyl amine (NH₂CH₃), acetic acid (CH₃CO₂H), and even the amino acid glycine (NH₂CH₂CO₂H). </p><br><p>Notably, about half of these interstellar molecules are carbon-based organic molecules. The atoms originated from the nuclear fusion of ancient stars, and it's fascinating that these atoms then join together to form molecules even in the deep vacuum of outer space.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>That's amazing to think about - the molecules we study in chemistry class are also floating around in space! This has been really helpful. I think I finally understand covalent bonds. Thank you for making chemistry less intimidating!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>You're very welcome! I'm delighted that you're seeing chemistry in a new light. The universe is indeed full of the same chemistry we study in the classroom, which makes learning these concepts all the more meaningful. You've made excellent progress today in understanding covalent bonds, and I hope you continue to explore the fascinating world of chemistry with this newfound confidence. Is there anything else about covalent bonds or other chemistry topics you'd like to explore?</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "551946eb-b2c2-46a3-a5eb-8b33fa509466", "classid": "conceptual-chemistry-0605", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I'm supposed to be learning about chemical bonding for my science class. I've always been kind of intimidated by chemistry, to be honest. I need to understand something called \"covalent bonds.\"", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I completely understand that chemistry can feel intimidating at first. Let's explore covalent bonds together - it's actually a fascinating concept that helps explain how many substances around us form.\n\nLet me start with a simple analogy. Imagine two children playing together and sharing their toys. The force that keeps these children together is their mutual attraction to the toys they share. In a similar fashion, two atoms can be held together by their mutual attraction for electrons they share.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's an interesting comparison. So atoms can share things like kids share toys?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! Let's take fluorine as an example. A fluorine atom has a strong tendency to acquire an additional electron, which would fill its outer shell. When a fluorine atom encounters another fluorine atom, it can add that additional electron to its outer shell by grabbing onto the unpaired valence electron of the other fluorine atom.\n\nThis results in a situation where the two fluorine atoms are mutually attracted to the same two electrons. This type of electrical attraction, where atoms are held together by their mutual attraction for shared electrons, is called a covalent bond. The prefix \"co-\" signifies sharing, and \"-valent\" refers to the fact that it's valence electrons that are being shared.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I see. So instead of one atom completely taking electrons from another atom, they're kind of... sharing them? Does that mean both atoms are somewhat satisfied with this arrangement?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent observation! Yes, through this sharing arrangement, each fluorine atom achieves a filled valence shell. The two atoms are held together in a fluorine molecule by the attraction they both have for those two shared electrons.\n\nThe positive nuclear charge of each fluorine atom (which we can think of as the core of the atom) causes it to be attracted to the unpaired valence electron of its neighboring fluorine atom. Through this mutual attraction, they form what we call a covalent bond.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So what do we call something that's made up of atoms held together by these covalent bonds?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": A substance composed of atoms held together by covalent bonds is called a covalent compound. The fundamental unit of most covalent compounds is a molecule, which we can formally define as any group of atoms held together by covalent bonds.\n\nUsing the element fluorine as an example, two fluorine atoms join together to form a fluorine molecule, represented as F\u2082. When writing electron-dot structures for covalent compounds, chemists often use a straight line to represent the two electrons involved in a covalent bond.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, what are electron-dot structures again? I think we covered those earlier but I'm still confused about them.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": No problem! Electron-dot structures, also called Lewis structures, are diagrams that show how the valence electrons are arranged among the atoms in a molecule. The dots represent electrons.\n\nFor the fluorine molecule (F\u2082), there are two frequently used ways of showing the electron-dot structure without using spheres to represent the atoms:\n\nF:F or F\u2014F\n\nIn both representations, the straight line represents two electrons\u2014one from each atom. This is the bonding pair of electrons that forms the covalent bond.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So in drawings of molecules, when I see a line between atoms, that represents a covalent bond?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct! And it's important to note that we now have two types of electron pairs to keep track of:\n1. A nonbonding pair (also called a lone pair) refers to any pair that exists in the electron-dot structure of an individual atom.\n2. A bonding pair refers to any pair that results from formation of a covalent bond.\n\nThe key difference is that in a nonbonding pair, both electrons originate in the same atom, while in a bonding pair, one electron comes from each atom participating in the bond.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. So which elements tend to form these covalent bonds? Is it all elements or just certain ones?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question. Covalent bonds are formed when two atoms that both tend to gain electrons are brought into contact with each other. Atoms that tend to form covalent bonds are primarily atoms of the nonmetallic elements, which you'll find in the upper right corner of the periodic table (with the exception of the noble gas elements, which are very stable and tend not to form bonds).\n\nThis is different from ionic bonds, which we discussed earlier. Remember that an ionic bond is formed when an atom that tends to lose electrons makes contact with an atom that tends to gain them.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I see. What about hydrogen? It's on the left side of the periodic table with the metals, but I know water has hydrogen in it. Does hydrogen form covalent bonds?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent observation! Yes, hydrogen is a special case. Unlike the other group 1 elements, hydrogen has a fairly strong attraction for an additional electron. Two hydrogen atoms, for example, covalently bond to form a hydrogen molecule, H\u2082.\n\nIn this case, two hydrogen atoms form a covalent bond as they share their unpaired electrons. Each hydrogen atom contributes one electron to the bond, resulting in a shared pair that both atoms are attracted to.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I'm starting to understand. So how many covalent bonds can different atoms form? Is there a pattern to it?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, there is a pattern, and it's quite logical. The number of covalent bonds an atom commonly forms is equal to the number of additional electrons it can attract, which is the number of electrons needed to fill its valence shell.\n\nFor example:\n- Hydrogen attracts only one additional electron, so it forms only one covalent bond.\n- Oxygen attracts two additional electrons, so it forms two covalent bonds (as in water, H\u2082O).\n- Nitrogen attracts three additional electrons, so it forms three covalent bonds.\n- Carbon attracts four additional electrons, so it forms four covalent bonds.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so in water (H\u2082O), the oxygen atom is forming two covalent bonds with hydrogen atoms? Can you explain how that works exactly?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Of course! In water (H\u2082O), the oxygen atom has two unpaired valence electrons. These two electrons pair with the unpaired valence electrons of two hydrogen atoms to form two covalent bonds.\n\nThrough this arrangement, the oxygen atom gains access to two additional electrons (one from each hydrogen atom), which helps fill its valence shell. Simultaneously, each hydrogen atom gains access to an additional electron from the oxygen atom, which helps fill its valence shell too. This mutual sharing satisfies both elements' need for a filled valence shell.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's really cool. I never thought about how the water molecules I drink every day are held together by these shared electrons. What about other molecules like ammonia or methane? How do they work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I love your connection to everyday substances! Let's look at ammonia (NH\u2083) and methane (CH\u2084).\n\nIn ammonia (NH\u2083), a nitrogen atom forms three covalent bonds with three hydrogen atoms. Nitrogen attracts three additional electrons to fill its valence shell, which it gets by bonding with three hydrogen atoms. Each hydrogen atom, in turn, gets access to an additional electron by bonding to nitrogen.\n\nIn methane (CH\u2084), a carbon atom forms four covalent bonds with four hydrogen atoms. Carbon attracts four additional electrons to fill its valence shell, which it gets by bonding with four hydrogen atoms. Again, each hydrogen atom gets access to an additional electron.\n\nInterestingly, the number of covalent bonds formed by these nonmetallic elements parallels the negative charge these ions tend to form. This makes sense because covalent-bond formation and negative-ion formation are both applications of the same concept: nonmetallic atoms tend to gain electrons until their valence shells are filled.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm starting to see a pattern here. So there's a relationship between how many covalent bonds an element forms and the negative charge its ion would have?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent insight! Yes, that's exactly right. Covalent bonds and the negative ions formed by nonmetals have something fundamental in common: both involve nonmetallic atoms gaining electrons until their valence shells are filled.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Are there any unusual examples of covalent compounds that don't follow the typical pattern of small molecules?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! Diamond is a fascinating example of an unusual covalent compound. It consists of carbon atoms covalently bonded to one another in four directions, forming what we call a covalent crystal.\n\nA covalent crystal is a highly ordered, three-dimensional network of covalently bonded atoms. This network of carbon atoms forms a very strong and rigid structure, which explains why diamonds are so hard.\n\nInterestingly, because a diamond is a group of atoms held together only by covalent bonds, it can be characterized as a single molecule. Unlike most other molecules, a diamond molecule is large enough to be visible to the naked eye, so it's more appropriately referred to as a macromolecule.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so a diamond is basically one giant molecule? That's mind-blowing! I thought molecules were always microscopic.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, that realization surprises many people! A diamond is essentially one giant molecule, a macromolecule where all the carbon atoms are connected by covalent bonds in a continuous network. Most naturally occurring diamonds formed deep within the Earth not millions, but billions of years ago.\n\nHere's another interesting fact: astronomers have recently discovered an expired star that has a solid core made of diamond. This star-sized diamond measures about 4000 kilometers wide, which amounts to about 10 billion trillion trillion carats. It has been named \"Lucy,\" after The Beatles song \"Lucy in the Sky with Diamonds.\" In about 7 billion years, our own star, the Sun, is also likely to crystallize into a huge diamond ball.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's amazing! So, just to make sure I understand the basics: how many electrons make up a single covalent bond?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Great question for checking your understanding. A single covalent bond consists of two electrons\u2014one from each participating atom.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Can atoms share more than just two electrons between them?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, absolutely! It is possible to have more than two electrons shared between two atoms. When four electrons (two from each atom) are shared, we call this a double covalent bond, or simply a double bond.\n\nFor example, molecular oxygen (O\u2082) consists of two oxygen atoms connected by four shared electrons forming a double bond. Similarly, carbon dioxide (CO\u2082) consists of two double bonds connecting two oxygen atoms to a central carbon atom.\n\nSome atoms can even form triple covalent bonds, in which six electrons\u2014three from each atom\u2014are shared. One example is molecular nitrogen (N\u2082). Any double or triple bond is often referred to as a multiple bond. Multiple bonds higher than these, such as quadruple covalent bonds, are not commonly observed.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if I see two lines between atoms in a molecular diagram, that's a double bond with four shared electrons, and three lines would be a triple bond with six shared electrons?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! You're catching on quickly. The number of lines represents the number of electron pairs being shared between the atoms:\n- A single line (\u2014) represents a single bond (one shared pair, 2 electrons)\n- A double line (=) represents a double bond (two shared pairs, 4 electrons)\n- A triple line (\u2261) represents a triple bond (three shared pairs, 6 electrons)", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm noticing a pattern with how many bonds each element forms. Is there a consistent rule for that?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, there is a consistent pattern. Looking at electron-dot structures for various molecules, you'll notice that each element consistently forms the same number of bonds:\n- Hydrogen forms one bond\n- Oxygen forms two bonds\n- Nitrogen forms three bonds\n- Carbon forms four bonds\n\nAs we discussed earlier, this number of bonds is equal to the number of additional electrons the atom is able to attract as indicated by its position in the periodic table.\n\nAdditionally, the number of nonbonding lone pairs on atoms is also consistent:\n- Hydrogen, aluminum, and carbon show no lone pairs\n- Nitrogen has one lone pair\n- Oxygen has two lone pairs\n- Chlorine and fluorine have three lone pairs\n\nThese numbers of lone pairs allow each atom to have a filled shell of electrons.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": What happens in molecules that have a charge, like ions? Does that change how many bonds an atom forms?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a sophisticated question! Yes, the pattern is different for charged atoms within a polyatomic ion.\n\nA positively charged atom within a polyatomic ion has one additional covalent bond and one fewer lone pair compared to its neutral state. For example, the nitrogen atom of an ammonia molecule (NH\u2083) has three bonds and one lone pair. But if you add a hydrogen ion (H\u207a) to ammonia, you create the ammonium ion (NH\u2084\u207a). The nitrogen of the ammonium ion has four bonds and no lone pairs. This happens because the lone pair of ammonia reacted with a hydrogen ion to form the fourth bond.\n\nSimilarly, a negatively charged atom within a polyatomic ion has one fewer covalent bond and one additional lone pair compared to its neutral state. For example, the oxygen of a water molecule (H\u2082O) has two bonds and two lone pairs. If you remove a hydrogen ion (H\u207a) from a water molecule, you create the hydroxide ion (OH\u207b). The oxygen of the hydroxide ion has only one bond but three lone pairs. The additional lone pair was created as the hydrogen ion left the water molecule without an electron.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is starting to make sense. So if I see an electron-dot structure of something like the bicarbonate ion where one oxygen atom has only one covalent bond instead of the usual two, that would be because that oxygen is carrying a negative charge, right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly right! In a neutral molecule, you would expect each oxygen atom to have two bonds. If you see an oxygen atom with only one covalent bond, as in the bicarbonate ion, it's because that oxygen is carrying a negative charge.\n\nAlthough it's bonded only once, it has three lone pairs, which, together with the two bonding electrons (the one bond it forms), fill its valence shell. This follows our pattern: a negatively charged atom has one fewer bond and one additional lone pair compared to its neutral state.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, I feel like I'm actually starting to understand chemistry! This isn't as intimidating as I thought it would be. So covalent bonds are all about sharing electrons, and there are patterns to how many bonds each element forms. Is there anything else I should know about covalent bonds?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're doing incredibly well! I'm thrilled to see your confidence growing. You've grasped the key concepts about covalent bonds:\n1. They involve atoms sharing electrons to achieve filled valence shells\n2. The number of bonds an atom forms relates to how many electrons it needs to fill its valence shell\n3. We can have single, double, or triple bonds depending on how many electron pairs are shared\n4. The patterns change in predictable ways when atoms carry charges\n\nOne more interesting fact is that covalent compounds exist throughout our universe. Spectroscopic studies of interstellar dust within our galaxy have revealed the presence of more than 120 kinds of molecules, such as hydrogen chloride (HCl), water (H\u2082O), acetylene (H\u2082C\u2082), formic acid (HCO\u2082H), methanol (CH\u2083OH), methyl amine (NH\u2082CH\u2083), acetic acid (CH\u2083CO\u2082H), and even the amino acid glycine (NH\u2082CH\u2082CO\u2082H). \n\nNotably, about half of these interstellar molecules are carbon-based organic molecules. The atoms originated from the nuclear fusion of ancient stars, and it's fascinating that these atoms then join together to form molecules even in the deep vacuum of outer space.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's amazing to think about - the molecules we study in chemistry class are also floating around in space! This has been really helpful. I think I finally understand covalent bonds. Thank you for making chemistry less intimidating!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're very welcome! I'm delighted that you're seeing chemistry in a new light. The universe is indeed full of the same chemistry we study in the classroom, which makes learning these concepts all the more meaningful. You've made excellent progress today in understanding covalent bonds, and I hope you continue to explore the fascinating world of chemistry with this newfound confidence. Is there anything else about covalent bonds or other chemistry topics you'd like to explore?", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742536611.764204, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0605_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

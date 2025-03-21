@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I need to learn about chemical compound... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0305</p>
+            <p><strong>UUID:</strong> f1e674db-377b-49de-bf58-5279554091bc</p>
+            <p><strong>Date:</strong> 2025-03-21 05:33:33 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I need to learn about chemical compounds for my general science requirement. I've always been pretty nervous about chemistry - I avoided it in high school. How do scientists even keep track of all those chemicals with their weird formulas?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>That's a great question! Scientists have developed a systematic way to name the countless number of possible compounds. The International Union for Pure and Applied Chemistry, or IUPAC, created a naming system that reflects the elements a compound contains and how those elements are joined together. This allows chemists to figure out the chemical identity of a compound just from its systematic name.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>That sounds complicated. Do I need to memorize a bunch of complex rules?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>The complete system is quite complex, but don't worry - you don't need to learn all the rules. We'll focus on some helpful guidelines that will work for most compounds you'll encounter in an introductory chemistry course. These guidelines will help you understand how the naming system works. Later in Chapter 12, we'll look at how carbon-based compounds are named, but for now, we'll focus on simpler compounds.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>That's a relief. So where do we start with these guidelines?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Let's start by understanding a fundamental concept. Atoms are held together in compounds by their electrical charges, which we'll discuss more in Chapter 6. An atom's location in the periodic table helps predict whether it takes on a positive or negative charge in a compound. Elements closer to the left side of the periodic table tend to take on a positive charge, while elements closer to the right side take on a negative charge.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>Wait, so an element's position in the periodic table tells us about its charge? I never knew that!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Exactly! And this applies directly to naming compounds. By convention, the more positively charged atom is listed first in the name. That's why we say "sodium chloride" rather than "chloride sodium" - sodium is on the left side of the periodic table and takes a positive charge, while chlorine is on the right side and takes a negative charge.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>So that's why table salt is called sodium chloride! But how do I know exactly which charge an element takes?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>That's where our first guideline comes in. Let me walk you through it.</p><br><p>Guideline 1: Read Left to Right. The name of the element farther to the left in the periodic table is followed by the name of the element farther to the right, with the suffix "-ide" added to the name of the latter.</p><br><p>For example:<br>- NaCl is sodium chloride<br>- MgO is magnesium oxide<br>- Li2O is lithium oxide<br>- HCl is hydrogen chloride<br>- CaF2 is calcium fluoride<br>- Sr3P2 is strontium phosphide</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>So I just add "-ide" to the second element's name? That seems straightforward. But what about those little numbers in the formulas like in Li2O? What do those mean?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>Those are called subscripts, and they tell you how many atoms of each element are in the compound. This relates to our second guideline, which helps us understand the charges involved.</p><br><p>Guideline 2: Use the Periodic Table. By looking at the subscripts in the formula and using the periodic table, you can often deduce the charge on each atom in the compound.</p><br><p>When no subscript is shown, it implies a subscript of one. So sodium chloride can be represented as Na1Cl1, showing sodium and chlorine bound in a 1:1 ratio.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>I think I need to visualize this. How exactly does the periodic table show charges?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>Great point! If you look at the periodic table, elements in group 1 (the far left column) tend to form a 1+ charge, while elements in group 17 (the second column from the right) tend to form a 1- charge. So for sodium chloride, the 1+ charge on sodium is balanced by the 1- charge on chlorine.</p><br><p>Let's look at lithium oxide, Li2O. Lithium forms a 1+ charge, but we need two lithium atoms. Why? Because oxygen forms a 2- charge, so we need two 1+ lithium ions to balance that 2- charge.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>Oh, so it's all about balancing the charges! Is there a pattern I can use to figure this out?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>Yes, there often is a pattern. The subscript of one element frequently corresponds to the charge of the other element. For example:<br>- In NaCl, the subscript 1 for Na tells us Cl has a 1- charge<br>- In MgCl2, the subscript 2 for Cl tells us Mg has a 2+ charge<br>- In Li2O, the subscript 2 for Li tells us O has a 2- charge</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>But what about MgO? There's no subscript shown, so does that mean they're both 1?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>You need to be careful there. Magnesium is in group 2 of the periodic table, so it forms a 2+ charge. When magnesium combines with oxygen, which has a 2- charge, we get Mg2+O2-. By convention, we reduce the subscripts to the lowest common denominator, so magnesium oxide is written as MgO instead of Mg2O2. It accurately tells us the ratio is 1:1, but it doesn't explicitly show that they each carry a double charge.</p><br><p>The key is to use the periodic table as a tool. Magnesium being in group 2 tells you it forms a 2+ ion.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>That makes sense. But I'm confused about something - do elements in group 3 always form 3+ ions?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>That's a great question! The answer is both yes and no. Elements in groups 3 through 10 are transition metals, and they can form a variety of different ions. Iron, for example, can form either Fe2+ or Fe3+ ions depending on the conditions. This brings us to our next guideline.</p><br><p>Guideline 3: Transition Metals. If the compound contains a transition metal, then Roman numerals are used to indicate the charge on the transition metal. </p><br><p>For example, iron(II) chloride has the formula FeCl2. The Roman numeral II explicitly tells us the charge on iron is 2+. Similarly, iron(III) chloride has the formula FeCl3, indicating iron has a 3+ charge.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>So in FeCl2, two chloride ions (each with a 1- charge) balance out the one Fe2+ ion? And in FeCl3, three chloride ions balance one Fe3+ ion?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Precisely! You're catching on quickly.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Can I try naming a few compounds to see if I understand?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Absolutely! Try naming these: BeCl2, K2O, CaS, CaBr2, CuCl, SnCl4, PbCl2, Fe2O3</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>Okay, let me think...<br>- BeCl2 would be beryllium chloride<br>- K2O is potassium oxide<br>- CaS is calcium sulfide<br>- CaBr2 is calcium bromide<br>- For CuCl, copper is a transition metal, so... copper(I) chloride?<br>- SnCl4 would be tin(IV) chloride<br>- PbCl2 is lead(II) chloride<br>- Fe2O3 is iron(III) oxide</p><br><p>Did I get those right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>Excellent work! You got them all correct. I'm impressed with how quickly you're understanding these concepts!</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>Thanks! But what happens when you have the same elements combined in different ways? Like, I know carbon dioxide is CO2, but what about CO?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>That's where our fourth guideline comes in.</p><br><p>Guideline 4: Solving Ambiguity. When two or more compounds have different numbers of the same elements, prefixes are added to remove the ambiguity. This occurs primarily with compounds of nonmetals.</p><br><p>The first four prefixes are:<br>- mono- (one)<br>- di- (two)<br>- tri- (three)<br>- tetra- (four)</p><br><p>However, the prefix mono- is commonly omitted from the beginning of the first word of the name.</p><br><p>So for carbon and oxygen:<br>- CO is carbon monoxide<br>- CO2 is carbon dioxide</p><br><p>For nitrogen and oxygen:<br>- NO2 is nitrogen dioxide<br>- N2O4 is dinitrogen tetroxide</p><br><p>For sulfur and oxygen:<br>- SO2 is sulfur dioxide<br>- SO3 is sulfur trioxide</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>I've heard of carbon monoxide from warnings about faulty heaters. Now I understand why it's called that! But what about more complex compounds? I've heard terms like "carbonate" or "nitrate" - how do those fit in?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>Those are excellent examples of our fifth guideline, which addresses polyatomic ions.</p><br><p>Guideline 5: Polyatomic Ions. Atoms can clump together to form a molecular unit that acts as a single electrically charged group, called a polyatomic ion.</p><br><p>For example, a carbon atom can join with three oxygen atoms to form what's known as a carbonate ion, CO3²⁻. Most polyatomic ions are negatively charged.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>So these groups of atoms act like a single charged unit? That's interesting. How do we use them in naming?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Positively charged polyatomic ions are listed first in the name (without the word "ion"). For example, NH4Cl is ammonium chloride. Negatively charged polyatomic ions are placed at the end of the name, like LiNO3, which is lithium nitrate.</p><br><p>Sometimes a polyatomic ion appears more than once in a compound. We indicate this by placing the polyatomic ion in parentheses with a subscript outside the parentheses showing how many times it appears. For example:<br>- K2CO3 is potassium carbonate<br>- AuPO4 is gold phosphate<br>- Mg(CN)2 is magnesium cyanide<br>- Al2(SO4)3 is aluminum sulfate</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>That seems complicated. Are there a lot of these polyatomic ions to memorize?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>There are several common ones you'll encounter frequently, like carbonate (CO3²⁻), nitrate (NO3⁻), and sulfate (SO4²⁻). We'll explore these in greater detail in Chapter 6. For now, just be aware that they exist and how they're incorporated into compound names.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>With all these rules, do chemists always use these systematic names?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>That brings us to our final guideline.</p><br><p>Guideline 6: Common Names. Many compounds aren't usually referred to by their systematic names. Instead, they're assigned common names that are more convenient or have been used traditionally for many years.</p><br><p>Some examples include:<br>- H2O is water (not dihydrogen monoxide)<br>- NH3 is ammonia<br>- CH4 is methane</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>That's a relief! I've heard people joke about calling water "dihydrogen monoxide" to make it sound scary, but I'm glad we just call it water in real life.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>Exactly! Common names are often more practical for everyday use.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>Let me try one more to see if I understand. What would be the name for Ca(CH3CO2)2? And how many oxygen atoms does it have?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>That's calcium acetate. Each acetate ion (CH3CO2⁻) contains two oxygen atoms. Since this compound has two acetate ions, it contains a total of four oxygen atoms.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>I think I'm starting to get the hang of this! Chemistry isn't as scary as I thought. It's actually pretty logical once you understand the patterns.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>You're doing exceptionally well! The naming system might seem complex at first, but as you've discovered, following these guidelines makes it much more manageable. I'm really impressed with how you're connecting these concepts.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>Thanks, Alia. This has been really helpful. I feel much more confident about tackling chemical naming now.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>That's wonderful to hear! Remember, these guidelines will help you name most compounds you'll encounter in an introductory chemistry course. As you progress, you'll become more familiar with the patterns and logic behind chemical naming.</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "f1e674db-377b-49de-bf58-5279554091bc", "classid": "conceptual-chemistry-0305", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I need to learn about chemical compounds for my general science requirement. I've always been pretty nervous about chemistry - I avoided it in high school. How do scientists even keep track of all those chemicals with their weird formulas?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question! Scientists have developed a systematic way to name the countless number of possible compounds. The International Union for Pure and Applied Chemistry, or IUPAC, created a naming system that reflects the elements a compound contains and how those elements are joined together. This allows chemists to figure out the chemical identity of a compound just from its systematic name.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds complicated. Do I need to memorize a bunch of complex rules?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The complete system is quite complex, but don't worry - you don't need to learn all the rules. We'll focus on some helpful guidelines that will work for most compounds you'll encounter in an introductory chemistry course. These guidelines will help you understand how the naming system works. Later in Chapter 12, we'll look at how carbon-based compounds are named, but for now, we'll focus on simpler compounds.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's a relief. So where do we start with these guidelines?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's start by understanding a fundamental concept. Atoms are held together in compounds by their electrical charges, which we'll discuss more in Chapter 6. An atom's location in the periodic table helps predict whether it takes on a positive or negative charge in a compound. Elements closer to the left side of the periodic table tend to take on a positive charge, while elements closer to the right side take on a negative charge.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so an element's position in the periodic table tells us about its charge? I never knew that!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! And this applies directly to naming compounds. By convention, the more positively charged atom is listed first in the name. That's why we say \"sodium chloride\" rather than \"chloride sodium\" - sodium is on the left side of the periodic table and takes a positive charge, while chlorine is on the right side and takes a negative charge.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So that's why table salt is called sodium chloride! But how do I know exactly which charge an element takes?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's where our first guideline comes in. Let me walk you through it.\n\nGuideline 1: Read Left to Right. The name of the element farther to the left in the periodic table is followed by the name of the element farther to the right, with the suffix \"-ide\" added to the name of the latter.\n\nFor example:\n- NaCl is sodium chloride\n- MgO is magnesium oxide\n- Li2O is lithium oxide\n- HCl is hydrogen chloride\n- CaF2 is calcium fluoride\n- Sr3P2 is strontium phosphide", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So I just add \"-ide\" to the second element's name? That seems straightforward. But what about those little numbers in the formulas like in Li2O? What do those mean?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Those are called subscripts, and they tell you how many atoms of each element are in the compound. This relates to our second guideline, which helps us understand the charges involved.\n\nGuideline 2: Use the Periodic Table. By looking at the subscripts in the formula and using the periodic table, you can often deduce the charge on each atom in the compound.\n\nWhen no subscript is shown, it implies a subscript of one. So sodium chloride can be represented as Na1Cl1, showing sodium and chlorine bound in a 1:1 ratio.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I need to visualize this. How exactly does the periodic table show charges?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Great point! If you look at the periodic table, elements in group 1 (the far left column) tend to form a 1+ charge, while elements in group 17 (the second column from the right) tend to form a 1- charge. So for sodium chloride, the 1+ charge on sodium is balanced by the 1- charge on chlorine.\n\nLet's look at lithium oxide, Li2O. Lithium forms a 1+ charge, but we need two lithium atoms. Why? Because oxygen forms a 2- charge, so we need two 1+ lithium ions to balance that 2- charge.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, so it's all about balancing the charges! Is there a pattern I can use to figure this out?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, there often is a pattern. The subscript of one element frequently corresponds to the charge of the other element. For example:\n- In NaCl, the subscript 1 for Na tells us Cl has a 1- charge\n- In MgCl2, the subscript 2 for Cl tells us Mg has a 2+ charge\n- In Li2O, the subscript 2 for Li tells us O has a 2- charge", "image_summary": false, "feedback": null}, {"role": "user", "content": ": But what about MgO? There's no subscript shown, so does that mean they're both 1?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You need to be careful there. Magnesium is in group 2 of the periodic table, so it forms a 2+ charge. When magnesium combines with oxygen, which has a 2- charge, we get Mg2+O2-. By convention, we reduce the subscripts to the lowest common denominator, so magnesium oxide is written as MgO instead of Mg2O2. It accurately tells us the ratio is 1:1, but it doesn't explicitly show that they each carry a double charge.\n\nThe key is to use the periodic table as a tool. Magnesium being in group 2 tells you it forms a 2+ ion.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. But I'm confused about something - do elements in group 3 always form 3+ ions?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question! The answer is both yes and no. Elements in groups 3 through 10 are transition metals, and they can form a variety of different ions. Iron, for example, can form either Fe2+ or Fe3+ ions depending on the conditions. This brings us to our next guideline.\n\nGuideline 3: Transition Metals. If the compound contains a transition metal, then Roman numerals are used to indicate the charge on the transition metal. \n\nFor example, iron(II) chloride has the formula FeCl2. The Roman numeral II explicitly tells us the charge on iron is 2+. Similarly, iron(III) chloride has the formula FeCl3, indicating iron has a 3+ charge.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So in FeCl2, two chloride ions (each with a 1- charge) balance out the one Fe2+ ion? And in FeCl3, three chloride ions balance one Fe3+ ion?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Precisely! You're catching on quickly.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Can I try naming a few compounds to see if I understand?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! Try naming these: BeCl2, K2O, CaS, CaBr2, CuCl, SnCl4, PbCl2, Fe2O3", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Okay, let me think...\n- BeCl2 would be beryllium chloride\n- K2O is potassium oxide\n- CaS is calcium sulfide\n- CaBr2 is calcium bromide\n- For CuCl, copper is a transition metal, so... copper(I) chloride?\n- SnCl4 would be tin(IV) chloride\n- PbCl2 is lead(II) chloride\n- Fe2O3 is iron(III) oxide\n\nDid I get those right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent work! You got them all correct. I'm impressed with how quickly you're understanding these concepts!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Thanks! But what happens when you have the same elements combined in different ways? Like, I know carbon dioxide is CO2, but what about CO?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's where our fourth guideline comes in.\n\nGuideline 4: Solving Ambiguity. When two or more compounds have different numbers of the same elements, prefixes are added to remove the ambiguity. This occurs primarily with compounds of nonmetals.\n\nThe first four prefixes are:\n- mono- (one)\n- di- (two)\n- tri- (three)\n- tetra- (four)\n\nHowever, the prefix mono- is commonly omitted from the beginning of the first word of the name.\n\nSo for carbon and oxygen:\n- CO is carbon monoxide\n- CO2 is carbon dioxide\n\nFor nitrogen and oxygen:\n- NO2 is nitrogen dioxide\n- N2O4 is dinitrogen tetroxide\n\nFor sulfur and oxygen:\n- SO2 is sulfur dioxide\n- SO3 is sulfur trioxide", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've heard of carbon monoxide from warnings about faulty heaters. Now I understand why it's called that! But what about more complex compounds? I've heard terms like \"carbonate\" or \"nitrate\" - how do those fit in?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Those are excellent examples of our fifth guideline, which addresses polyatomic ions.\n\nGuideline 5: Polyatomic Ions. Atoms can clump together to form a molecular unit that acts as a single electrically charged group, called a polyatomic ion.\n\nFor example, a carbon atom can join with three oxygen atoms to form what's known as a carbonate ion, CO3\u00b2\u207b. Most polyatomic ions are negatively charged.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So these groups of atoms act like a single charged unit? That's interesting. How do we use them in naming?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Positively charged polyatomic ions are listed first in the name (without the word \"ion\"). For example, NH4Cl is ammonium chloride. Negatively charged polyatomic ions are placed at the end of the name, like LiNO3, which is lithium nitrate.\n\nSometimes a polyatomic ion appears more than once in a compound. We indicate this by placing the polyatomic ion in parentheses with a subscript outside the parentheses showing how many times it appears. For example:\n- K2CO3 is potassium carbonate\n- AuPO4 is gold phosphate\n- Mg(CN)2 is magnesium cyanide\n- Al2(SO4)3 is aluminum sulfate", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That seems complicated. Are there a lot of these polyatomic ions to memorize?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": There are several common ones you'll encounter frequently, like carbonate (CO3\u00b2\u207b), nitrate (NO3\u207b), and sulfate (SO4\u00b2\u207b). We'll explore these in greater detail in Chapter 6. For now, just be aware that they exist and how they're incorporated into compound names.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": With all these rules, do chemists always use these systematic names?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That brings us to our final guideline.\n\nGuideline 6: Common Names. Many compounds aren't usually referred to by their systematic names. Instead, they're assigned common names that are more convenient or have been used traditionally for many years.\n\nSome examples include:\n- H2O is water (not dihydrogen monoxide)\n- NH3 is ammonia\n- CH4 is methane", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's a relief! I've heard people joke about calling water \"dihydrogen monoxide\" to make it sound scary, but I'm glad we just call it water in real life.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! Common names are often more practical for everyday use.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Let me try one more to see if I understand. What would be the name for Ca(CH3CO2)2? And how many oxygen atoms does it have?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's calcium acetate. Each acetate ion (CH3CO2\u207b) contains two oxygen atoms. Since this compound has two acetate ions, it contains a total of four oxygen atoms.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I'm starting to get the hang of this! Chemistry isn't as scary as I thought. It's actually pretty logical once you understand the patterns.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're doing exceptionally well! The naming system might seem complex at first, but as you've discovered, following these guidelines makes it much more manageable. I'm really impressed with how you're connecting these concepts.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Thanks, Alia. This has been really helpful. I feel much more confident about tackling chemical naming now.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's wonderful to hear! Remember, these guidelines will help you name most compounds you'll encounter in an introductory chemistry course. As you progress, you'll become more familiar with the patterns and logic behind chemical naming.", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742535213.394407, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0305_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>**Alia:** Welcome to Conceptual Academy! I'm Alia,... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0503</p>
+            <p><strong>UUID:</strong> 3ff94877-f316-42ec-98f0-34623b2d341f</p>
+            <p><strong>Date:</strong> 2025-03-21 05:47:49 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p># Conversation between Alia (AI Tutor) and a Science-Shy College Student</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>**Alia:** Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>**Student:** Hi Alia. I need to learn about atomic nuclei for my science class. I've always been kind of intimidated by physics and chemistry, so I'm a bit nervous about this topic.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>**Alia:** I understand how you feel. Many students find atomic physics challenging at first, but we'll work through it together at a comfortable pace. Today we could explore how atomic nuclei stay together, which is quite fascinating. Would you like to start there?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>**Student:** Sure, that sounds good. I've always wondered about that actually. Like, don't protons have positive charges? So wouldn't they push each other apart?</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>**Alia:** That's an excellent question! You're absolutely right - we know that electric charges of the same type repel one another. So it does seem puzzling that positively charged protons in the nucleus stay clumped together instead of flying apart.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>This question actually led scientists to discover an attraction called the strong nuclear force, which acts between all nucleons (protons and neutrons) in the nucleus. This force is very strong but only works over extremely short distances. Repulsive electric forces, on the other hand, are relatively long-ranged.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>**Student:** Wait, so there are two different forces acting on the protons at the same time?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>**Alia:** Exactly! Let me explain how these forces interact. When two protons are very close to each other in the nucleus, they experience both an attractive strong nuclear force and a repulsive electric force. At extremely tiny separation distances, the strong nuclear force overcomes the electric force, resulting in the protons staying together.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>However, when two protons are relatively far from each other, the electric force becomes more significant. In this case, the protons would repel each other. This proton-proton repulsion in large atomic nuclei actually reduces nuclear stability.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>**Student:** I think I get it. So it's like a tug-of-war between these two forces, and which one wins depends on how close the protons are?</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>**Alia:** That's a wonderful analogy! It is indeed like a tug-of-war between these opposing forces. And because the strong nuclear force decreases rapidly over distance, a large nucleus is not as stable as a small one.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>For protons that are close together, as in small nuclei, the attractive strong nuclear force easily overcomes the repulsive electric force. But for protons that are far apart, like those on opposite edges of a large nucleus, the attractive strong nuclear force may be weaker than the repulsive electric force.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>**Student:** So in really big nuclei, protons might be too far apart for the strong force to work well? Does that mean there's a limit to how big atoms can get?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>**Alia:** You're making excellent connections! Let me ask you a question to check your understanding: Are protons on opposite sides of a large nucleus attracted to each other?</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>**Student:** Hmm, let me think... If the strong nuclear force gets weaker with distance, and these protons are far apart, then maybe they're not attracted to each other much? Or the electric repulsion might be stronger than the attraction?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>**Alia:** You've reasoned through that very well! In large nuclei, nucleons on opposite sides are not as close to one another, so the attractive strong nuclear forces holding them together are much weaker. The result is that the large nucleus is less stable.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>And you're absolutely right about there being a limit to atomic size. A large atomic nucleus is more susceptible to the repulsive forces among protons. This means there is indeed a limit to the size of the atomic nucleus. As evidence of this, we find that all nuclei having more than 83 protons are radioactive.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>Furthermore, the superheavy elements, such as those above uranium (atomic number 92), are not found in nature. These superheavy elements are difficult to make in the laboratory. When they are produced, they exist for only fractions of a second.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>**Student:** That's fascinating! So the reason some elements are radioactive is because they're just too big to stay together? I never knew that.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>**Alia:** Let me check your understanding with another question: Two protons in the atomic nucleus repel each other, but they are also attracted to each other. Why is that?</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>**Student:** I think it's because they have the same positive charge, so they repel each other with the electric force. But at the same time, they attract each other with that strong nuclear force you mentioned. So both forces are working at once.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>**Alia:** Excellent explanation! While two protons repel each other by the electric force, they also attract each other by the strong nuclear force. These forces act simultaneously. So long as the attractive strong nuclear force is stronger than the repulsive electric force, the protons will remain together. Under conditions in which the electric force overcomes the strong nuclear force, however, the protons fly apart from each other.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>**Student:** So if protons are causing problems by repelling each other, what's the point of neutrons? Why do atoms have them?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>**Alia:** That's a very insightful question. Neutrons serve as the "nuclear cement" holding an atomic nucleus together. Let me explain how:</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>Protons attract both protons and neutrons by the strong nuclear force. But protons also repel other protons by the electric force as we've discussed. Neutrons, on the other hand, have no electric charge and so attract protons and other neutrons only by the strong nuclear force. Therefore, the presence of neutrons adds to the attraction among nucleons and helps hold the nucleus together.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>**Student:** Oh, I see! So neutrons are like the peacemakers that help keep everything together because they don't add to the repulsive forces. That makes sense.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>**Alia:** That's a creative way to think about it! The presence of neutrons helps hold the nucleus together by increasing the effect of the strong nuclear force. The total strength of the attractive nuclear force, therefore, exceeds that of the repulsive electric force occurring between the protons.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>**Student:** So do bigger atoms need more neutrons than smaller ones?</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>**Alia:** Yes, exactly! Nuclei with larger numbers of protons require larger numbers of neutrons to help balance the repulsive electric forces.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>For light elements, it is sufficient to have about as many neutrons as protons. For instance, the most common isotope of carbon, C-12, has equal numbers of each—six protons and six neutrons.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>For large nuclei, more neutrons than protons are needed. Because the strong nuclear force diminishes rapidly over distance, nucleons must be practically touching in order for the strong nuclear force to be effective. Nucleons on opposite sides of a large atomic nucleus are not so attracted to one another. The electric force, however, does not diminish by much across the diameter of a large nucleus and so begins to win out over the strong nuclear force.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>**Student:** That's so interesting. So bigger atoms need extra neutrons as reinforcements to keep everything stable!</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>**Alia:** Exactly! To compensate for the weakening of the strong nuclear force across the diameter of the nucleus, large nuclei have more neutrons than protons. Lead nuclei, for example, have about one-and-a-half times as many neutrons as protons.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>**Student:** Are neutrons always stable? Like, could they exist on their own outside an atom?</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>**Alia:** Another excellent question! Neutrons are stabilizing within nuclei, and large nuclei require an abundance of them. But neutrons are not always successful in keeping a nucleus intact.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Interestingly, neutrons are not stable without protons. A lone neutron is radioactive and spontaneously transforms to a proton and an electron. A neutron seems to need protons around to keep this from happening.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>**Student:** Wait, so a neutron can turn into a proton? That's wild! I thought these particles were, like, permanent.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>**Alia:** I understand your surprise! This transformation is indeed fascinating. After the size of a nucleus reaches a certain point, the neutrons so outnumber the protons that there are not sufficient protons in the mix to prevent the neutrons from turning into protons.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>As neutrons in a nucleus change into protons, the stability of the nucleus decreases because the repulsive electric force becomes increasingly significant. The result is that pieces of the nucleus fragment away in the form of radiation.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>**Student:** So if I understand correctly, too many neutrons can be a problem too? Because they might turn into protons and then you'd have too many protons pushing each other apart?</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>**Alia:** You've grasped the concept perfectly! Let me ask you one final question to check your understanding: What role do neutrons serve in the atomic nucleus? What is the fate of a neutron when alone or distant from one or more protons?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>**Student:** Neutrons serve as a kind of "glue" or "cement" that helps hold the nucleus together by adding attractive forces without adding repulsive forces. But if a neutron is alone or too far from protons, it becomes unstable and turns into a proton and an electron. I think that's pretty cool - I never realized particles could transform like that!</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>**Alia:** Outstanding! Neutrons do indeed serve as a nuclear cement in nuclei and add to nuclear stability. But when alone or away from protons, a neutron becomes radioactive and spontaneously transforms to a proton and an electron.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>I'm impressed by how well you're connecting these concepts. You've shown great curiosity and understanding of these atomic forces despite your initial hesitation about science topics. How are you feeling about this subject now?</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>**Student:** I actually feel much better about it! Breaking it down like this makes it easier to understand. It's like the particles are playing by rules that make sense once you know what they are. I think I'll be more confident in class now. Thanks, Alia!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>**Alia:** You're very welcome! I'm glad you're feeling more confident. You've done excellent work today understanding these complex nuclear forces and interactions. It's perfectly normal to feel uncertain about new scientific concepts at first, but as you've experienced, breaking them down step by step makes them more accessible. Is there anything else about atomic nuclei you'd like to explore?</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "3ff94877-f316-42ec-98f0-34623b2d341f", "classid": "conceptual-chemistry-0503", "chat_history": [{"role": "assistant", "content": "# Conversation between Alia (AI Tutor) and a Science-Shy College Student", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** Hi Alia. I need to learn about atomic nuclei for my science class. I've always been kind of intimidated by physics and chemistry, so I'm a bit nervous about this topic.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** I understand how you feel. Many students find atomic physics challenging at first, but we'll work through it together at a comfortable pace. Today we could explore how atomic nuclei stay together, which is quite fascinating. Would you like to start there?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** Sure, that sounds good. I've always wondered about that actually. Like, don't protons have positive charges? So wouldn't they push each other apart?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** That's an excellent question! You're absolutely right - we know that electric charges of the same type repel one another. So it does seem puzzling that positively charged protons in the nucleus stay clumped together instead of flying apart.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "This question actually led scientists to discover an attraction called the strong nuclear force, which acts between all nucleons (protons and neutrons) in the nucleus. This force is very strong but only works over extremely short distances. Repulsive electric forces, on the other hand, are relatively long-ranged.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** Wait, so there are two different forces acting on the protons at the same time?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** Exactly! Let me explain how these forces interact. When two protons are very close to each other in the nucleus, they experience both an attractive strong nuclear force and a repulsive electric force. At extremely tiny separation distances, the strong nuclear force overcomes the electric force, resulting in the protons staying together.", "image_summary": false, "feedback": null}, {"role": "user", "content": "However, when two protons are relatively far from each other, the electric force becomes more significant. In this case, the protons would repel each other. This proton-proton repulsion in large atomic nuclei actually reduces nuclear stability.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** I think I get it. So it's like a tug-of-war between these two forces, and which one wins depends on how close the protons are?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** That's a wonderful analogy! It is indeed like a tug-of-war between these opposing forces. And because the strong nuclear force decreases rapidly over distance, a large nucleus is not as stable as a small one.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "For protons that are close together, as in small nuclei, the attractive strong nuclear force easily overcomes the repulsive electric force. But for protons that are far apart, like those on opposite edges of a large nucleus, the attractive strong nuclear force may be weaker than the repulsive electric force.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** So in really big nuclei, protons might be too far apart for the strong force to work well? Does that mean there's a limit to how big atoms can get?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** You're making excellent connections! Let me ask you a question to check your understanding: Are protons on opposite sides of a large nucleus attracted to each other?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** Hmm, let me think... If the strong nuclear force gets weaker with distance, and these protons are far apart, then maybe they're not attracted to each other much? Or the electric repulsion might be stronger than the attraction?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** You've reasoned through that very well! In large nuclei, nucleons on opposite sides are not as close to one another, so the attractive strong nuclear forces holding them together are much weaker. The result is that the large nucleus is less stable.", "image_summary": false, "feedback": null}, {"role": "user", "content": "And you're absolutely right about there being a limit to atomic size. A large atomic nucleus is more susceptible to the repulsive forces among protons. This means there is indeed a limit to the size of the atomic nucleus. As evidence of this, we find that all nuclei having more than 83 protons are radioactive.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "Furthermore, the superheavy elements, such as those above uranium (atomic number 92), are not found in nature. These superheavy elements are difficult to make in the laboratory. When they are produced, they exist for only fractions of a second.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** That's fascinating! So the reason some elements are radioactive is because they're just too big to stay together? I never knew that.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** Let me check your understanding with another question: Two protons in the atomic nucleus repel each other, but they are also attracted to each other. Why is that?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** I think it's because they have the same positive charge, so they repel each other with the electric force. But at the same time, they attract each other with that strong nuclear force you mentioned. So both forces are working at once.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** Excellent explanation! While two protons repel each other by the electric force, they also attract each other by the strong nuclear force. These forces act simultaneously. So long as the attractive strong nuclear force is stronger than the repulsive electric force, the protons will remain together. Under conditions in which the electric force overcomes the strong nuclear force, however, the protons fly apart from each other.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** So if protons are causing problems by repelling each other, what's the point of neutrons? Why do atoms have them?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** That's a very insightful question. Neutrons serve as the \"nuclear cement\" holding an atomic nucleus together. Let me explain how:", "image_summary": false, "feedback": null}, {"role": "user", "content": "Protons attract both protons and neutrons by the strong nuclear force. But protons also repel other protons by the electric force as we've discussed. Neutrons, on the other hand, have no electric charge and so attract protons and other neutrons only by the strong nuclear force. Therefore, the presence of neutrons adds to the attraction among nucleons and helps hold the nucleus together.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** Oh, I see! So neutrons are like the peacemakers that help keep everything together because they don't add to the repulsive forces. That makes sense.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** That's a creative way to think about it! The presence of neutrons helps hold the nucleus together by increasing the effect of the strong nuclear force. The total strength of the attractive nuclear force, therefore, exceeds that of the repulsive electric force occurring between the protons.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** So do bigger atoms need more neutrons than smaller ones?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** Yes, exactly! Nuclei with larger numbers of protons require larger numbers of neutrons to help balance the repulsive electric forces.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "For light elements, it is sufficient to have about as many neutrons as protons. For instance, the most common isotope of carbon, C-12, has equal numbers of each\u2014six protons and six neutrons.", "image_summary": false, "feedback": null}, {"role": "user", "content": "For large nuclei, more neutrons than protons are needed. Because the strong nuclear force diminishes rapidly over distance, nucleons must be practically touching in order for the strong nuclear force to be effective. Nucleons on opposite sides of a large atomic nucleus are not so attracted to one another. The electric force, however, does not diminish by much across the diameter of a large nucleus and so begins to win out over the strong nuclear force.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** That's so interesting. So bigger atoms need extra neutrons as reinforcements to keep everything stable!", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** Exactly! To compensate for the weakening of the strong nuclear force across the diameter of the nucleus, large nuclei have more neutrons than protons. Lead nuclei, for example, have about one-and-a-half times as many neutrons as protons.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** Are neutrons always stable? Like, could they exist on their own outside an atom?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** Another excellent question! Neutrons are stabilizing within nuclei, and large nuclei require an abundance of them. But neutrons are not always successful in keeping a nucleus intact.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "Interestingly, neutrons are not stable without protons. A lone neutron is radioactive and spontaneously transforms to a proton and an electron. A neutron seems to need protons around to keep this from happening.", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** Wait, so a neutron can turn into a proton? That's wild! I thought these particles were, like, permanent.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** I understand your surprise! This transformation is indeed fascinating. After the size of a nucleus reaches a certain point, the neutrons so outnumber the protons that there are not sufficient protons in the mix to prevent the neutrons from turning into protons.", "image_summary": false, "feedback": null}, {"role": "user", "content": "As neutrons in a nucleus change into protons, the stability of the nucleus decreases because the repulsive electric force becomes increasingly significant. The result is that pieces of the nucleus fragment away in the form of radiation.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** So if I understand correctly, too many neutrons can be a problem too? Because they might turn into protons and then you'd have too many protons pushing each other apart?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** You've grasped the concept perfectly! Let me ask you one final question to check your understanding: What role do neutrons serve in the atomic nucleus? What is the fate of a neutron when alone or distant from one or more protons?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Student:** Neutrons serve as a kind of \"glue\" or \"cement\" that helps hold the nucleus together by adding attractive forces without adding repulsive forces. But if a neutron is alone or too far from protons, it becomes unstable and turns into a proton and an electron. I think that's pretty cool - I never realized particles could transform like that!", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Alia:** Outstanding! Neutrons do indeed serve as a nuclear cement in nuclei and add to nuclear stability. But when alone or away from protons, a neutron becomes radioactive and spontaneously transforms to a proton and an electron.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "I'm impressed by how well you're connecting these concepts. You've shown great curiosity and understanding of these atomic forces despite your initial hesitation about science topics. How are you feeling about this subject now?", "image_summary": false, "feedback": null}, {"role": "user", "content": "**Student:** I actually feel much better about it! Breaking it down like this makes it easier to understand. It's like the particles are playing by rules that make sense once you know what they are. I think I'll be more confident in class now. Thanks, Alia!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": "**Alia:** You're very welcome! I'm glad you're feeling more confident. You've done excellent work today understanding these complex nuclear forces and interactions. It's perfectly normal to feel uncertain about new scientific concepts at first, but as you've experienced, breaking them down step by step makes them more accessible. Is there anything else about atomic nuclei you'd like to explore?", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742536069.981028, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0503_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

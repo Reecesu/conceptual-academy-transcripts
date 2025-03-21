@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I need to learn about the relationship ... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0103</p>
+            <p><strong>UUID:</strong> d076634d-dd1c-4b37-abeb-776da86ef415</p>
+            <p><strong>Date:</strong> 2025-03-21 05:18:20 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I need to learn about the relationship between science and technology for my general education science course. I've always been a bit intimidated by science classes, so I'm hoping you can help me understand this topic.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I'd be happy to help you explore the relationship between science and technology. This is an important foundational concept. Science is concerned with gathering knowledge about the natural world. When we apply this knowledge for practical purposes, we have what we call technology.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>So technology is just applied science?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a good starting point! From scientific discoveries, an engineer can design new technologies. New technologies, in turn, can be of assistance to scientists in conducting their research. The computer, for example, is technology scientists use on a daily basis. So, technology arises from science, but technology also supports science—the two are different from each other but very much related.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>That makes sense. So it's kind of like a cycle? Science leads to technology which then helps with more science?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Exactly! You could think of it as a cycle or a partnership. Here's a simple way to remember it: Science is a way of knowing. Technology is a way of doing.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>I like that distinction. In my daily life, I guess I interact with technology all the time, but I don't always think about the science behind it.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>That's a great observation. Now, let's discuss an important aspect of technology - it's actually a double-edged sword that can be both helpful and harmful.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>What do you mean by double-edged sword?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>Well, we have the technology, for example, to extract fossil fuels from the ground and then to burn the fossil fuels for the production of energy. Energy production from fossil fuels has benefited our society in countless ways. On the flip side, the burning of fossil fuels endangers the environment.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>So you're saying technology itself isn't good or bad - it's how we use it?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>That's correct! It is tempting to blame technology itself for problems such as pollution, resource depletion, and even overpopulation. These problems, however, are not the fault of technology any more than a shotgun wound is the fault of the shotgun. It is humans who use the technology, and humans who must decide how to use it responsibly.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>That makes me think of social media. The technology itself isn't bad, but how people use it can sometimes cause harm. Is that a fair comparison?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>That's an excellent comparison! The technology of social media platforms is neutral, but the applications and choices we make using that technology can lead to different outcomes, both positive and negative.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>But with all the environmental problems we're facing, is technology just making things worse?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>That's a common concern, but remarkably, we already possess the technology to solve many environmental problems. In this 21st century, we are seeing a switch from fossil fuels to more sustainable energy sources, such as photovoltaics, hydroelectric, wind, solar thermal electric generation, and biomass conversion.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>I didn't realize we already had that much technology for environmental solutions.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>Yes, and there are other examples too. Whereas the paper on which the hard copy of a book is printed came from trees, paper can also come from fast-growing weeds, and less of even these materials will be needed as e-books gain popularity. In some parts of the world, progress is being made to stem the rapid growth of our human population, which is an issue that aggravates almost every problem faced by humans today.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>So if we have the technology to solve these problems, why haven't we solved them yet?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>That's a perceptive question. We live on a finite planet, and Earth's population carrying capacity is being acknowledged. The greatest obstacle to solving today's problems lies more with social inertia than with a lack of technology. Technology is our tool. What we do with this tool is up to us. The promise of technology is a cleaner and healthier world. Wise applications of technology can lead to a better world.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>So the promise of technology is a cleaner and healthier world?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Exactly! That's an important takeaway. Now, let's discuss another critical aspect of technology: risk assessment.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Risk assessment? You mean like figuring out if a technology is dangerous?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>That's part of it. The numerous benefits of technology are paired with risks. When the benefits of a technological innovation are seen to outweigh its risks, the technology is accepted and applied. X rays, for example, continue to be used for medical diagnosis despite their potential for causing cancer.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>But if something has risks, why would we use it at all?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>When risks are perceived to outweigh the benefits, the technology tends to be used very sparingly or not at all. It's about weighing benefits against risks. Also, risk can vary for different groups. Aspirin is useful for adults, but for young children it can cause a potentially lethal condition known as Reye's syndrome.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>Oh, I see. So something might be risky for one group but beneficial for another?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>That's correct. Let me give you another example: Dumping raw sewage into the local river may pose little risk for a town located upstream, but for towns downstream the untreated sewage is a health hazard. Similarly, storing radioactive wastes underground may pose little risk for us today, but for future generations the risks of such storage are greater if there is leakage into groundwater.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>I never thought about how technology decisions might affect different people differently, or even future generations.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>Yes, and this is why these issues are complex. Technologies involve different risks and benefits for different people, raising questions that are often hotly debated. Which medications should be sold over the counter to the general public, and how should they be labeled? Should food be irradiated in order to put an end to food poisoning, which kills more than 5000 Americans each year? The risks to all members of society need to be considered when public policies are decided.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>I feel like a lot of people expect products to be completely safe with no risk at all. Is that realistic?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>That's an insightful observation! People seem to have difficulty accepting the impossibility of zero risk. You cannot go to the beach without risking skin cancer, no matter how much sunscreen you apply. You cannot avoid radioactivity, for it occurs naturally in the air you breathe and the foods you eat.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>So how do we know which risks are worth taking?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>Science can help to determine relative risks. As the tools of science improve, the accuracy of risk assessment improves. Acceptance of risk, on the other hand, is a societal issue. Zero risk is not possible, and a society that accepts no risks receives no benefits.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>So it's all about balance and making informed decisions?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Exactly! That's a great way to summarize it. Let me check your understanding with a concept check question: Does technology come from science or does science come from technology?</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>Hmm, based on what we've discussed... I think it's both? Technology comes from applying scientific knowledge, but then scientists use technology to do more science.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>Excellent answer! Both! The practical application of knowledge gained through science is technology. In this sense, the science comes first. The tools of technology, however, can be used by scientists to further our understandings of nature. A case in point would be the telescope, which is a tool that permits us to learn about the stars. Science and technology are different, but they complement each other.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>This is making a lot more sense now. I feel like I have a better grasp of how science and technology relate to each other.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>I'm glad to hear that! Let me share one more important point about technology and its impacts. Pharmaceuticals provide measurable benefits. A recently noted risk, however, is that many of these pharmaceuticals are now ending up in our drinking water, lakes, and streams. Although their concentrations are quite low, they are detectable, and these materials are being shown to have a measurable effect on species living in the water.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>That's concerning. What should people do with old medications then?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>The conclusion from this information is that old medicines should be thrown in the trash and never flushed down the drain. Better yet, bring your old prescription drugs to your local pharmacist who will have the means to dispose of these chemicals properly.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>That's really helpful practical advice. I'll remember that and share it with my family too. This conversation has helped me see that science and technology are more connected to my everyday life than I realized.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>That's wonderful to hear! Making those connections between scientific concepts and your daily life is an important part of learning science. Do you have any other questions about the relationship between science and technology?</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>I think I understand the main ideas now. Technology comes from applying scientific knowledge, they support each other in a cycle, technology can have both benefits and risks, and we need to make informed decisions about how we use it. It's not as intimidating as I thought!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>You've summarized it perfectly! I'm so glad you're feeling more comfortable with these concepts. Science is all around us, and understanding these relationships helps us make better decisions in our daily lives.</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "d076634d-dd1c-4b37-abeb-776da86ef415", "classid": "conceptual-chemistry-0103", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I need to learn about the relationship between science and technology for my general education science course. I've always been a bit intimidated by science classes, so I'm hoping you can help me understand this topic.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'd be happy to help you explore the relationship between science and technology. This is an important foundational concept. Science is concerned with gathering knowledge about the natural world. When we apply this knowledge for practical purposes, we have what we call technology.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So technology is just applied science?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a good starting point! From scientific discoveries, an engineer can design new technologies. New technologies, in turn, can be of assistance to scientists in conducting their research. The computer, for example, is technology scientists use on a daily basis. So, technology arises from science, but technology also supports science\u2014the two are different from each other but very much related.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. So it's kind of like a cycle? Science leads to technology which then helps with more science?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! You could think of it as a cycle or a partnership. Here's a simple way to remember it: Science is a way of knowing. Technology is a way of doing.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I like that distinction. In my daily life, I guess I interact with technology all the time, but I don't always think about the science behind it.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great observation. Now, let's discuss an important aspect of technology - it's actually a double-edged sword that can be both helpful and harmful.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": What do you mean by double-edged sword?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Well, we have the technology, for example, to extract fossil fuels from the ground and then to burn the fossil fuels for the production of energy. Energy production from fossil fuels has benefited our society in countless ways. On the flip side, the burning of fossil fuels endangers the environment.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So you're saying technology itself isn't good or bad - it's how we use it?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct! It is tempting to blame technology itself for problems such as pollution, resource depletion, and even overpopulation. These problems, however, are not the fault of technology any more than a shotgun wound is the fault of the shotgun. It is humans who use the technology, and humans who must decide how to use it responsibly.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes me think of social media. The technology itself isn't bad, but how people use it can sometimes cause harm. Is that a fair comparison?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent comparison! The technology of social media platforms is neutral, but the applications and choices we make using that technology can lead to different outcomes, both positive and negative.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": But with all the environmental problems we're facing, is technology just making things worse?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a common concern, but remarkably, we already possess the technology to solve many environmental problems. In this 21st century, we are seeing a switch from fossil fuels to more sustainable energy sources, such as photovoltaics, hydroelectric, wind, solar thermal electric generation, and biomass conversion.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I didn't realize we already had that much technology for environmental solutions.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, and there are other examples too. Whereas the paper on which the hard copy of a book is printed came from trees, paper can also come from fast-growing weeds, and less of even these materials will be needed as e-books gain popularity. In some parts of the world, progress is being made to stem the rapid growth of our human population, which is an issue that aggravates almost every problem faced by humans today.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if we have the technology to solve these problems, why haven't we solved them yet?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a perceptive question. We live on a finite planet, and Earth's population carrying capacity is being acknowledged. The greatest obstacle to solving today's problems lies more with social inertia than with a lack of technology. Technology is our tool. What we do with this tool is up to us. The promise of technology is a cleaner and healthier world. Wise applications of technology can lead to a better world.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the promise of technology is a cleaner and healthier world?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! That's an important takeaway. Now, let's discuss another critical aspect of technology: risk assessment.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Risk assessment? You mean like figuring out if a technology is dangerous?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's part of it. The numerous benefits of technology are paired with risks. When the benefits of a technological innovation are seen to outweigh its risks, the technology is accepted and applied. X rays, for example, continue to be used for medical diagnosis despite their potential for causing cancer.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": But if something has risks, why would we use it at all?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": When risks are perceived to outweigh the benefits, the technology tends to be used very sparingly or not at all. It's about weighing benefits against risks. Also, risk can vary for different groups. Aspirin is useful for adults, but for young children it can cause a potentially lethal condition known as Reye's syndrome.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I see. So something might be risky for one group but beneficial for another?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct. Let me give you another example: Dumping raw sewage into the local river may pose little risk for a town located upstream, but for towns downstream the untreated sewage is a health hazard. Similarly, storing radioactive wastes underground may pose little risk for us today, but for future generations the risks of such storage are greater if there is leakage into groundwater.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I never thought about how technology decisions might affect different people differently, or even future generations.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, and this is why these issues are complex. Technologies involve different risks and benefits for different people, raising questions that are often hotly debated. Which medications should be sold over the counter to the general public, and how should they be labeled? Should food be irradiated in order to put an end to food poisoning, which kills more than 5000 Americans each year? The risks to all members of society need to be considered when public policies are decided.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I feel like a lot of people expect products to be completely safe with no risk at all. Is that realistic?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an insightful observation! People seem to have difficulty accepting the impossibility of zero risk. You cannot go to the beach without risking skin cancer, no matter how much sunscreen you apply. You cannot avoid radioactivity, for it occurs naturally in the air you breathe and the foods you eat.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So how do we know which risks are worth taking?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Science can help to determine relative risks. As the tools of science improve, the accuracy of risk assessment improves. Acceptance of risk, on the other hand, is a societal issue. Zero risk is not possible, and a society that accepts no risks receives no benefits.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So it's all about balance and making informed decisions?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! That's a great way to summarize it. Let me check your understanding with a concept check question: Does technology come from science or does science come from technology?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hmm, based on what we've discussed... I think it's both? Technology comes from applying scientific knowledge, but then scientists use technology to do more science.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent answer! Both! The practical application of knowledge gained through science is technology. In this sense, the science comes first. The tools of technology, however, can be used by scientists to further our understandings of nature. A case in point would be the telescope, which is a tool that permits us to learn about the stars. Science and technology are different, but they complement each other.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is making a lot more sense now. I feel like I have a better grasp of how science and technology relate to each other.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm glad to hear that! Let me share one more important point about technology and its impacts. Pharmaceuticals provide measurable benefits. A recently noted risk, however, is that many of these pharmaceuticals are now ending up in our drinking water, lakes, and streams. Although their concentrations are quite low, they are detectable, and these materials are being shown to have a measurable effect on species living in the water.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's concerning. What should people do with old medications then?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The conclusion from this information is that old medicines should be thrown in the trash and never flushed down the drain. Better yet, bring your old prescription drugs to your local pharmacist who will have the means to dispose of these chemicals properly.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's really helpful practical advice. I'll remember that and share it with my family too. This conversation has helped me see that science and technology are more connected to my everyday life than I realized.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's wonderful to hear! Making those connections between scientific concepts and your daily life is an important part of learning science. Do you have any other questions about the relationship between science and technology?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I understand the main ideas now. Technology comes from applying scientific knowledge, they support each other in a cycle, technology can have both benefits and risks, and we need to make informed decisions about how we use it. It's not as intimidating as I thought!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've summarized it perfectly! I'm so glad you're feeling more comfortable with these concepts. Science is all around us, and understanding these relationships helps us make better decisions in our daily lives.", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742534300.563178, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0103_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

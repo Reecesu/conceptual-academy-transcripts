@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I'm supposed to be learning about chemi... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0903</p>
+            <p><strong>UUID:</strong> 56763542-4246-47a7-bc90-9f18f4b46ca6</p>
+            <p><strong>Date:</strong> 2025-03-21 06:15:54 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I'm supposed to be learning about chemical reactions for my general science class, but I've always struggled with chemistry. My professor mentioned something called "moles" that's important, but it just sounds confusing.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I understand your concern. Many students find the concept of moles challenging at first, but it's a fundamental concept that helps chemists work with chemicals in practical ways. Would you like to explore what moles are and how they relate to chemical reactions?</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>Yes, please. I remember something about it being a number like "dozen" but much bigger?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a great starting point! You're absolutely right. The word "mole" indicates a number, much as we use the word "dozen" to indicate a number. While a dozen equals 12, a mole equals a much larger number: 6.02 × 10²³. This number is known as Avogadro's number, named after the 18th-century scientist Amedeo Avogadro.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Wow, that's a huge number! Why do chemists need such a big number?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>That's an excellent question. Atoms and molecules are extremely small, so when chemists work with them in the lab, they're handling billions upon billions of particles. The mole helps bridge the gap between the microscopic world of atoms and the macroscopic world where we measure things in grams.</p><br><p>Let me explain the key relationship: if you express the numeric value of the atomic mass of any element in grams, the number of atoms in that sample will always be 6.02 × 10²³, which is 1 mole. For example, a 22.990-gram sample of sodium metal (Na), which has an atomic mass of 22.990 amu, contains 6.02 × 10²³ sodium atoms.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>So if I have the atomic mass in grams, I have a mole of that element? Like if lead has an atomic mass of 207.2, then 207.2 grams of lead has a mole of lead atoms?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Exactly! You've got it. A 207.2-gram sample of lead (Pb), which has an atomic mass of 207.2 amu, contains 6.02 × 10²³ lead atoms—that's one mole of lead.</p><br><p>This same concept applies to molecules and compounds too. If you express the numeric value of the formula mass in grams, a sample having that mass contains 6.02 × 10²³ molecules. For example, there are 6.02 × 10²³ O₂ molecules in 31.998 grams of molecular oxygen (O₂), which has a formula mass of 31.998 amu.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>Wait, so for compounds, I just add up all the atomic masses to get the formula mass, right? Like for CO₂, it would be carbon plus two oxygens?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>Yes, that's correct! For carbon dioxide (CO₂), you add the atomic mass of carbon (12.011 amu) to the atomic mass of two oxygen atoms (2 × 15.999 amu) to get a formula mass of 44.009 amu. This means that 44.009 grams of CO₂ contains 6.02 × 10²³ CO₂ molecules—one mole of CO₂.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>I think I get it now. So we call this the "molar mass," right? Like, carbon has a molar mass of 12.011 grams per mole?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>You're picking this up quickly! Yes, the molar mass of any substance, whether it's an element or a compound, is defined as the mass of 1 mole of that substance. The units are grams per mole.</p><br><p>The atomic mass of carbon is 12.011 amu, which means that 1 mole of carbon has a mass of 12.011 grams, so the molar mass of carbon is 12.011 grams per mole. Similarly, the molar mass of molecular oxygen (O₂) is 31.998 grams per mole.</p><br><p>For convenience, these values are often rounded to the nearest whole number, so carbon's molar mass might be presented as 12 grams per mole, and molecular oxygen's as 32 grams per mole.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>That makes sense. But I'm still confused about why chemists need moles for reactions. Why can't they just use grams directly?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>That's a thoughtful question. The key is that atoms and molecules react in specific ratios by number, not by mass. In the laboratory, chemists measure materials by mass (grams), but chemical reactions occur based on the number of particles interacting.</p><br><p>The mole is ideal for chemical reactions because it allows chemists to translate between the number of particles and their mass. For example, 1 mole of carbon (12 grams) reacts with 1 mole of molecular oxygen (32 grams) to give 1 mole of carbon dioxide (44 grams).</p><br><p>Notice how the total mass is conserved: 12 grams + 32 grams = 44 grams. This is the law of conservation of mass in action!</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>Oh, I see! So the mole helps us count atoms and molecules even though we're measuring grams on a scale. But what happens when the ratio isn't 1:1?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>Great question! In many instances, chemicals don't react in a 1:1 ratio. For example, 2 moles (4 grams) of molecular hydrogen react with 1 mole (32 grams) of molecular oxygen to give 2 moles (36 grams) of water.</p><br><p>This is where balanced chemical equations become especially useful. The coefficients in a balanced chemical equation tell us the mole ratio of reactants and products. A chemist can then convert these numbers of moles to grams to know exactly how much of each substance to measure.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>So it's like a recipe in cooking! The coefficients tell you how many "moles" of each ingredient you need.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>That's an excellent analogy! Cooking and chemistry are indeed similar in that both require measuring ingredients in specific proportions. Just as a cook looks to a recipe to find the necessary quantities measured by cups or tablespoons, a chemist looks to the periodic table to find the necessary quantities measured by the number of grams per mole for each element or compound.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>Wait, I just realized something. If atoms are never created or destroyed in chemical reactions, and the air we breathe has atoms in it... am I breathing the same atoms that famous people from history breathed?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>What an insightful connection! Yes, the atoms in your lungs are indeed connected to atoms that were once in the lungs of historical figures like Leonardo da Vinci. Atoms are continuously recycled through Earth's chemical and biological systems. The oxygen molecules you're breathing right now have likely been breathed by countless organisms throughout Earth's history. It's a fascinating perspective on our connection to the past and to the natural world!</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>That's mind-blowing! OK, so how do we actually use moles to calculate masses in chemical reactions? I have a homework problem about this.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Let's explore that with some calculations. The coefficients of a chemical equation tell us the ratio by which reactants react and products form. Let me show you an example with methane combustion:</p><br><p>CH₄ + 2O₂ → CO₂ + 2H₂O</p><br><p>This equation tells us that every 1 mole of methane (CH₄) reacts with 2 moles of oxygen (O₂) to produce 1 mole of carbon dioxide (CO₂) and 2 moles of water (H₂O).</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>That looks complicated. Let's say I have 16 grams of methane. How would I figure out how much water would form?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Let's work through this step by step:</p><br><p>First, we need to know how many moles of methane we have. The formula mass of CH₄ is 16 amu, so 16 grams of methane equals 1 mole.</p><br><p>According to our balanced equation, 1 mole of CH₄ produces 2 moles of H₂O. So, our 16 grams of methane will yield 2 moles of water.</p><br><p>Now, we need to convert these 2 moles of water to grams. The formula mass of H₂O is 18 amu, so 1 mole of water equals 18 grams. Therefore, 2 moles equals 36 grams.</p><br><p>Thus, 16 grams of methane would yield 36 grams of water.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>I'm trying to follow the steps, but it's still a bit confusing. Could you show the mathematical steps more clearly?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>Of course! Let me break it down into a more systematic approach:</p><br><p>Step 1: Convert the given mass to moles.<br>16 g CH₄ × (1 mol CH₄/16 g CH₄) = 1 mol CH₄</p><br><p>Step 2: Use the coefficients of the balanced equation to find how many moles of H₂O are produced.<br>1 mol CH₄ × (2 mol H₂O/1 mol CH₄) = 2 mol H₂O</p><br><p>Step 3: Convert moles of H₂O to grams.<br>2 mol H₂O × (18 g H₂O/1 mol H₂O) = 36 g H₂O</p><br><p>These steps can be combined into a single equation:<br>16 g CH₄ × (1 mol CH₄/16 g CH₄) × (2 mol H₂O/1 mol CH₄) × (18 g H₂O/1 mol H₂O) = 36 g H₂O</p><br><p>This technique is an application of unit conversion, where you set up ratios so units cancel out, leaving you with the desired unit in your answer.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>That makes more sense now. So this whole process is called stoichiometry, right? I've heard that term but didn't know what it meant.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>Yes, exactly! The method of converting grams of a substance to moles (step 1), then from moles of this substance to moles of that substance (step 2), followed by moles of that substance to grams (step 3) is called stoichiometry. Using stoichiometry, we can calculate the amounts of reactants or products in any chemical reaction.</p><br><p>This is just an introduction to stoichiometry; it's developed much further in upper-level chemistry. For now, the main idea is understanding how we keep track of atoms and molecules as they react to form products.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>I think I get the basic idea now. But what about if we had a different question? Like, how much carbon dioxide would be produced from that same 16 grams of methane?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>Let's analyze that problem:</p><br><p>For the reaction CH₄ + 2O₂ → CO₂ + 2H₂O, we want to find how much CO₂ is produced from 16 g of CH₄.</p><br><p>We know that 16 g of methane is 1 mole, and according to the balanced equation, 1 mole of CH₄ produces 1 mole of CO₂.</p><br><p>The formula mass of CO₂ is 44 amu, so 1 mole of CO₂ equals 44 grams.</p><br><p>Thus, 16 g of methane would yield 44 g of carbon dioxide.</p><br><p>Mathematically:<br>16 g CH₄ × (1 mol CH₄/16 g CH₄) × (1 mol CO₂/1 mol CH₄) × (44 g CO₂/1 mol CO₂) = 44 g CO₂</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>I notice that the total mass of products (36 g water + 44 g carbon dioxide = 80 g) is more than the 16 g of methane we started with. That seems to violate conservation of mass...</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Very astute observation! You're right to question this. The reason the product mass (80 g) is greater than the 16 g of methane is that methane doesn't react alone—it reacts with oxygen.</p><br><p>In the combustion reaction, methane (CH₄) reacts with oxygen (O₂). To find the mass of oxygen needed, we can use stoichiometry again:</p><br><p>16 g CH₄ × (1 mol CH₄/16 g CH₄) × (2 mol O₂/1 mol CH₄) × (32 g O₂/1 mol O₂) = 64 g O₂</p><br><p>So, 16 g of methane reacts with 64 g of oxygen to produce 44 g of carbon dioxide plus 36 g of water.</p><br><p>The total mass of reactants (16 g + 64 g = 80 g) equals the total mass of products (44 g + 36 g = 80 g), which confirms the law of conservation of mass!</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>That makes sense now! Can we try one more example to make sure I really understand this?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>Absolutely! Let's look at the formation of ozone from oxygen:<br>3O₂ → 2O₃</p><br><p>If we start with 64 g of oxygen (O₂), how many grams of ozone (O₃) can be produced?</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>Let me try this one! First, I need to find moles of O₂. The formula mass is 32 amu, so 64 g is 2 moles. Then, according to the equation, 3 moles of O₂ make 2 moles of O₃, so 2 moles of O₂ would make... um... 4/3 moles of O₃? And then O₃ has a formula mass of 48 amu, so 4/3 moles would be... 64 grams! Wait, that's the same as what we started with. Is that right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Excellent work! Your reasoning and calculation are spot on! According to the law of mass conservation, the amount of mass in the products must equal the amount of mass in the reactants. Since this reaction involves only one reactant and one product, 64 g of reactant produces 64 g of product.</p><br><p>Here's the step-by-step calculation just to confirm:<br>64 g O₂ × (1 mol O₂/32 g O₂) × (2 mol O₃/3 mol O₂) × (48 g O₃/1 mol O₃) = 64 g O₃</p><br><p>The atoms are simply rearranging—all the oxygen atoms present in O₂ molecules end up in O₃ molecules, so the total mass remains the same.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>I'm starting to feel more confident about this! What about when we have two reactants? Like nitrogen gas reacting with oxygen gas?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>Great question! When we have two reactants, we need to determine if one is limiting the reaction. Let's consider this reaction:<br>N₂ + O₂ → 2NO</p><br><p>If we have 28 g of nitrogen (N₂) and 32 g of oxygen (O₂), how much nitrogen monoxide (NO) is formed?</p><br><p>N₂ has a formula mass of 28 amu, so 28 g is 1 mole. O₂ has a formula mass of 32 amu, so 32 g is 1 mole.</p><br><p>According to the balanced equation, 1 mole of N₂ reacts with 1 mole of O₂ to produce 2 moles of NO. So, we'll produce 2 moles of NO.</p><br><p>The formula mass of NO is 30 amu, so 2 moles equals 60 g of NO. This is also the sum of the reactant masses (28 g + 32 g = 60 g), which confirms conservation of mass.</p><br><p>We can verify this with step-by-step calculations:<br>28 g N₂ × (1 mol N₂/28 g N₂) × (2 mol NO/1 mol N₂) × (30 g NO/1 mol NO) = 60 g NO</p><br><p>Or starting from oxygen:<br>32 g O₂ × (1 mol O₂/32 g O₂) × (2 mol NO/1 mol O₂) × (30 g NO/1 mol NO) = 60 g NO</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>What if there was more oxygen than needed? Like 28 g of N₂ and 40 g of O₂?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>That's a crucial concept in stoichiometry! When reactants aren't in the exact ratio needed by the balanced equation, one reactant will be completely consumed before the other. The reactant that is completely consumed is called the "limiting reactant" because it limits how much product can be formed.</p><br><p>In your example with 28 g of N₂ and 40 g of O₂:<br>- 28 g of N₂ is 1 mole, which requires 1 mole (32 g) of O₂ according to the equation<br>- We have 40 g of O₂, which is 1.25 moles<br>- Since we only need 1 mole of O₂, there would be 0.25 moles (8 g) of O₂ left unreacted</p><br><p>The nitrogen is the limiting reactant here, and the reaction would still produce 60 g of NO, with 8 g of O₂ remaining unreacted.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>This is making more sense now. So in chemical reactions, we always need to pay attention to the ratios in the balanced equation and the actual amounts of reactants we have.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>That's exactly right! Stoichiometry is all about the quantitative relationships in chemical reactions. It's an area of chemistry rich in opportunities for analytical thinking.</p><br><p>Let me ask you a question to check your understanding: How many grams of iron oxide (Fe₂O₃) can be produced from the reaction of 25.0 g of iron (Fe) with an unlimited amount of oxygen (O₂)?</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>OK, I'll try. First I need the balanced equation. Would it be... 4Fe + 3O₂ → 2Fe₂O₃?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>That's correct! Good job writing the balanced equation.</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>Now I need to convert 25.0 g of Fe to moles. Iron's atomic mass is about 56 g/mol, so that's...<br>25.0 g Fe × (1 mol Fe/56 g Fe) = 0.446 mol Fe</p><br><p>Then I use the equation to find moles of Fe₂O₃:<br>0.446 mol Fe × (2 mol Fe₂O₃/4 mol Fe) = 0.223 mol Fe₂O₃</p><br><p>And finally, convert to grams. Fe₂O₃ has a formula mass of about 160 g/mol:<br>0.223 mol Fe₂O₃ × (160 g Fe₂O₃/1 mol Fe₂O₃) = 35.7 g Fe₂O₃</p><br><p>So I get 35.7 grams of iron oxide. Is that right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>That's excellent work! Your calculation is correct. From 25.0 g of iron, you can produce 35.7 g of iron oxide (Fe₂O₃). The increase in mass comes from the oxygen that combines with the iron.</p></div>
+        </div>
+
+        <div class="message user" data-index="47" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(47)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-47"><p>I'm really starting to get the hang of this! Can we talk about something I heard in class called "empirical formulas"? I'm not sure what that means.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="48" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(48)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-48"><p>I'd be happy to explain empirical formulas! The empirical formula shows the elements of a compound in their lowest whole-number ratio.</p><br><p>Consider glucose, which has the molecular formula C₆H₁₂O₆. This formula tells us that each glucose molecule contains 6 carbon atoms, 12 hydrogen atoms, and 6 oxygen atoms.</p><br><p>The empirical formula, however, reduces this to the simplest whole-number ratio. Since all the subscripts in C₆H₁₂O₆ can be divided by 6, the empirical formula for glucose is CH₂O.</p></div>
+        </div>
+
+        <div class="message user" data-index="49" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(49)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-49"><p>So the empirical formula just shows the ratio, but not necessarily the actual number of atoms in the molecule?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="50" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(50)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-50"><p>Exactly! The empirical formula gives you the simplest ratio of atoms, while the molecular formula tells you the actual number of atoms in one molecule.</p><br><p>Historically, determining a compound's formula was quite challenging. One method chemists used was combustion analysis. They would burn the compound under controlled conditions and analyze the resulting products to determine the percent composition of elements in the original compound.</p><br><p>For glucose, combustion analysis might reveal data like this:<br>- Carbon: 40.123%<br>- Hydrogen: 6.670%<br>- Oxygen: 53.332%</p></div>
+        </div>
+
+        <div class="message user" data-index="51" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(51)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-51"><p>That's interesting, but how do you get from percentages to a formula?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="52" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(52)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-52"><p>To calculate the empirical formula from percent composition, chemists would divide each percentage by the atomic mass of that element. This gives the relative ratio of atoms:</p><br><p>For carbon: 40.123% ÷ 12.011 amu = 3.341<br>For hydrogen: 6.670% ÷ 1.008 amu = 6.617<br>For oxygen: 53.332% ÷ 15.999 amu = 3.333</p><br><p>Next, they would divide each value by the smallest number and round to the nearest whole number:</p><br><p>For carbon: 3.341 ÷ 3.333 = 1<br>For hydrogen: 6.617 ÷ 3.333 = 2<br>For oxygen: 3.333 ÷ 3.333 = 1</p><br><p>So the empirical formula is C₁H₂O₁, usually written as CH₂O.</p><br><p>This rounding accounts for experimental errors from the combustion analysis. The empirical formula was a chemist's first step in discovering a compound's molecular formula, which would be some multiple of the empirical formula.</p></div>
+        </div>
+
+        <div class="message user" data-index="53" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(53)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-53"><p>I see! But how did they figure out if the molecular formula was CH₂O, or C₂H₄O₂, or C₆H₁₂O₆?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="54" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(54)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-54"><p>That's an excellent question! Determining the actual molecular formula required additional techniques. Historically, chemists used methods like measuring the compound's molecular weight through various experimental techniques like crystallography. By comparing the molecular weight to the weight of the empirical formula unit, they could determine the multiplier.</p><br><p>For example, if they found that glucose's molecular weight was about 180 g/mol, and the empirical formula CH₂O has a weight of about 30 g/mol, they would know the molecular formula is (CH₂O)₆ or C₆H₁₂O₆.</p></div>
+        </div>
+
+        <div class="message user" data-index="55" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(55)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-55"><p>That makes sense. One last thing—my professor mentioned something about "percent yield." What's that all about?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="56" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(56)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-56"><p>Percent yield is a practical concept that addresses the reality of chemical reactions in the laboratory. In theory, chemical reactions should give you exactly the amount of product predicted by stoichiometry, but in practice, you often get less.</p><br><p>For example, let's consider the synthesis of methyl salicylate (the compound responsible for the smell and taste of wintergreen) from salicylic acid and methanol:</p><br><p>C₇H₆O₃ + CH₃OH → C₈H₈O₃ + H₂O</p><br><p>According to this equation, methyl salicylate forms from salicylic acid in a 1:1 mole ratio. If you start with 138 grams of salicylic acid (1 mole), then ideally, you should obtain 152 grams of methyl salicylate (1 mole).</p></div>
+        </div>
+
+        <div class="message user" data-index="57" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(57)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-57"><p>But I guess in real life, you don't get the full amount?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="58" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(58)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-58"><p>Exactly! In reality, not all of the salicylic acid will be converted to methyl salicylate. There might be competing reactions, or some product might be lost during isolation and purification.</p><br><p>This is where percent yield comes in. It's calculated by dividing the actual yield by the theoretical yield and multiplying by 100:</p><br><p>Percent Yield = (Actual Yield ÷ Theoretical Yield) × 100%</p><br><p>For example, if from 138 grams of salicylic acid (with a theoretical yield of 152 grams of methyl salicylate), you actually obtained 142 grams, the percent yield would be:</p><br><p>Percent Yield = (142 g ÷ 152 g) × 100% = 93.4%</p></div>
+        </div>
+
+        <div class="message user" data-index="59" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(59)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-59"><p>So a 100% yield would be perfect, but that's rare in real chemistry, right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="60" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(60)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-60"><p>That's correct! Because of laboratory conditions, a 100% yield is generally not expected. However, chemists invest considerable time and effort to optimize their reactions and get their actual yields as close to 100% as possible.</p></div>
+        </div>
+
+        <div class="message user" data-index="61" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(61)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-61"><p>Thank you so much, Alia! I feel much better about moles and stoichiometry now. It's not as intimidating as I thought, and I can see how it helps chemists work with real quantities in the lab.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="62" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(62)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-62"><p>You're very welcome! You've made excellent progress today. You've learned about moles as a counting unit for atoms and molecules, how to use stoichiometry to calculate quantities in chemical reactions, and even explored concepts like empirical formulas and percent yield. These are fundamental concepts in chemistry that will serve you well in your studies.</p><br><p>Is there anything else you'd like to review or any other chemistry topics you're curious about?</p></div>
+        </div>
+
+        <div class="message user" data-index="63" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(63)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-63"><p>I think I'm good for now. I need to practice these calculations a bit more, but I understand the concepts much better. Thanks again!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="64" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(64)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-64"><p>You're welcome! Practice is definitely key to becoming comfortable with stoichiometry calculations. Remember, chemistry is like any other skill—it gets easier with practice. I'm here if you have any more questions in the future. Good luck with your studies!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "56763542-4246-47a7-bc90-9f18f4b46ca6", "classid": "conceptual-chemistry-0903", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I'm supposed to be learning about chemical reactions for my general science class, but I've always struggled with chemistry. My professor mentioned something called \"moles\" that's important, but it just sounds confusing.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I understand your concern. Many students find the concept of moles challenging at first, but it's a fundamental concept that helps chemists work with chemicals in practical ways. Would you like to explore what moles are and how they relate to chemical reactions?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Yes, please. I remember something about it being a number like \"dozen\" but much bigger?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great starting point! You're absolutely right. The word \"mole\" indicates a number, much as we use the word \"dozen\" to indicate a number. While a dozen equals 12, a mole equals a much larger number: 6.02 \u00d7 10\u00b2\u00b3. This number is known as Avogadro's number, named after the 18th-century scientist Amedeo Avogadro.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's a huge number! Why do chemists need such a big number?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent question. Atoms and molecules are extremely small, so when chemists work with them in the lab, they're handling billions upon billions of particles. The mole helps bridge the gap between the microscopic world of atoms and the macroscopic world where we measure things in grams.\n\nLet me explain the key relationship: if you express the numeric value of the atomic mass of any element in grams, the number of atoms in that sample will always be 6.02 \u00d7 10\u00b2\u00b3, which is 1 mole. For example, a 22.990-gram sample of sodium metal (Na), which has an atomic mass of 22.990 amu, contains 6.02 \u00d7 10\u00b2\u00b3 sodium atoms.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if I have the atomic mass in grams, I have a mole of that element? Like if lead has an atomic mass of 207.2, then 207.2 grams of lead has a mole of lead atoms?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! You've got it. A 207.2-gram sample of lead (Pb), which has an atomic mass of 207.2 amu, contains 6.02 \u00d7 10\u00b2\u00b3 lead atoms\u2014that's one mole of lead.\n\nThis same concept applies to molecules and compounds too. If you express the numeric value of the formula mass in grams, a sample having that mass contains 6.02 \u00d7 10\u00b2\u00b3 molecules. For example, there are 6.02 \u00d7 10\u00b2\u00b3 O\u2082 molecules in 31.998 grams of molecular oxygen (O\u2082), which has a formula mass of 31.998 amu.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so for compounds, I just add up all the atomic masses to get the formula mass, right? Like for CO\u2082, it would be carbon plus two oxygens?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, that's correct! For carbon dioxide (CO\u2082), you add the atomic mass of carbon (12.011 amu) to the atomic mass of two oxygen atoms (2 \u00d7 15.999 amu) to get a formula mass of 44.009 amu. This means that 44.009 grams of CO\u2082 contains 6.02 \u00d7 10\u00b2\u00b3 CO\u2082 molecules\u2014one mole of CO\u2082.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I get it now. So we call this the \"molar mass,\" right? Like, carbon has a molar mass of 12.011 grams per mole?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're picking this up quickly! Yes, the molar mass of any substance, whether it's an element or a compound, is defined as the mass of 1 mole of that substance. The units are grams per mole.\n\nThe atomic mass of carbon is 12.011 amu, which means that 1 mole of carbon has a mass of 12.011 grams, so the molar mass of carbon is 12.011 grams per mole. Similarly, the molar mass of molecular oxygen (O\u2082) is 31.998 grams per mole.\n\nFor convenience, these values are often rounded to the nearest whole number, so carbon's molar mass might be presented as 12 grams per mole, and molecular oxygen's as 32 grams per mole.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. But I'm still confused about why chemists need moles for reactions. Why can't they just use grams directly?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a thoughtful question. The key is that atoms and molecules react in specific ratios by number, not by mass. In the laboratory, chemists measure materials by mass (grams), but chemical reactions occur based on the number of particles interacting.\n\nThe mole is ideal for chemical reactions because it allows chemists to translate between the number of particles and their mass. For example, 1 mole of carbon (12 grams) reacts with 1 mole of molecular oxygen (32 grams) to give 1 mole of carbon dioxide (44 grams).\n\nNotice how the total mass is conserved: 12 grams + 32 grams = 44 grams. This is the law of conservation of mass in action!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I see! So the mole helps us count atoms and molecules even though we're measuring grams on a scale. But what happens when the ratio isn't 1:1?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Great question! In many instances, chemicals don't react in a 1:1 ratio. For example, 2 moles (4 grams) of molecular hydrogen react with 1 mole (32 grams) of molecular oxygen to give 2 moles (36 grams) of water.\n\nThis is where balanced chemical equations become especially useful. The coefficients in a balanced chemical equation tell us the mole ratio of reactants and products. A chemist can then convert these numbers of moles to grams to know exactly how much of each substance to measure.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So it's like a recipe in cooking! The coefficients tell you how many \"moles\" of each ingredient you need.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent analogy! Cooking and chemistry are indeed similar in that both require measuring ingredients in specific proportions. Just as a cook looks to a recipe to find the necessary quantities measured by cups or tablespoons, a chemist looks to the periodic table to find the necessary quantities measured by the number of grams per mole for each element or compound.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, I just realized something. If atoms are never created or destroyed in chemical reactions, and the air we breathe has atoms in it... am I breathing the same atoms that famous people from history breathed?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": What an insightful connection! Yes, the atoms in your lungs are indeed connected to atoms that were once in the lungs of historical figures like Leonardo da Vinci. Atoms are continuously recycled through Earth's chemical and biological systems. The oxygen molecules you're breathing right now have likely been breathed by countless organisms throughout Earth's history. It's a fascinating perspective on our connection to the past and to the natural world!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's mind-blowing! OK, so how do we actually use moles to calculate masses in chemical reactions? I have a homework problem about this.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's explore that with some calculations. The coefficients of a chemical equation tell us the ratio by which reactants react and products form. Let me show you an example with methane combustion:\n\nCH\u2084 + 2O\u2082 \u2192 CO\u2082 + 2H\u2082O\n\nThis equation tells us that every 1 mole of methane (CH\u2084) reacts with 2 moles of oxygen (O\u2082) to produce 1 mole of carbon dioxide (CO\u2082) and 2 moles of water (H\u2082O).", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That looks complicated. Let's say I have 16 grams of methane. How would I figure out how much water would form?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's work through this step by step:\n\nFirst, we need to know how many moles of methane we have. The formula mass of CH\u2084 is 16 amu, so 16 grams of methane equals 1 mole.\n\nAccording to our balanced equation, 1 mole of CH\u2084 produces 2 moles of H\u2082O. So, our 16 grams of methane will yield 2 moles of water.\n\nNow, we need to convert these 2 moles of water to grams. The formula mass of H\u2082O is 18 amu, so 1 mole of water equals 18 grams. Therefore, 2 moles equals 36 grams.\n\nThus, 16 grams of methane would yield 36 grams of water.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm trying to follow the steps, but it's still a bit confusing. Could you show the mathematical steps more clearly?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Of course! Let me break it down into a more systematic approach:\n\nStep 1: Convert the given mass to moles.\n16 g CH\u2084 \u00d7 (1 mol CH\u2084/16 g CH\u2084) = 1 mol CH\u2084\n\nStep 2: Use the coefficients of the balanced equation to find how many moles of H\u2082O are produced.\n1 mol CH\u2084 \u00d7 (2 mol H\u2082O/1 mol CH\u2084) = 2 mol H\u2082O\n\nStep 3: Convert moles of H\u2082O to grams.\n2 mol H\u2082O \u00d7 (18 g H\u2082O/1 mol H\u2082O) = 36 g H\u2082O\n\nThese steps can be combined into a single equation:\n16 g CH\u2084 \u00d7 (1 mol CH\u2084/16 g CH\u2084) \u00d7 (2 mol H\u2082O/1 mol CH\u2084) \u00d7 (18 g H\u2082O/1 mol H\u2082O) = 36 g H\u2082O\n\nThis technique is an application of unit conversion, where you set up ratios so units cancel out, leaving you with the desired unit in your answer.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes more sense now. So this whole process is called stoichiometry, right? I've heard that term but didn't know what it meant.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, exactly! The method of converting grams of a substance to moles (step 1), then from moles of this substance to moles of that substance (step 2), followed by moles of that substance to grams (step 3) is called stoichiometry. Using stoichiometry, we can calculate the amounts of reactants or products in any chemical reaction.\n\nThis is just an introduction to stoichiometry; it's developed much further in upper-level chemistry. For now, the main idea is understanding how we keep track of atoms and molecules as they react to form products.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I get the basic idea now. But what about if we had a different question? Like, how much carbon dioxide would be produced from that same 16 grams of methane?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's analyze that problem:\n\nFor the reaction CH\u2084 + 2O\u2082 \u2192 CO\u2082 + 2H\u2082O, we want to find how much CO\u2082 is produced from 16 g of CH\u2084.\n\nWe know that 16 g of methane is 1 mole, and according to the balanced equation, 1 mole of CH\u2084 produces 1 mole of CO\u2082.\n\nThe formula mass of CO\u2082 is 44 amu, so 1 mole of CO\u2082 equals 44 grams.\n\nThus, 16 g of methane would yield 44 g of carbon dioxide.\n\nMathematically:\n16 g CH\u2084 \u00d7 (1 mol CH\u2084/16 g CH\u2084) \u00d7 (1 mol CO\u2082/1 mol CH\u2084) \u00d7 (44 g CO\u2082/1 mol CO\u2082) = 44 g CO\u2082", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I notice that the total mass of products (36 g water + 44 g carbon dioxide = 80 g) is more than the 16 g of methane we started with. That seems to violate conservation of mass...", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Very astute observation! You're right to question this. The reason the product mass (80 g) is greater than the 16 g of methane is that methane doesn't react alone\u2014it reacts with oxygen.\n\nIn the combustion reaction, methane (CH\u2084) reacts with oxygen (O\u2082). To find the mass of oxygen needed, we can use stoichiometry again:\n\n16 g CH\u2084 \u00d7 (1 mol CH\u2084/16 g CH\u2084) \u00d7 (2 mol O\u2082/1 mol CH\u2084) \u00d7 (32 g O\u2082/1 mol O\u2082) = 64 g O\u2082\n\nSo, 16 g of methane reacts with 64 g of oxygen to produce 44 g of carbon dioxide plus 36 g of water.\n\nThe total mass of reactants (16 g + 64 g = 80 g) equals the total mass of products (44 g + 36 g = 80 g), which confirms the law of conservation of mass!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense now! Can we try one more example to make sure I really understand this?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! Let's look at the formation of ozone from oxygen:\n3O\u2082 \u2192 2O\u2083\n\nIf we start with 64 g of oxygen (O\u2082), how many grams of ozone (O\u2083) can be produced?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Let me try this one! First, I need to find moles of O\u2082. The formula mass is 32 amu, so 64 g is 2 moles. Then, according to the equation, 3 moles of O\u2082 make 2 moles of O\u2083, so 2 moles of O\u2082 would make... um... 4/3 moles of O\u2083? And then O\u2083 has a formula mass of 48 amu, so 4/3 moles would be... 64 grams! Wait, that's the same as what we started with. Is that right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent work! Your reasoning and calculation are spot on! According to the law of mass conservation, the amount of mass in the products must equal the amount of mass in the reactants. Since this reaction involves only one reactant and one product, 64 g of reactant produces 64 g of product.\n\nHere's the step-by-step calculation just to confirm:\n64 g O\u2082 \u00d7 (1 mol O\u2082/32 g O\u2082) \u00d7 (2 mol O\u2083/3 mol O\u2082) \u00d7 (48 g O\u2083/1 mol O\u2083) = 64 g O\u2083\n\nThe atoms are simply rearranging\u2014all the oxygen atoms present in O\u2082 molecules end up in O\u2083 molecules, so the total mass remains the same.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm starting to feel more confident about this! What about when we have two reactants? Like nitrogen gas reacting with oxygen gas?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Great question! When we have two reactants, we need to determine if one is limiting the reaction. Let's consider this reaction:\nN\u2082 + O\u2082 \u2192 2NO\n\nIf we have 28 g of nitrogen (N\u2082) and 32 g of oxygen (O\u2082), how much nitrogen monoxide (NO) is formed?\n\nN\u2082 has a formula mass of 28 amu, so 28 g is 1 mole. O\u2082 has a formula mass of 32 amu, so 32 g is 1 mole.\n\nAccording to the balanced equation, 1 mole of N\u2082 reacts with 1 mole of O\u2082 to produce 2 moles of NO. So, we'll produce 2 moles of NO.\n\nThe formula mass of NO is 30 amu, so 2 moles equals 60 g of NO. This is also the sum of the reactant masses (28 g + 32 g = 60 g), which confirms conservation of mass.\n\nWe can verify this with step-by-step calculations:\n28 g N\u2082 \u00d7 (1 mol N\u2082/28 g N\u2082) \u00d7 (2 mol NO/1 mol N\u2082) \u00d7 (30 g NO/1 mol NO) = 60 g NO\n\nOr starting from oxygen:\n32 g O\u2082 \u00d7 (1 mol O\u2082/32 g O\u2082) \u00d7 (2 mol NO/1 mol O\u2082) \u00d7 (30 g NO/1 mol NO) = 60 g NO", "image_summary": false, "feedback": null}, {"role": "user", "content": ": What if there was more oxygen than needed? Like 28 g of N\u2082 and 40 g of O\u2082?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a crucial concept in stoichiometry! When reactants aren't in the exact ratio needed by the balanced equation, one reactant will be completely consumed before the other. The reactant that is completely consumed is called the \"limiting reactant\" because it limits how much product can be formed.\n\nIn your example with 28 g of N\u2082 and 40 g of O\u2082:\n- 28 g of N\u2082 is 1 mole, which requires 1 mole (32 g) of O\u2082 according to the equation\n- We have 40 g of O\u2082, which is 1.25 moles\n- Since we only need 1 mole of O\u2082, there would be 0.25 moles (8 g) of O\u2082 left unreacted\n\nThe nitrogen is the limiting reactant here, and the reaction would still produce 60 g of NO, with 8 g of O\u2082 remaining unreacted.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is making more sense now. So in chemical reactions, we always need to pay attention to the ratios in the balanced equation and the actual amounts of reactants we have.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! Stoichiometry is all about the quantitative relationships in chemical reactions. It's an area of chemistry rich in opportunities for analytical thinking.\n\nLet me ask you a question to check your understanding: How many grams of iron oxide (Fe\u2082O\u2083) can be produced from the reaction of 25.0 g of iron (Fe) with an unlimited amount of oxygen (O\u2082)?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": OK, I'll try. First I need the balanced equation. Would it be... 4Fe + 3O\u2082 \u2192 2Fe\u2082O\u2083?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct! Good job writing the balanced equation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Now I need to convert 25.0 g of Fe to moles. Iron's atomic mass is about 56 g/mol, so that's...\n25.0 g Fe \u00d7 (1 mol Fe/56 g Fe) = 0.446 mol Fe\n\nThen I use the equation to find moles of Fe\u2082O\u2083:\n0.446 mol Fe \u00d7 (2 mol Fe\u2082O\u2083/4 mol Fe) = 0.223 mol Fe\u2082O\u2083\n\nAnd finally, convert to grams. Fe\u2082O\u2083 has a formula mass of about 160 g/mol:\n0.223 mol Fe\u2082O\u2083 \u00d7 (160 g Fe\u2082O\u2083/1 mol Fe\u2082O\u2083) = 35.7 g Fe\u2082O\u2083\n\nSo I get 35.7 grams of iron oxide. Is that right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's excellent work! Your calculation is correct. From 25.0 g of iron, you can produce 35.7 g of iron oxide (Fe\u2082O\u2083). The increase in mass comes from the oxygen that combines with the iron.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm really starting to get the hang of this! Can we talk about something I heard in class called \"empirical formulas\"? I'm not sure what that means.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'd be happy to explain empirical formulas! The empirical formula shows the elements of a compound in their lowest whole-number ratio.\n\nConsider glucose, which has the molecular formula C\u2086H\u2081\u2082O\u2086. This formula tells us that each glucose molecule contains 6 carbon atoms, 12 hydrogen atoms, and 6 oxygen atoms.\n\nThe empirical formula, however, reduces this to the simplest whole-number ratio. Since all the subscripts in C\u2086H\u2081\u2082O\u2086 can be divided by 6, the empirical formula for glucose is CH\u2082O.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the empirical formula just shows the ratio, but not necessarily the actual number of atoms in the molecule?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! The empirical formula gives you the simplest ratio of atoms, while the molecular formula tells you the actual number of atoms in one molecule.\n\nHistorically, determining a compound's formula was quite challenging. One method chemists used was combustion analysis. They would burn the compound under controlled conditions and analyze the resulting products to determine the percent composition of elements in the original compound.\n\nFor glucose, combustion analysis might reveal data like this:\n- Carbon: 40.123%\n- Hydrogen: 6.670%\n- Oxygen: 53.332%", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's interesting, but how do you get from percentages to a formula?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": To calculate the empirical formula from percent composition, chemists would divide each percentage by the atomic mass of that element. This gives the relative ratio of atoms:\n\nFor carbon: 40.123% \u00f7 12.011 amu = 3.341\nFor hydrogen: 6.670% \u00f7 1.008 amu = 6.617\nFor oxygen: 53.332% \u00f7 15.999 amu = 3.333\n\nNext, they would divide each value by the smallest number and round to the nearest whole number:\n\nFor carbon: 3.341 \u00f7 3.333 = 1\nFor hydrogen: 6.617 \u00f7 3.333 = 2\nFor oxygen: 3.333 \u00f7 3.333 = 1\n\nSo the empirical formula is C\u2081H\u2082O\u2081, usually written as CH\u2082O.\n\nThis rounding accounts for experimental errors from the combustion analysis. The empirical formula was a chemist's first step in discovering a compound's molecular formula, which would be some multiple of the empirical formula.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I see! But how did they figure out if the molecular formula was CH\u2082O, or C\u2082H\u2084O\u2082, or C\u2086H\u2081\u2082O\u2086?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent question! Determining the actual molecular formula required additional techniques. Historically, chemists used methods like measuring the compound's molecular weight through various experimental techniques like crystallography. By comparing the molecular weight to the weight of the empirical formula unit, they could determine the multiplier.\n\nFor example, if they found that glucose's molecular weight was about 180 g/mol, and the empirical formula CH\u2082O has a weight of about 30 g/mol, they would know the molecular formula is (CH\u2082O)\u2086 or C\u2086H\u2081\u2082O\u2086.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. One last thing\u2014my professor mentioned something about \"percent yield.\" What's that all about?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Percent yield is a practical concept that addresses the reality of chemical reactions in the laboratory. In theory, chemical reactions should give you exactly the amount of product predicted by stoichiometry, but in practice, you often get less.\n\nFor example, let's consider the synthesis of methyl salicylate (the compound responsible for the smell and taste of wintergreen) from salicylic acid and methanol:\n\nC\u2087H\u2086O\u2083 + CH\u2083OH \u2192 C\u2088H\u2088O\u2083 + H\u2082O\n\nAccording to this equation, methyl salicylate forms from salicylic acid in a 1:1 mole ratio. If you start with 138 grams of salicylic acid (1 mole), then ideally, you should obtain 152 grams of methyl salicylate (1 mole).", "image_summary": false, "feedback": null}, {"role": "user", "content": ": But I guess in real life, you don't get the full amount?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! In reality, not all of the salicylic acid will be converted to methyl salicylate. There might be competing reactions, or some product might be lost during isolation and purification.\n\nThis is where percent yield comes in. It's calculated by dividing the actual yield by the theoretical yield and multiplying by 100:\n\nPercent Yield = (Actual Yield \u00f7 Theoretical Yield) \u00d7 100%\n\nFor example, if from 138 grams of salicylic acid (with a theoretical yield of 152 grams of methyl salicylate), you actually obtained 142 grams, the percent yield would be:\n\nPercent Yield = (142 g \u00f7 152 g) \u00d7 100% = 93.4%", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So a 100% yield would be perfect, but that's rare in real chemistry, right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct! Because of laboratory conditions, a 100% yield is generally not expected. However, chemists invest considerable time and effort to optimize their reactions and get their actual yields as close to 100% as possible.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Thank you so much, Alia! I feel much better about moles and stoichiometry now. It's not as intimidating as I thought, and I can see how it helps chemists work with real quantities in the lab.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're very welcome! You've made excellent progress today. You've learned about moles as a counting unit for atoms and molecules, how to use stoichiometry to calculate quantities in chemical reactions, and even explored concepts like empirical formulas and percent yield. These are fundamental concepts in chemistry that will serve you well in your studies.\n\nIs there anything else you'd like to review or any other chemistry topics you're curious about?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I'm good for now. I need to practice these calculations a bit more, but I understand the concepts much better. Thanks again!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're welcome! Practice is definitely key to becoming comfortable with stoichiometry calculations. Remember, chemistry is like any other skill\u2014it gets easier with practice. I'm here if you have any more questions in the future. Good luck with your studies!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742537754.659763, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0903_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

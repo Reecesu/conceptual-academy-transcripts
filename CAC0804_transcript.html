@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I need to study about phases of matter ... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-0804</p>
+            <p><strong>UUID:</strong> af4eb8ed-0842-42be-8b24-be0eb44b1ec2</p>
+            <p><strong>Date:</strong> 2025-03-21 06:10:50 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I need to study about phases of matter for my science class. I've never been great at science - I actually avoided it in high school when I could. But I need to understand this for my general education requirements.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I'm glad you're giving science another chance! Many students find that approaching science concepts step-by-step makes them much more accessible. Today we can explore liquid and gaseous phases of matter, with a special focus on water. Does that sound like a good place to start?</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>Yes, that works. I know water can be liquid or gas like steam, but I'm not really sure about the details of how it changes from one to the other.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>Perfect! Let's begin with how molecules behave in liquid water. Molecules of water in the liquid phase move about in all directions at different speeds. Some of these molecules may reach the liquid's surface moving fast enough to overcome the hydrogen bonds and escape into the gaseous phase. This process of molecules converting from the liquid phase to the gaseous phase is called evaporation, or sometimes vaporization.</p><br><p>The opposite process is condensation—the changing of a gas to a liquid. At the surface of any body of water, there is a constant exchange of molecules from one phase to the other.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>So at the surface of water, some molecules are leaving to become gas while others are returning to become liquid? That's happening all the time?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Exactly! Picture the surface of a lake or even a glass of water - there's constant molecular activity happening right at that interface between the water and the air above it. Some water molecules are escaping upward while others from the air are rejoining the liquid.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>I've noticed that when I get out of the shower and I'm wet, I feel cold. Is that related to evaporation?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>That's a perfect real-life example! As evaporating molecules leave the liquid phase, they take their kinetic energy with them. This has the effect of lowering the average kinetic energy of all the molecules remaining in the liquid, and the liquid is cooled.</p><br><p>Evaporation also has a cooling effect on the surrounding air, because liquid molecules that escape into the gaseous phase are moving relatively slowly compared to other molecules in the air. This makes sense when you consider that these newly arrived molecules lost a fair amount of their kinetic energy in overcoming the hydrogen bonds of the liquid phase. Adding these slower molecules to the surrounding air effectively decreases the average kinetic energy of all the molecules making up the air, and the air is cooled.</p><br><p>So, no matter how you look at it, evaporation is a cooling process.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>That makes sense for why I feel cold when I'm wet! So the water is basically stealing heat energy from my body as it evaporates?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>That's an excellent way to put it! As water cools, the rate of evaporation slows down, because fewer molecules have sufficient energy to escape the hydrogen bonds of the liquid phase. A higher rate of evaporation can be maintained if the water is in contact with a relatively warm surface, such as your skin. Body heat then flows from you into the water. In this way the water maintains a higher temperature, and evaporation continues at a relatively high rate.</p><br><p>This is why you feel cool as you dry off after getting wet—you are losing body heat to the energy-requiring process of evaporation.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>Is that why we sweat when we're hot? I never really thought about why that happens.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>That's exactly right! When your body overheats, your sweat glands produce perspiration. The evaporation of perspiration cools you and helps you maintain a stable body temperature.</p><br><p>Interestingly, many animals don't have sweat glands and must cool themselves by other means. For example, dogs have no sweat glands (except between their toes). They cool themselves by panting. In this way, evaporation occurs in the mouth and the bronchial tract. Pigs also have no sweat glands and therefore cannot cool off by the evaporation of perspiration. Instead, they wallow in the mud to cool themselves.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>That's cool about the animals! I have a question though - if water wasn't so "sticky" with those hydrogen bonds you mentioned, would it cool us more or less when it evaporates?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>That's an excellent conceptual question! If water were less "sticky," you would be cooled more by its evaporation. Water molecules leave the liquid phase only when they have enough kinetic energy to overcome hydrogen bonding. It is hydrogen bonding that makes water sticky, so to say that water is less sticky is to say that hydrogen bonds are weaker than they actually are.</p><br><p>Then at a given temperature, more molecules in the liquid phase would have sufficient kinetic energy to overcome the weaker hydrogen bonds and escape into the gaseous phase, carrying heat away from the liquid. The cooling power of evaporating water would therefore be greater. This is why less "sticky" substances, such as rubbing alcohol, have a noticeably greater cooling effect as they evaporate.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>Oh! I've noticed that with hand sanitizer - it feels really cold on my hands when it's evaporating. So that's because it's less "sticky" than water?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>Exactly! You've made a great connection to everyday experience. Now, let's talk about something interesting - even cool or frozen water can evaporate. Warm water evaporates, but so does cool water. The only difference is that cool water evaporates at a slower rate.</p><br><p>Even frozen water "evaporates." This form of evaporation, in which molecules jump directly from the solid phase to the gaseous phase, is called sublimation. Because water molecules are so firmly held in the solid phase, frozen water does not release molecules into the gaseous phase as readily as liquid water does. Sublimation, however, does account for the loss of significant portions of snow and ice, especially on sunny, dry mountaintops. It's also why ice cubes left in the freezer for a long time tend to get smaller.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>Wait, so ice cubes can just disappear without melting first? I thought they were just melting a little bit in the freezer. That's wild.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>Yes, that's right! The ice molecules can go directly from the solid phase to the gas phase without becoming liquid first. It's a slower process than melting and then evaporating, but it definitely happens.</p><br><p>Now, let's talk about the opposite of evaporation - condensation. At the surface of any body of water, there is condensation as well as evaporation. Condensation occurs as slow-moving water vapor molecules collide with and stick to the surface of a body of liquid water. Fast-moving water vapor molecules tend to bounce off each other or off the liquid surface, losing little of their kinetic energy. Only the slowest gas molecules condense into the liquid phase.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>So condensation is basically the opposite of evaporation? Does it have the opposite effect on temperature too?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Yes, you've identified the pattern! As condensation happens, energy is released as hydrogen bonds are formed. This energy is absorbed by the liquid and increases its temperature.</p><br><p>Condensation involves the removal of slower-moving water vapor molecules from the gaseous phase. The average kinetic energy of the remaining water vapor molecules is therefore increased, which means that the water vapor is warmer. So, no matter how you look at it, condensation is a warming process.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>Is that why a burn from steam is worse than from hot water at the same temperature? I've heard that before but never understood why.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>That's exactly right! A burn to your skin from 100°C water vapor is much more damaging than a burn from 100°C liquid water. Why? The water vapor gives up considerable energy when it condenses to a liquid and wets the skin.</p><br><p>This energy released by condensation is utilized in heating systems, such as household radiators. Heat is given up by water vapor when the vapor condenses inside the radiator.</p><br><p>The water vapor in our atmosphere also gives up energy as it condenses. This is the energy source for many weather systems, such as hurricanes, which derive much of their energy from the condensation of water vapor contained in humid tropical air. The formation of 1 inch of rain over an area of 1 square mile yields the energy equivalent of about 32,000 tons of exploded dynamite.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Wow, that's a lot of energy! I had no idea that condensation could be so powerful. I'm starting to see how important these processes are in the real world.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Absolutely! And you can experience these effects in everyday life too. After you take a shower, even a cold one, you are warmed by the heat energy released as the water vapor in the shower stall condenses. You quickly sense the difference if you step out of the stall. Away from the moisture, the rate of evaporation is much higher than the rate of condensation, and as a result, you feel chilly.</p><br><p>When you remain in the shower stall, where the humidity is higher, the rate of condensation is increased, so you feel that much warmer. Now you know why you can dry yourself with a towel much more comfortably if you remain in the shower stall.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>That makes so much sense! I've always noticed that but never understood why. So that's also why some places feel more uncomfortable when it's hot - like when I visited family in New Orleans versus when I went to Las Vegas?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>You've hit on another excellent example! Spend a July afternoon in dry Tucson or Las Vegas and you'll soon notice that the evaporation rate is appreciably greater than the condensation rate. The result of this pronounced evaporation is a much cooler feeling than you would experience on a same-temperature July afternoon in New York City or New Orleans. In these humid locations, condensation outpaces evaporation, and you feel the warming effect as water vapor in the air condenses on your skin.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>I have a question. If I leave a bowl of water out and the water level stays the same from one day to the next, does that mean nothing is happening with evaporation or condensation?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>That's a great question! If the water level in a bowl of water remains unchanged from one day to the next, you cannot conclude that no evaporation or condensation is taking place. In fact, there is much activity occurring at the molecular level. Both evaporation and condensation occur continuously and simultaneously.</p><br><p>The fact that the water level remains constant indicates equal rates of evaporation and condensation—the number of H₂O molecules leaving the liquid surface by evaporation is equal to the number entering the liquid by condensation.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>I see. It's like a balance of molecules coming and going. Let's talk about boiling now. I know it's when water bubbles, but what's actually happening there?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>Let's explore boiling! Boiling is actually a type of evaporation that occurs beneath the surface of the liquid. When liquid water is heated to a sufficiently high temperature, bubbles of water vapor form beneath the surface. These bubbles are buoyed to the surface, where they escape, and we say the liquid is boiling.</p><br><p>Bubbles can form only when the pressure of the vapor inside them is equal to or greater than the combined pressure exerted by the surrounding water and the atmosphere above. At the boiling point of the liquid, the pressure inside the bubbles equals or exceeds the combined pressure of the surrounding water and the atmosphere. At lower temperatures, the pressure inside the bubbles is not enough, and the surrounding pressure collapses any bubbles that form.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>So the pressure has to be high enough inside the bubbles for them to exist? What does the pressure inside a bubble have to equal or be greater than?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>The pressure inside a bubble of boiling water must equal or exceed the combined pressure of the surrounding water and the atmosphere above. This is why at what point boiling begins depends not only on temperature but also on pressure. This includes the pressure from the weight of the surrounding liquid as well as the pressure from the weight of the atmosphere at the surface.</p><br><p>As atmospheric pressure increases, the vapor molecules inside any bubbles that form must move faster in order to exert enough pressure from inside the bubble to counteract the additional atmospheric pressure. So increasing the pressure exerted on the surface of a liquid raises its boiling point.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>Is that why those pressure cookers work? My mom has one and says it cooks food faster.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>Exactly! The tight lid of a pressure cooker holds pressurized vapor above the water surface, and this inhibits boiling. In this way, the boiling temperature of the water is increased. Any food placed in this hotter water cooks more quickly than food placed in water boiling at 100°C.</p><br><p>Conversely, lower atmospheric pressure (as at high altitudes) decreases the boiling point of the liquid. In Denver, Colorado, the Mile-High City, for example, water boils at 95°C instead of the 100°C boiling temperature at sea level. If you try to cook food in boiling water that is cooler than 100°C, you must wait a longer time for proper cooking. A three-minute boiled egg in Denver is runny and undercooked.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>I've heard that cooking at high altitudes is tricky! So water can boil at different temperatures depending on the pressure or altitude?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>That's right! If the temperature of the boiling water were very low, food would not cook at all. As the German mountaineer Heinrich Harrer noted in his book Seven Years in Tibet, at an elevation of 4500 meters (15,000 feet) or higher, you can sip a cup of boiling tea without any danger of burning your mouth.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>That's fascinating! So is boiling a cooling process like evaporation? That seems counterintuitive since we usually heat things by boiling them.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>That's a really thoughtful question. Boiling, like evaporation, is indeed a cooling process. At first thought, this may seem surprising—perhaps because we usually associate boiling with heating. But heating water is one thing; boiling is another.</p><br><p>Boiling water is cooled by boiling as fast as it is heated by the energy from the heat source. So boiling water remains at a constant temperature. If cooling did not take place, continued application of heat to a pot of boiling water would raise the temperature of the water. The reason the pressure cooker reaches higher temperatures is that boiling is forestalled by increased pressure, which in effect prevents cooling.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>So is boiling a type of evaporation, or is evaporation a type of boiling? I'm a bit confused about how they relate.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>That's a great conceptual question. Boiling is a form of evaporation that takes place beneath the surface of a liquid. While regular evaporation occurs only at the surface of a liquid, boiling involves the formation of vapor bubbles throughout the liquid.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>That makes sense! So they're related but not the same thing.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>Exactly. Let me share a fascinating experiment that dramatically shows the cooling effect of evaporation and boiling. It consists of a shallow dish of room-temperature water in a vacuum jar. When the pressure in the jar is slowly reduced by a vacuum pump, the water starts to boil. The boiling process takes heat away from the water, which consequently cools.</p><br><p>As the pressure is further reduced, more and more of the slower-moving liquid molecules boil away. Continued boiling results in a lowering of the temperature until the freezing point of approximately 0°C is reached. Continued cooling by boiling causes ice to form over the surface of the bubbling water. Boiling and freezing take place at the same time! The frozen bubbles of boiling water are a remarkable sight.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>Wait, water can boil and freeze at the same time? That sounds impossible!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>It does sound counterintuitive, but it's a real phenomenon! In a vacuum, water can freeze and boil at the same time. This is known as water's triple point, which is where it can exist as a solid, liquid, and vapor simultaneously.</p><br><p>This principle has practical applications too. For example, if you spray some drops of coffee into a vacuum chamber, they, too, boil until they freeze. Even after they are frozen, the water molecules continue to evaporate into the vacuum until all that is left to be seen are little crystals of coffee solids. This is how freeze-dried coffee is made. The low temperature of this process tends to keep the chemical structure of the coffee solids from changing. When hot water is added, much of the original flavor of the coffee is retained.</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>So that's how they make freeze-dried coffee! I've always wondered about that. Does this cooling effect have any other practical applications in everyday life?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>Absolutely! The refrigerator also employs the cooling effect of boiling. A liquid coolant that has a low boiling point is pumped into the coils inside the refrigerator, where the liquid boils (evaporates) and draws heat from the food stored in the refrigerator.</p><br><p>Then the coolant in its gas phase, along with its added energy, is directed outside the refrigerator to coils located in the back, appropriately called condensation coils, where heat is given off to the air as the coolant condenses back to a liquid. A motor pumps the coolant through the system as it undergoes the cyclic process of vaporization and condensation. The next time you're near a refrigerator, place your hand near the condensation coils in the back; you'll feel the heat that has been extracted from inside.</p><br><p>An air conditioner employs the same principle, pumping heat energy from inside a building to outside the building. Turn the air conditioner around so that inside cold is pumped outside and the air conditioner becomes a type of heater known as a heat pump.</p></div>
+        </div>
+
+        <div class="message user" data-index="47" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(47)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-47"><p>This is amazing! I never realized that so many everyday things connect to these science concepts. This actually makes a lot more sense than I expected. I'm starting to see how understanding these basic principles helps explain so much about the world.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="48" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(48)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-48"><p>I'm glad to hear that! Science is all around us, and understanding these fundamental concepts can help us make sense of many everyday phenomena. It's wonderful to see you making these connections. Do you have any other questions about liquid and gaseous phases?</p></div>
+        </div>
+
+        <div class="message user" data-index="49" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(49)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-49"><p>I think I understand the main ideas now. It's pretty cool how evaporation cools things and condensation warms things, and how pressure affects boiling points. I'll definitely look at my refrigerator differently now! Thanks for explaining all this clearly.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="50" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(50)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-50"><p>You're welcome! You've done an excellent job connecting these scientific concepts to your everyday experiences. That's exactly how science becomes meaningful. Feel free to come back anytime you have more questions or want to explore other topics!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "af4eb8ed-0842-42be-8b24-be0eb44b1ec2", "classid": "conceptual-chemistry-0804", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I need to study about phases of matter for my science class. I've never been great at science - I actually avoided it in high school when I could. But I need to understand this for my general education requirements.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm glad you're giving science another chance! Many students find that approaching science concepts step-by-step makes them much more accessible. Today we can explore liquid and gaseous phases of matter, with a special focus on water. Does that sound like a good place to start?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Yes, that works. I know water can be liquid or gas like steam, but I'm not really sure about the details of how it changes from one to the other.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Perfect! Let's begin with how molecules behave in liquid water. Molecules of water in the liquid phase move about in all directions at different speeds. Some of these molecules may reach the liquid's surface moving fast enough to overcome the hydrogen bonds and escape into the gaseous phase. This process of molecules converting from the liquid phase to the gaseous phase is called evaporation, or sometimes vaporization.\n\nThe opposite process is condensation\u2014the changing of a gas to a liquid. At the surface of any body of water, there is a constant exchange of molecules from one phase to the other.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So at the surface of water, some molecules are leaving to become gas while others are returning to become liquid? That's happening all the time?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! Picture the surface of a lake or even a glass of water - there's constant molecular activity happening right at that interface between the water and the air above it. Some water molecules are escaping upward while others from the air are rejoining the liquid.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've noticed that when I get out of the shower and I'm wet, I feel cold. Is that related to evaporation?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a perfect real-life example! As evaporating molecules leave the liquid phase, they take their kinetic energy with them. This has the effect of lowering the average kinetic energy of all the molecules remaining in the liquid, and the liquid is cooled.\n\nEvaporation also has a cooling effect on the surrounding air, because liquid molecules that escape into the gaseous phase are moving relatively slowly compared to other molecules in the air. This makes sense when you consider that these newly arrived molecules lost a fair amount of their kinetic energy in overcoming the hydrogen bonds of the liquid phase. Adding these slower molecules to the surrounding air effectively decreases the average kinetic energy of all the molecules making up the air, and the air is cooled.\n\nSo, no matter how you look at it, evaporation is a cooling process.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense for why I feel cold when I'm wet! So the water is basically stealing heat energy from my body as it evaporates?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent way to put it! As water cools, the rate of evaporation slows down, because fewer molecules have sufficient energy to escape the hydrogen bonds of the liquid phase. A higher rate of evaporation can be maintained if the water is in contact with a relatively warm surface, such as your skin. Body heat then flows from you into the water. In this way the water maintains a higher temperature, and evaporation continues at a relatively high rate.\n\nThis is why you feel cool as you dry off after getting wet\u2014you are losing body heat to the energy-requiring process of evaporation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Is that why we sweat when we're hot? I never really thought about why that happens.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! When your body overheats, your sweat glands produce perspiration. The evaporation of perspiration cools you and helps you maintain a stable body temperature.\n\nInterestingly, many animals don't have sweat glands and must cool themselves by other means. For example, dogs have no sweat glands (except between their toes). They cool themselves by panting. In this way, evaporation occurs in the mouth and the bronchial tract. Pigs also have no sweat glands and therefore cannot cool off by the evaporation of perspiration. Instead, they wallow in the mud to cool themselves.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's cool about the animals! I have a question though - if water wasn't so \"sticky\" with those hydrogen bonds you mentioned, would it cool us more or less when it evaporates?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent conceptual question! If water were less \"sticky,\" you would be cooled more by its evaporation. Water molecules leave the liquid phase only when they have enough kinetic energy to overcome hydrogen bonding. It is hydrogen bonding that makes water sticky, so to say that water is less sticky is to say that hydrogen bonds are weaker than they actually are.\n\nThen at a given temperature, more molecules in the liquid phase would have sufficient kinetic energy to overcome the weaker hydrogen bonds and escape into the gaseous phase, carrying heat away from the liquid. The cooling power of evaporating water would therefore be greater. This is why less \"sticky\" substances, such as rubbing alcohol, have a noticeably greater cooling effect as they evaporate.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh! I've noticed that with hand sanitizer - it feels really cold on my hands when it's evaporating. So that's because it's less \"sticky\" than water?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! You've made a great connection to everyday experience. Now, let's talk about something interesting - even cool or frozen water can evaporate. Warm water evaporates, but so does cool water. The only difference is that cool water evaporates at a slower rate.\n\nEven frozen water \"evaporates.\" This form of evaporation, in which molecules jump directly from the solid phase to the gaseous phase, is called sublimation. Because water molecules are so firmly held in the solid phase, frozen water does not release molecules into the gaseous phase as readily as liquid water does. Sublimation, however, does account for the loss of significant portions of snow and ice, especially on sunny, dry mountaintops. It's also why ice cubes left in the freezer for a long time tend to get smaller.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so ice cubes can just disappear without melting first? I thought they were just melting a little bit in the freezer. That's wild.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, that's right! The ice molecules can go directly from the solid phase to the gas phase without becoming liquid first. It's a slower process than melting and then evaporating, but it definitely happens.\n\nNow, let's talk about the opposite of evaporation - condensation. At the surface of any body of water, there is condensation as well as evaporation. Condensation occurs as slow-moving water vapor molecules collide with and stick to the surface of a body of liquid water. Fast-moving water vapor molecules tend to bounce off each other or off the liquid surface, losing little of their kinetic energy. Only the slowest gas molecules condense into the liquid phase.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So condensation is basically the opposite of evaporation? Does it have the opposite effect on temperature too?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, you've identified the pattern! As condensation happens, energy is released as hydrogen bonds are formed. This energy is absorbed by the liquid and increases its temperature.\n\nCondensation involves the removal of slower-moving water vapor molecules from the gaseous phase. The average kinetic energy of the remaining water vapor molecules is therefore increased, which means that the water vapor is warmer. So, no matter how you look at it, condensation is a warming process.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Is that why a burn from steam is worse than from hot water at the same temperature? I've heard that before but never understood why.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! A burn to your skin from 100\u00b0C water vapor is much more damaging than a burn from 100\u00b0C liquid water. Why? The water vapor gives up considerable energy when it condenses to a liquid and wets the skin.\n\nThis energy released by condensation is utilized in heating systems, such as household radiators. Heat is given up by water vapor when the vapor condenses inside the radiator.\n\nThe water vapor in our atmosphere also gives up energy as it condenses. This is the energy source for many weather systems, such as hurricanes, which derive much of their energy from the condensation of water vapor contained in humid tropical air. The formation of 1 inch of rain over an area of 1 square mile yields the energy equivalent of about 32,000 tons of exploded dynamite.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's a lot of energy! I had no idea that condensation could be so powerful. I'm starting to see how important these processes are in the real world.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! And you can experience these effects in everyday life too. After you take a shower, even a cold one, you are warmed by the heat energy released as the water vapor in the shower stall condenses. You quickly sense the difference if you step out of the stall. Away from the moisture, the rate of evaporation is much higher than the rate of condensation, and as a result, you feel chilly.\n\nWhen you remain in the shower stall, where the humidity is higher, the rate of condensation is increased, so you feel that much warmer. Now you know why you can dry yourself with a towel much more comfortably if you remain in the shower stall.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes so much sense! I've always noticed that but never understood why. So that's also why some places feel more uncomfortable when it's hot - like when I visited family in New Orleans versus when I went to Las Vegas?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've hit on another excellent example! Spend a July afternoon in dry Tucson or Las Vegas and you'll soon notice that the evaporation rate is appreciably greater than the condensation rate. The result of this pronounced evaporation is a much cooler feeling than you would experience on a same-temperature July afternoon in New York City or New Orleans. In these humid locations, condensation outpaces evaporation, and you feel the warming effect as water vapor in the air condenses on your skin.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I have a question. If I leave a bowl of water out and the water level stays the same from one day to the next, does that mean nothing is happening with evaporation or condensation?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question! If the water level in a bowl of water remains unchanged from one day to the next, you cannot conclude that no evaporation or condensation is taking place. In fact, there is much activity occurring at the molecular level. Both evaporation and condensation occur continuously and simultaneously.\n\nThe fact that the water level remains constant indicates equal rates of evaporation and condensation\u2014the number of H\u2082O molecules leaving the liquid surface by evaporation is equal to the number entering the liquid by condensation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I see. It's like a balance of molecules coming and going. Let's talk about boiling now. I know it's when water bubbles, but what's actually happening there?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's explore boiling! Boiling is actually a type of evaporation that occurs beneath the surface of the liquid. When liquid water is heated to a sufficiently high temperature, bubbles of water vapor form beneath the surface. These bubbles are buoyed to the surface, where they escape, and we say the liquid is boiling.\n\nBubbles can form only when the pressure of the vapor inside them is equal to or greater than the combined pressure exerted by the surrounding water and the atmosphere above. At the boiling point of the liquid, the pressure inside the bubbles equals or exceeds the combined pressure of the surrounding water and the atmosphere. At lower temperatures, the pressure inside the bubbles is not enough, and the surrounding pressure collapses any bubbles that form.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the pressure has to be high enough inside the bubbles for them to exist? What does the pressure inside a bubble have to equal or be greater than?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The pressure inside a bubble of boiling water must equal or exceed the combined pressure of the surrounding water and the atmosphere above. This is why at what point boiling begins depends not only on temperature but also on pressure. This includes the pressure from the weight of the surrounding liquid as well as the pressure from the weight of the atmosphere at the surface.\n\nAs atmospheric pressure increases, the vapor molecules inside any bubbles that form must move faster in order to exert enough pressure from inside the bubble to counteract the additional atmospheric pressure. So increasing the pressure exerted on the surface of a liquid raises its boiling point.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Is that why those pressure cookers work? My mom has one and says it cooks food faster.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! The tight lid of a pressure cooker holds pressurized vapor above the water surface, and this inhibits boiling. In this way, the boiling temperature of the water is increased. Any food placed in this hotter water cooks more quickly than food placed in water boiling at 100\u00b0C.\n\nConversely, lower atmospheric pressure (as at high altitudes) decreases the boiling point of the liquid. In Denver, Colorado, the Mile-High City, for example, water boils at 95\u00b0C instead of the 100\u00b0C boiling temperature at sea level. If you try to cook food in boiling water that is cooler than 100\u00b0C, you must wait a longer time for proper cooking. A three-minute boiled egg in Denver is runny and undercooked.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've heard that cooking at high altitudes is tricky! So water can boil at different temperatures depending on the pressure or altitude?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's right! If the temperature of the boiling water were very low, food would not cook at all. As the German mountaineer Heinrich Harrer noted in his book Seven Years in Tibet, at an elevation of 4500 meters (15,000 feet) or higher, you can sip a cup of boiling tea without any danger of burning your mouth.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's fascinating! So is boiling a cooling process like evaporation? That seems counterintuitive since we usually heat things by boiling them.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a really thoughtful question. Boiling, like evaporation, is indeed a cooling process. At first thought, this may seem surprising\u2014perhaps because we usually associate boiling with heating. But heating water is one thing; boiling is another.\n\nBoiling water is cooled by boiling as fast as it is heated by the energy from the heat source. So boiling water remains at a constant temperature. If cooling did not take place, continued application of heat to a pot of boiling water would raise the temperature of the water. The reason the pressure cooker reaches higher temperatures is that boiling is forestalled by increased pressure, which in effect prevents cooling.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So is boiling a type of evaporation, or is evaporation a type of boiling? I'm a bit confused about how they relate.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great conceptual question. Boiling is a form of evaporation that takes place beneath the surface of a liquid. While regular evaporation occurs only at the surface of a liquid, boiling involves the formation of vapor bubbles throughout the liquid.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense! So they're related but not the same thing.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly. Let me share a fascinating experiment that dramatically shows the cooling effect of evaporation and boiling. It consists of a shallow dish of room-temperature water in a vacuum jar. When the pressure in the jar is slowly reduced by a vacuum pump, the water starts to boil. The boiling process takes heat away from the water, which consequently cools.\n\nAs the pressure is further reduced, more and more of the slower-moving liquid molecules boil away. Continued boiling results in a lowering of the temperature until the freezing point of approximately 0\u00b0C is reached. Continued cooling by boiling causes ice to form over the surface of the bubbling water. Boiling and freezing take place at the same time! The frozen bubbles of boiling water are a remarkable sight.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, water can boil and freeze at the same time? That sounds impossible!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": It does sound counterintuitive, but it's a real phenomenon! In a vacuum, water can freeze and boil at the same time. This is known as water's triple point, which is where it can exist as a solid, liquid, and vapor simultaneously.\n\nThis principle has practical applications too. For example, if you spray some drops of coffee into a vacuum chamber, they, too, boil until they freeze. Even after they are frozen, the water molecules continue to evaporate into the vacuum until all that is left to be seen are little crystals of coffee solids. This is how freeze-dried coffee is made. The low temperature of this process tends to keep the chemical structure of the coffee solids from changing. When hot water is added, much of the original flavor of the coffee is retained.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So that's how they make freeze-dried coffee! I've always wondered about that. Does this cooling effect have any other practical applications in everyday life?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! The refrigerator also employs the cooling effect of boiling. A liquid coolant that has a low boiling point is pumped into the coils inside the refrigerator, where the liquid boils (evaporates) and draws heat from the food stored in the refrigerator.\n\nThen the coolant in its gas phase, along with its added energy, is directed outside the refrigerator to coils located in the back, appropriately called condensation coils, where heat is given off to the air as the coolant condenses back to a liquid. A motor pumps the coolant through the system as it undergoes the cyclic process of vaporization and condensation. The next time you're near a refrigerator, place your hand near the condensation coils in the back; you'll feel the heat that has been extracted from inside.\n\nAn air conditioner employs the same principle, pumping heat energy from inside a building to outside the building. Turn the air conditioner around so that inside cold is pumped outside and the air conditioner becomes a type of heater known as a heat pump.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is amazing! I never realized that so many everyday things connect to these science concepts. This actually makes a lot more sense than I expected. I'm starting to see how understanding these basic principles helps explain so much about the world.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm glad to hear that! Science is all around us, and understanding these fundamental concepts can help us make sense of many everyday phenomena. It's wonderful to see you making these connections. Do you have any other questions about liquid and gaseous phases?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I understand the main ideas now. It's pretty cool how evaporation cools things and condensation warms things, and how pressure affects boiling points. I'll definitely look at my refrigerator differently now! Thanks for explaining all this clearly.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're welcome! You've done an excellent job connecting these scientific concepts to your everyday experiences. That's exactly how science becomes meaningful. Feel free to come back anytime you have more questions or want to explore other topics!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742537450.677928, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC0804_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

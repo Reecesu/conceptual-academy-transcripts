@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I need help understanding this chemothe... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-1403</p>
+            <p><strong>UUID:</strong> 8a86e450-b557-4418-b28c-7855b7584585</p>
+            <p><strong>Date:</strong> 2025-03-21 06:49:52 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I need help understanding this chemotherapy chapter for my science class. I've always been pretty bad at science, so I'm kind of nervous about it.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I understand that science can feel intimidating at first, but I'm here to guide you through it. Let's start with what chemotherapy is. Chemotherapy refers to the use of drugs that destroy disease-causing agents without doing excessive harm to the host. This approach works by taking advantage of the ways a disease-causing agent is different from the host, and it's effective in treating many diseases, including bacterial and viral infections, as well as cancer.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>So basically chemotherapy is just any drug that kills bad stuff without killing us too much? I thought chemotherapy was just for cancer.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a common misconception! While we often associate chemotherapy with cancer treatment, the term actually applies more broadly to any drug treatment that selectively targets disease-causing agents. The key principle is that these drugs exploit differences between the disease-causing agent and the human body. Let's start exploring some specific examples, beginning with drugs used to treat bacterial infections.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Okay, I'm following so far. What kinds of drugs are used against bacteria?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>The first drugs effectively used to treat bacterial infections were sulfa drugs, developed in the 1930s. They work by exploiting a key difference between humans and bacteria related to folic acid.</p><br><p>Both humans and bacteria need folic acid to remain healthy. However, while we humans can obtain folic acid directly from our diet, bacteria cannot absorb folic acid from outside sources. Instead, bacteria must make their own supply of folic acid.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>Wait, so bacteria can't just use the folic acid that might be around them? They have to make it themselves?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Exactly! Bacteria have special receptor sites that help them make folic acid from a simpler molecule found in all bacteria called para-aminobenzoic acid, or PABA for short. The PABA attaches to a specific receptor site and is converted to folic acid.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>So how do sulfa drugs use this difference to kill bacteria?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>Great question. Sulfa drugs have a close structural resemblance to PABA. When a person with a bacterial infection takes a sulfa drug, the drug is transformed by the body into a compound called sulfanilamide. This sulfanilamide attaches to the bacterial receptor sites that were designed for PABA.</p><br><p>When sulfanilamide occupies these receptor sites, it prevents bacteria from synthesizing folic acid. Without folic acid, the bacteria soon die. The patient, however, lives on because they get folic acid directly from their diet.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>Oh, I think I get it! The sulfa drugs basically trick the bacteria by pretending to be PABA, but then they don't actually help make folic acid. And this doesn't hurt us because we get our folic acid from food. That's pretty clever!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>That's an excellent summary! You're absolutely right. This is a perfect example of how chemotherapy works by exploiting differences between pathogens and humans.</p><br><p>Now let's talk about another important class of drugs used against bacteria: antibiotics. Microorganisms such as molds, fungi, and even bacteria have evolved to produce chemicals, known as antibiotics, that prevent the growth of bacteria. Penicillin was the first antibiotic discovered.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>I've taken antibiotics before when I got strep throat. How do they work differently from sulfa drugs?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>Penicillins and closely related compounds known as cephalosporins kill bacteria through a different mechanism. Instead of interfering with folic acid production, they inactivate receptor sites responsible for strengthening the bacterial cell wall. With these receptor sites inactivated, bacterial cell walls grow weak and eventually burst.</p><br><p>Many derivatives of penicillin, such as penicillin G, have since been isolated from microorganisms and prepared in laboratories. Both penicillins and cephalosporins, like cephalexin, as well as most other antibiotics, are produced by microorganisms that can be mass-produced in large vats. The antibiotics are then harvested and purified for medical use.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>That makes sense. So antibiotics basically make the bacteria's walls collapse? What about viruses? Are they treated the same way?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>No, viruses are treated quite differently, and that's an excellent transition to our next topic. So far, chemotherapy has been more successful in treating bacterial infections than viral infections. Perhaps the greatest obstacle to effective viral treatment lies in the nature of viruses themselves.</p><br><p>When not attached to a host, a virus is an inert, lifeless bundle of biomolecules—and it's difficult to kill something that's not alive!</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>Wait, viruses aren't alive? That's confusing because we talk about "killing" viruses all the time.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>That's a very perceptive point! A typical virus consists of only one strand or several strands of either RNA or DNA encapsulated in a protein coat. Viruses are much smaller than bacteria and many times smaller than animal cells.</p><br><p>Some viruses infect the host by attaching to a cell and then injecting their genetic contents. Once inside the cell, the virus's genetic information is incorporated into the host DNA and replicated by the machinery of the host cell. Eventually, the cell bursts because it's overstuffed with a multitude of viral replicates, which then spread to infect other host cells.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>So the virus basically hijacks our cells to make copies of itself? That's kind of scary. How do antiviral drugs work against something like that?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Most common antiviral drugs are derivatives of nucleosides, which are similar to nucleotides but without a phosphate group. Nucleosides are found freely in all cells and are used by cells to create RNA or DNA. Before being used, however, the nucleosides must first be primed with three phosphate groups.</p><br><p>Various synthetic derivatives of nucleosides are readily primed by virus-infected cells but not by uninfected cells. Two synthetic nucleoside derivatives are acyclovir, sold under the trade name Zovirax®, and zidovudine, sold under the trade name AZT.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>So these fake nucleosides mess up the virus somehow? I'm not sure I understand how.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Let me explain. Once incorporated in the RNA or DNA of a virus-infected host cell, these nucleoside derivatives disrupt protein synthesis, and the infected cell dies before replicating the virus. Proliferation of the virus, although not halted, is thus brought under control.</p><br><p>Acyclovir is useful in the treatment of herpes. Oral herpes is caused by the herpes simplex virus 1 (HSV-1), and genital herpes is caused by the herpes simplex virus 2 (HSV-2). More than 90 percent of the world's population is infected with the oral herpes virus, although many infected people don't exhibit symptoms.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Wow, 90 percent? That's a lot higher than I would have guessed. What about other viruses like HIV?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>For HIV, which is responsible for AIDS, zidovudine (AZT) is used to suppress viral replication. According to the World Health Organization, as of 2020, about 38 million people were living with an HIV infection.</p><br><p>HIV research has also led to a new class of antiviral agents known as protease inhibitors. The life cycles of many viruses, including HIV, depend on enzymes known as proteases, which break down proteins. A protease might be used by a virus to penetrate the proteins on a host cell membrane or to break down host polypeptides to create amino acids necessary for viral replication.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>I'm a bit confused. So proteases are tools that the virus uses, and protease inhibitors stop these tools from working?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>That's exactly right! Drugs that block the action of proteases control viral proliferation. Nelfinavir, sold under the trade name Viracept®, is an example of an effective protease inhibitor.</p><br><p>Patients receiving a "cocktail" of a protease inhibitor and nucleoside antiviral agents may have their HIV counts brought below detectable levels. Although it's unlikely that this regimen can totally eliminate HIV from an infected person, the highly reduced viral counts tend to significantly delay or prevent the onset of AIDS and reduce the patient's infectiousness to others.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>That's fascinating. And I think I saw in the news that similar drugs were developed for COVID-19?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>You're absolutely right. Protease inhibitors used to fight HIV infection have also been developed to fight Covid-19 infections. This is particularly the case with the Pfizer drug Paxlovid, which contains the protease inhibitor ritonavir. When taken soon after an infection, this chemotherapy has been shown to reduce the need for hospitalization.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>This makes me wonder - if viruses are so much simpler than bacteria, why are they harder to treat? Wouldn't it be easier to target something simple?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>That's an excellent question! Chemotherapeutics act by interfering with one or more of the chemical reactions a pathogen needs in order to exist. The more complex a pathogen, the more ways there are to interfere with its life cycle. The fact that viruses are so simple means we have few avenues for a chemotherapeutic approach.</p><br><p>Also, an unusual feature of viruses like herpes is their preference for nerve cells. Stress to the nervous system, such as emotional stress or sunburn, can cause the virus to replicate, leading to an outbreak through the skin. When they're not replicating, these viruses remain in nerve cells, where they aren't detected by the body's immune system, which has little activity in nerve cells. While dormant in the nervous system, the viruses evade not only the immune system but also antiviral drugs.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>Okay, that makes sense. I never thought about it that way. What about cancer? That's what most people think of with chemotherapy, right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Yes, let's move on to cancer chemotherapy. Cells periodically lose the ability to control their own growth and begin multiplying faster than they should. Normally, the immune system recognizes these renegade cells and destroys them. Occasionally, however, they escape this line of defense and continue to multiply unchecked.</p><br><p>The result can be a mass of tissue, called a tumor, that deprives healthy cells of oxygen and nutrients or causes other problems. Cells from a tumor may break away and be carried to other sites in the body, where they lodge and continue to multiply, forming additional tumors.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>That sounds like what they call metastasis, right? I've heard that term before.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>That's right! As tumors multiply, more and more healthy cells are damaged and eventually die. Ultimately, the whole body may die. This is the process of cancer, the second leading cause of death in most developed nations. At present mortality rates, one in six of us will die of this disease.</p><br><p>Chemotherapy is most effective at the early stages of cancer, because drugs work best on cells that are in the process of dividing, a process called cellular mitosis. When a tumor is young, most of its cells are undergoing mitosis. As the tumor ages, however, the fraction of cells in this growth phase decreases, reducing drug sensitivity.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>So the cancer drugs mainly attack cells that are dividing? But don't we have normal cells that divide too? What happens to those?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>That's a very insightful question. Unfortunately, cancerous cells are not the only cells in the body that divide. Normal cells divide periodically, and some types of cells, such as those in the gastrointestinal tract and in hair follicles, are always in a state of cellular division.</p><br><p>As a consequence, many cancer chemotherapeutics are noted for their toxicity; patients undergoing treatments often experience gastrointestinal problems and hair loss.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>That explains the hair loss from chemotherapy. I always wondered about that. So how exactly do these drugs kill the dividing cells?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>DNA is the target of many anticancer compounds, because during cellular mitosis, strands of DNA are unwound and therefore susceptible to chemical attack. A variety of chemicals may be used to selectively kill cells that are in the process of dividing.</p><br><p>The compound 5-fluorouracil, for example, is mistaken by a cell for the nucleotide base uracil. Once incorporated into the DNA of the cancerous cell, 5-fluorouracil's non-nucleotide structure interferes with the normal DNA workings, and the cell dies.</p><br><p>Harsher agents, such as cyclophosphamide and cisplatin, destroy DNA's ability to function by chemically bonding to the DNA or by cross-linking the two strands of the double helix.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>So these drugs basically mess up the DNA when the cell is trying to copy it during division. Are there other ways cancer drugs work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>Yes, some anticancer drugs kill cancerous cells without acting on DNA. Certain alkaloids, such as vincristine and paclitaxel, kill dividing cells by preventing the formation of cellular microstructures they need for division.</p><br><p>As another point of attack, cancerous cells have high metabolic rates, which means they rely heavily on biochemical nutrients, such as dihydrofolic acid. The anticancer agent methotrexate is structurally very similar to dihydrofolic acid and works by binding to dihydrofolic acid receptor sites in the cancerous cells, thereby interfering with metabolic reactions in the cells.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>This reminds me of how the sulfa drugs work! It's like the same principle but applied to cancer cells. Are there any other approaches to fighting cancer?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>Absolutely! The high metabolism of cancer cells means they also need to be fed an adequate supply of blood—a source of both nutrients and oxygen. The growth of a tumor, therefore, requires that new blood vessels be allowed to grow alongside new tumor cells. The growth of new blood vessels is called angiogenesis.</p><br><p>Drugs blocking the growth of new blood vessels are called angiogenesis inhibitors. Some powerful angiogenesis inhibitors have been developed that selectively bind to a protein that cancer cells need to promote angiogenesis. Upon binding, the inhibitor deactivates the protein. This shuts down the growth of new blood vessels into the tumor, which begins to shrink as cancer cells die from a lack of blood.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>So these drugs basically starve the tumor by cutting off its blood supply? That's clever! Are there any other new approaches to cancer treatment?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>Yes, another promising approach involves monoclonal antibodies. An antibody is a protein macromolecule the body produces to identify and then destroy an infectious agent, such as a bacterium or virus and even a cancer cell.</p><br><p>Antibodies specific for certain cancer cells, called monoclonal antibodies, can be created in the laboratory. The term monoclonal means these antibodies are identical clones of each other, which means they can be produced in quantities sufficient for clinical use.</p><br><p>The monoclonal antibody rituximab, for example, is effective at killing cancerous cells of certain lymphomas. Although not a cure, rituximab helps to maintain a state of remission.</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>It's amazing how many different approaches there are! Do you think we'll ever find a cure for all cancers?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>Cancer chemotherapy combined with radiation therapy and/or surgery can be effective in minimizing the growth of or even curing many forms of cancer. As our understanding of cellular mechanics continues to grow, so will our ability to increase the overall survival rates of cancer patients.</p><br><p>A case in point lies with chronic myeloid leukemia, CML, a form of cancer in which certain blood cells proliferate because of an abnormal protein produced by a DNA mutation. From a mapping of the receptor sites on this protein, scientists were able to design a molecule, called Gleevec®, that binds to these receptor sites and inhibits their functioning.</p><br><p>Although not a cure for this once very deadly cancer, Gleevec® stops the progression of this disease and related diseases, with remarkable 5-year survival rates of around 95 percent.</p></div>
+        </div>
+
+        <div class="message user" data-index="47" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(47)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-47"><p>Wow, that's incredible progress! From what you're saying, it sounds like we're getting better at developing targeted treatments for specific types of cancer.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="48" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(48)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-48"><p>You've grasped a key point! There are many forms of cancer, each with its own unique biochemistry. As Gleevec® demonstrates, our best hope lies not with a single magic bullet, but in our ability to learn the details of each cancer's biochemistry. From what we learn, we are then empowered to develop targeted treatments.</p><br><p>Much progress is being made in this arena of what is sometimes called "targeted chemotherapy." As further examples, you might want to look up information on BTK inhibitors, BCL-2 inhibitors, CAR-T Cell Therapy, and bispecific antibodies. Many of the recent agents are stunning in their curative capabilities. That's good chemistry.</p></div>
+        </div>
+
+        <div class="message user" data-index="49" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(49)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-49"><p>I have to say, Alia, when we started this conversation, I was feeling really intimidated by all this science. But the way you explained it made it so much clearer. These differences between bacteria, viruses, and cancer cells actually make sense now. It's pretty amazing how scientists can exploit small differences to create treatments.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="50" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(50)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-50"><p>I'm so glad this helped you understand the topic better! You've asked some excellent questions that show you're engaging deeply with the material. Science is really about understanding patterns and differences in nature, and then using that knowledge in practical ways. Chemotherapy is a perfect example of this principle in action. Is there anything else about this topic you'd like to explore further?</p></div>
+        </div>
+
+        <div class="message user" data-index="51" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(51)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-51"><p>I think I have a good understanding now, thanks! I feel much more confident about tackling my assignment on this chapter.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="52" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(52)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-52"><p>That's wonderful to hear! Remember that learning science is a journey, and it's perfectly normal to have questions along the way. You've shown a great ability to make connections between concepts, which is a valuable skill in science. Good luck with your assignment, and feel free to come back if you have any other questions!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "8a86e450-b557-4418-b28c-7855b7584585", "classid": "conceptual-chemistry-1403", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I need help understanding this chemotherapy chapter for my science class. I've always been pretty bad at science, so I'm kind of nervous about it.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I understand that science can feel intimidating at first, but I'm here to guide you through it. Let's start with what chemotherapy is. Chemotherapy refers to the use of drugs that destroy disease-causing agents without doing excessive harm to the host. This approach works by taking advantage of the ways a disease-causing agent is different from the host, and it's effective in treating many diseases, including bacterial and viral infections, as well as cancer.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So basically chemotherapy is just any drug that kills bad stuff without killing us too much? I thought chemotherapy was just for cancer.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a common misconception! While we often associate chemotherapy with cancer treatment, the term actually applies more broadly to any drug treatment that selectively targets disease-causing agents. The key principle is that these drugs exploit differences between the disease-causing agent and the human body. Let's start exploring some specific examples, beginning with drugs used to treat bacterial infections.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Okay, I'm following so far. What kinds of drugs are used against bacteria?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The first drugs effectively used to treat bacterial infections were sulfa drugs, developed in the 1930s. They work by exploiting a key difference between humans and bacteria related to folic acid.\n\nBoth humans and bacteria need folic acid to remain healthy. However, while we humans can obtain folic acid directly from our diet, bacteria cannot absorb folic acid from outside sources. Instead, bacteria must make their own supply of folic acid.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so bacteria can't just use the folic acid that might be around them? They have to make it themselves?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! Bacteria have special receptor sites that help them make folic acid from a simpler molecule found in all bacteria called para-aminobenzoic acid, or PABA for short. The PABA attaches to a specific receptor site and is converted to folic acid.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So how do sulfa drugs use this difference to kill bacteria?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Great question. Sulfa drugs have a close structural resemblance to PABA. When a person with a bacterial infection takes a sulfa drug, the drug is transformed by the body into a compound called sulfanilamide. This sulfanilamide attaches to the bacterial receptor sites that were designed for PABA.\n\nWhen sulfanilamide occupies these receptor sites, it prevents bacteria from synthesizing folic acid. Without folic acid, the bacteria soon die. The patient, however, lives on because they get folic acid directly from their diet.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I think I get it! The sulfa drugs basically trick the bacteria by pretending to be PABA, but then they don't actually help make folic acid. And this doesn't hurt us because we get our folic acid from food. That's pretty clever!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent summary! You're absolutely right. This is a perfect example of how chemotherapy works by exploiting differences between pathogens and humans.\n\nNow let's talk about another important class of drugs used against bacteria: antibiotics. Microorganisms such as molds, fungi, and even bacteria have evolved to produce chemicals, known as antibiotics, that prevent the growth of bacteria. Penicillin was the first antibiotic discovered.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've taken antibiotics before when I got strep throat. How do they work differently from sulfa drugs?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Penicillins and closely related compounds known as cephalosporins kill bacteria through a different mechanism. Instead of interfering with folic acid production, they inactivate receptor sites responsible for strengthening the bacterial cell wall. With these receptor sites inactivated, bacterial cell walls grow weak and eventually burst.\n\nMany derivatives of penicillin, such as penicillin G, have since been isolated from microorganisms and prepared in laboratories. Both penicillins and cephalosporins, like cephalexin, as well as most other antibiotics, are produced by microorganisms that can be mass-produced in large vats. The antibiotics are then harvested and purified for medical use.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. So antibiotics basically make the bacteria's walls collapse? What about viruses? Are they treated the same way?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": No, viruses are treated quite differently, and that's an excellent transition to our next topic. So far, chemotherapy has been more successful in treating bacterial infections than viral infections. Perhaps the greatest obstacle to effective viral treatment lies in the nature of viruses themselves.\n\nWhen not attached to a host, a virus is an inert, lifeless bundle of biomolecules\u2014and it's difficult to kill something that's not alive!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, viruses aren't alive? That's confusing because we talk about \"killing\" viruses all the time.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a very perceptive point! A typical virus consists of only one strand or several strands of either RNA or DNA encapsulated in a protein coat. Viruses are much smaller than bacteria and many times smaller than animal cells.\n\nSome viruses infect the host by attaching to a cell and then injecting their genetic contents. Once inside the cell, the virus's genetic information is incorporated into the host DNA and replicated by the machinery of the host cell. Eventually, the cell bursts because it's overstuffed with a multitude of viral replicates, which then spread to infect other host cells.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the virus basically hijacks our cells to make copies of itself? That's kind of scary. How do antiviral drugs work against something like that?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Most common antiviral drugs are derivatives of nucleosides, which are similar to nucleotides but without a phosphate group. Nucleosides are found freely in all cells and are used by cells to create RNA or DNA. Before being used, however, the nucleosides must first be primed with three phosphate groups.\n\nVarious synthetic derivatives of nucleosides are readily primed by virus-infected cells but not by uninfected cells. Two synthetic nucleoside derivatives are acyclovir, sold under the trade name Zovirax\u00ae, and zidovudine, sold under the trade name AZT.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So these fake nucleosides mess up the virus somehow? I'm not sure I understand how.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let me explain. Once incorporated in the RNA or DNA of a virus-infected host cell, these nucleoside derivatives disrupt protein synthesis, and the infected cell dies before replicating the virus. Proliferation of the virus, although not halted, is thus brought under control.\n\nAcyclovir is useful in the treatment of herpes. Oral herpes is caused by the herpes simplex virus 1 (HSV-1), and genital herpes is caused by the herpes simplex virus 2 (HSV-2). More than 90 percent of the world's population is infected with the oral herpes virus, although many infected people don't exhibit symptoms.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, 90 percent? That's a lot higher than I would have guessed. What about other viruses like HIV?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": For HIV, which is responsible for AIDS, zidovudine (AZT) is used to suppress viral replication. According to the World Health Organization, as of 2020, about 38 million people were living with an HIV infection.\n\nHIV research has also led to a new class of antiviral agents known as protease inhibitors. The life cycles of many viruses, including HIV, depend on enzymes known as proteases, which break down proteins. A protease might be used by a virus to penetrate the proteins on a host cell membrane or to break down host polypeptides to create amino acids necessary for viral replication.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm a bit confused. So proteases are tools that the virus uses, and protease inhibitors stop these tools from working?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! Drugs that block the action of proteases control viral proliferation. Nelfinavir, sold under the trade name Viracept\u00ae, is an example of an effective protease inhibitor.\n\nPatients receiving a \"cocktail\" of a protease inhibitor and nucleoside antiviral agents may have their HIV counts brought below detectable levels. Although it's unlikely that this regimen can totally eliminate HIV from an infected person, the highly reduced viral counts tend to significantly delay or prevent the onset of AIDS and reduce the patient's infectiousness to others.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's fascinating. And I think I saw in the news that similar drugs were developed for COVID-19?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're absolutely right. Protease inhibitors used to fight HIV infection have also been developed to fight Covid-19 infections. This is particularly the case with the Pfizer drug Paxlovid, which contains the protease inhibitor ritonavir. When taken soon after an infection, this chemotherapy has been shown to reduce the need for hospitalization.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This makes me wonder - if viruses are so much simpler than bacteria, why are they harder to treat? Wouldn't it be easier to target something simple?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent question! Chemotherapeutics act by interfering with one or more of the chemical reactions a pathogen needs in order to exist. The more complex a pathogen, the more ways there are to interfere with its life cycle. The fact that viruses are so simple means we have few avenues for a chemotherapeutic approach.\n\nAlso, an unusual feature of viruses like herpes is their preference for nerve cells. Stress to the nervous system, such as emotional stress or sunburn, can cause the virus to replicate, leading to an outbreak through the skin. When they're not replicating, these viruses remain in nerve cells, where they aren't detected by the body's immune system, which has little activity in nerve cells. While dormant in the nervous system, the viruses evade not only the immune system but also antiviral drugs.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Okay, that makes sense. I never thought about it that way. What about cancer? That's what most people think of with chemotherapy, right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, let's move on to cancer chemotherapy. Cells periodically lose the ability to control their own growth and begin multiplying faster than they should. Normally, the immune system recognizes these renegade cells and destroys them. Occasionally, however, they escape this line of defense and continue to multiply unchecked.\n\nThe result can be a mass of tissue, called a tumor, that deprives healthy cells of oxygen and nutrients or causes other problems. Cells from a tumor may break away and be carried to other sites in the body, where they lodge and continue to multiply, forming additional tumors.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds like what they call metastasis, right? I've heard that term before.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's right! As tumors multiply, more and more healthy cells are damaged and eventually die. Ultimately, the whole body may die. This is the process of cancer, the second leading cause of death in most developed nations. At present mortality rates, one in six of us will die of this disease.\n\nChemotherapy is most effective at the early stages of cancer, because drugs work best on cells that are in the process of dividing, a process called cellular mitosis. When a tumor is young, most of its cells are undergoing mitosis. As the tumor ages, however, the fraction of cells in this growth phase decreases, reducing drug sensitivity.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the cancer drugs mainly attack cells that are dividing? But don't we have normal cells that divide too? What happens to those?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a very insightful question. Unfortunately, cancerous cells are not the only cells in the body that divide. Normal cells divide periodically, and some types of cells, such as those in the gastrointestinal tract and in hair follicles, are always in a state of cellular division.\n\nAs a consequence, many cancer chemotherapeutics are noted for their toxicity; patients undergoing treatments often experience gastrointestinal problems and hair loss.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That explains the hair loss from chemotherapy. I always wondered about that. So how exactly do these drugs kill the dividing cells?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": DNA is the target of many anticancer compounds, because during cellular mitosis, strands of DNA are unwound and therefore susceptible to chemical attack. A variety of chemicals may be used to selectively kill cells that are in the process of dividing.\n\nThe compound 5-fluorouracil, for example, is mistaken by a cell for the nucleotide base uracil. Once incorporated into the DNA of the cancerous cell, 5-fluorouracil's non-nucleotide structure interferes with the normal DNA workings, and the cell dies.\n\nHarsher agents, such as cyclophosphamide and cisplatin, destroy DNA's ability to function by chemically bonding to the DNA or by cross-linking the two strands of the double helix.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So these drugs basically mess up the DNA when the cell is trying to copy it during division. Are there other ways cancer drugs work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, some anticancer drugs kill cancerous cells without acting on DNA. Certain alkaloids, such as vincristine and paclitaxel, kill dividing cells by preventing the formation of cellular microstructures they need for division.\n\nAs another point of attack, cancerous cells have high metabolic rates, which means they rely heavily on biochemical nutrients, such as dihydrofolic acid. The anticancer agent methotrexate is structurally very similar to dihydrofolic acid and works by binding to dihydrofolic acid receptor sites in the cancerous cells, thereby interfering with metabolic reactions in the cells.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This reminds me of how the sulfa drugs work! It's like the same principle but applied to cancer cells. Are there any other approaches to fighting cancer?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! The high metabolism of cancer cells means they also need to be fed an adequate supply of blood\u2014a source of both nutrients and oxygen. The growth of a tumor, therefore, requires that new blood vessels be allowed to grow alongside new tumor cells. The growth of new blood vessels is called angiogenesis.\n\nDrugs blocking the growth of new blood vessels are called angiogenesis inhibitors. Some powerful angiogenesis inhibitors have been developed that selectively bind to a protein that cancer cells need to promote angiogenesis. Upon binding, the inhibitor deactivates the protein. This shuts down the growth of new blood vessels into the tumor, which begins to shrink as cancer cells die from a lack of blood.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So these drugs basically starve the tumor by cutting off its blood supply? That's clever! Are there any other new approaches to cancer treatment?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, another promising approach involves monoclonal antibodies. An antibody is a protein macromolecule the body produces to identify and then destroy an infectious agent, such as a bacterium or virus and even a cancer cell.\n\nAntibodies specific for certain cancer cells, called monoclonal antibodies, can be created in the laboratory. The term monoclonal means these antibodies are identical clones of each other, which means they can be produced in quantities sufficient for clinical use.\n\nThe monoclonal antibody rituximab, for example, is effective at killing cancerous cells of certain lymphomas. Although not a cure, rituximab helps to maintain a state of remission.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": It's amazing how many different approaches there are! Do you think we'll ever find a cure for all cancers?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Cancer chemotherapy combined with radiation therapy and/or surgery can be effective in minimizing the growth of or even curing many forms of cancer. As our understanding of cellular mechanics continues to grow, so will our ability to increase the overall survival rates of cancer patients.\n\nA case in point lies with chronic myeloid leukemia, CML, a form of cancer in which certain blood cells proliferate because of an abnormal protein produced by a DNA mutation. From a mapping of the receptor sites on this protein, scientists were able to design a molecule, called Gleevec\u00ae, that binds to these receptor sites and inhibits their functioning.\n\nAlthough not a cure for this once very deadly cancer, Gleevec\u00ae stops the progression of this disease and related diseases, with remarkable 5-year survival rates of around 95 percent.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's incredible progress! From what you're saying, it sounds like we're getting better at developing targeted treatments for specific types of cancer.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've grasped a key point! There are many forms of cancer, each with its own unique biochemistry. As Gleevec\u00ae demonstrates, our best hope lies not with a single magic bullet, but in our ability to learn the details of each cancer's biochemistry. From what we learn, we are then empowered to develop targeted treatments.\n\nMuch progress is being made in this arena of what is sometimes called \"targeted chemotherapy.\" As further examples, you might want to look up information on BTK inhibitors, BCL-2 inhibitors, CAR-T Cell Therapy, and bispecific antibodies. Many of the recent agents are stunning in their curative capabilities. That's good chemistry.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I have to say, Alia, when we started this conversation, I was feeling really intimidated by all this science. But the way you explained it made it so much clearer. These differences between bacteria, viruses, and cancer cells actually make sense now. It's pretty amazing how scientists can exploit small differences to create treatments.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm so glad this helped you understand the topic better! You've asked some excellent questions that show you're engaging deeply with the material. Science is really about understanding patterns and differences in nature, and then using that knowledge in practical ways. Chemotherapy is a perfect example of this principle in action. Is there anything else about this topic you'd like to explore further?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I have a good understanding now, thanks! I feel much more confident about tackling my assignment on this chapter.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's wonderful to hear! Remember that learning science is a journey, and it's perfectly normal to have questions along the way. You've shown a great ability to make connections between concepts, which is a valuable skill in science. Good luck with your assignment, and feel free to come back if you have any other questions!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742539792.302183, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC1403_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

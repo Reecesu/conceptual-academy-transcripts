@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceptual Academy Transcripts</title>
+    <style>
+        :root {
+            --background: #f5f5f5;
+            --text: #333333;
+            --header: #2c3e50;
+            --card-bg: #ffffff;
+            --accent: #4CAF50;
+            --link: #2196F3;
+            --hover: #0D47A1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: var(--text);
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .transcript-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .transcript-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .transcript-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .transcript-card h3 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .transcript-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--link);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .transcript-link:hover {
+            background-color: var(--link);
+            color: white;
+        }
+        
+        .meta-item {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .create-new {
+            background-color: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .create-new:hover {
+            background-color: #3d8b40;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background: #121212;
+                --text: #FAFAFA;
+                --header: #81D4FA;
+                --card-bg: #2A2A2A;
+                --accent: #66BB6A;
+                --link: #64B5F6;
+                --hover: #90CAF9;
+            }
+            
+            .transcript-link {
+                background-color: #333333;
+            }
+            
+            .transcript-link:hover {
+                background-color: var(--link);
+            }
+            
+            .create-new:hover {
+                background-color: #558b2f;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcripts</h1>
+        <p>Select a transcript to view and edit the conversation between a student and Alia.</p>
+    </header>
+    
+    <a href="template.html" class="create-new">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Create New Transcript
+    </a>
+    
+    <div class="transcript-list">
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about the basics of scien...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0101</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:17:02 UTC</div>
+            <a href="CAC0101_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about the scientific meth...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0102</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:17:44 UTC</div>
+            <a href="CAC0102_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about the relationship be...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0103</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:18:20 UTC</div>
+            <a href="CAC0103_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about how science works f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0104</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:19:19 UTC</div>
+            <a href="CAC0104_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a required science course for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0105</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:19:46 UTC</div>
+            <a href="CAC0105_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about measurements and un...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0106</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:20:39 UTC</div>
+            <a href="CAC0106_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0107</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:21:16 UTC</div>
+            <a href="CAC0107_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about significant figures...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0108</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:22:06 UTC</div>
+            <a href="CAC0108_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a required science course this...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0201</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:22:31 UTC</div>
+            <a href="CAC0201_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a science class this semester,...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0202</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:23:49 UTC</div>
+            <a href="CAC0202_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course as pa...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0203</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:24:26 UTC</div>
+            <a href="CAC0203_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about density for my phys...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0204</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:25:15 UTC</div>
+            <a href="CAC0204_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand this chapter about e...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0205</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:25:44 UTC</div>
+            <a href="CAC0205_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about temperature for my ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0206</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:26:31 UTC</div>
+            <a href="CAC0206_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about phases of matter fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0207</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:27:24 UTC</div>
+            <a href="CAC0207_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about gas laws for my sci...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0208</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:29:27 UTC</div>
+            <a href="CAC0208_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about physical and chemic...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0301</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:30:27 UTC</div>
+            <a href="CAC0301_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about elements and atoms ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0302</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:31:04 UTC</div>
+            <a href="CAC0302_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about the periodic table ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0303</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:32:08 UTC</div>
+            <a href="CAC0303_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need help understanding some chemistry ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0304</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:32:41 UTC</div>
+            <a href="CAC0304_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical compounds ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0305</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:33:33 UTC</div>
+            <a href="CAC0305_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about mixtures for my sci...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0306</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:34:15 UTC</div>
+            <a href="CAC0306_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand something about how ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0307</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:35:23 UTC</div>
+            <a href="CAC0307_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a required science course for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0308</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:36:25 UTC</div>
+            <a href="CAC0308_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about atoms for my scienc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0401</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:37:02 UTC</div>
+            <a href="CAC0401_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about atoms and electrons...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0402</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:37:44 UTC</div>
+            <a href="CAC0402_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about atomic structure fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0403</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:38:21 UTC</div>
+            <a href="CAC0403_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0404</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:39:29 UTC</div>
+            <a href="CAC0404_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about light for my scienc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0405</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:40:09 UTC</div>
+            <a href="CAC0405_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about atomic spectra for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0406</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:41:16 UTC</div>
+            <a href="CAC0406_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about electrons for my ge...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0407</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:41:50 UTC</div>
+            <a href="CAC0407_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm supposed to be learning about atomic ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0408</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:43:29 UTC</div>
+            <a href="CAC0408_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand something about the ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0409</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:44:39 UTC</div>
+            <a href="CAC0409_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand a section in my phys...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0410</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:45:29 UTC</div>
+            <a href="CAC0410_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about atomic nuclei for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0501</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:46:21 UTC</div>
+            <a href="CAC0501_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about radioactivity for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0502</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:47:09 UTC</div>
+            <a href="CAC0502_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>**Alia:** Welcome to Conceptual Academy! I'm Alia,...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0503</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:47:49 UTC</div>
+            <a href="CAC0503_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to study something about radioacti...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0504</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:48:28 UTC</div>
+            <a href="CAC0504_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about radioactive decay f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0505</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:48:59 UTC</div>
+            <a href="CAC0505_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking this basic science course, and...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0506</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:49:40 UTC</div>
+            <a href="CAC0506_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. My professor mentioned we'll be covering ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0507</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:50:48 UTC</div>
+            <a href="CAC0507_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about mass and energy for...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0508</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:51:29 UTC</div>
+            <a href="CAC0508_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand nuclear fusion for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0509</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:52:17 UTC</div>
+            <a href="CAC0509_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical bonding fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0601</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:53:00 UTC</div>
+            <a href="CAC0601_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about ions for my science...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0602</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:54:01 UTC</div>
+            <a href="CAC0602_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a chemistry course this semest...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0603</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:54:43 UTC</div>
+            <a href="CAC0603_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about metallic bonds for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0604</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:55:39 UTC</div>
+            <a href="CAC0604_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm supposed to be learning about chemica...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0605</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:56:51 UTC</div>
+            <a href="CAC0605_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0606</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:57:53 UTC</div>
+            <a href="CAC0606_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical bonding fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0607</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:58:35 UTC</div>
+            <a href="CAC0607_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general chemistry course and...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0608</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 05:59:25 UTC</div>
+            <a href="CAC0608_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm supposed to be learning about how mol...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0701</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:00:24 UTC</div>
+            <a href="CAC0701_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about solutions for my sc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0702</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:01:22 UTC</div>
+            <a href="CAC0702_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a chemistry class this semeste...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0703</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:02:43 UTC</div>
+            <a href="CAC0703_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand solubility for my sc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0704</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:04:14 UTC</div>
+            <a href="CAC0704_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a required science course this...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0705</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:04:44 UTC</div>
+            <a href="CAC0705_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a chemistry class this semeste...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0706</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:05:18 UTC</div>
+            <a href="CAC0706_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about water purification ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0707</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:06:30 UTC</div>
+            <a href="CAC0707_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need help understanding a chapter about...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0801</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:07:06 UTC</div>
+            <a href="CAC0801_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about phase changes for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0802</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:08:16 UTC</div>
+            <a href="CAC0802_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0803</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:09:17 UTC</div>
+            <a href="CAC0803_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to study about phases of matter fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0804</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:10:50 UTC</div>
+            <a href="CAC0804_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a science course this semester...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0805</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:11:57 UTC</div>
+            <a href="CAC0805_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need help understanding phase changes f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0806</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:12:48 UTC</div>
+            <a href="CAC0806_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical reactions ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0901</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:13:44 UTC</div>
+            <a href="CAC0901_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a chemistry course this semest...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0902</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:14:12 UTC</div>
+            <a href="CAC0902_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm supposed to be learning about chemica...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0903</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:15:54 UTC</div>
+            <a href="CAC0903_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand chemical reactions a...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0904</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:17:00 UTC</div>
+            <a href="CAC0904_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand something about ener...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0905</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:17:40 UTC</div>
+            <a href="CAC0905_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical reactions ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0906</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:18:23 UTC</div>
+            <a href="CAC0906_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about catalysts for my ch...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0907</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:19:07 UTC</div>
+            <a href="CAC0907_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about chemical reactions ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-0908</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:20:00 UTC</div>
+            <a href="CAC0908_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about acids and bases for...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1001</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:21:06 UTC</div>
+            <a href="CAC1001_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about acids and bases for...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1002</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:21:47 UTC</div>
+            <a href="CAC1002_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about acids and bases for...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1003</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:22:56 UTC</div>
+            <a href="CAC1003_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about something called bu...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1004</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:23:39 UTC</div>
+            <a href="CAC1004_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an environmental science cours...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1005</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:24:15 UTC</div>
+            <a href="CAC1005_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about oxidation and reduc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1101</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:24:57 UTC</div>
+            <a href="CAC1101_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about electrochemistry fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1102</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:25:26 UTC</div>
+            <a href="CAC1102_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about batteries for my sc...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1103</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:26:26 UTC</div>
+            <a href="CAC1103_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about fuel cells for my s...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1104</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:27:12 UTC</div>
+            <a href="CAC1104_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a science course this semester...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1105</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:28:20 UTC</div>
+            <a href="CAC1105_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1106</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:28:53 UTC</div>
+            <a href="CAC1106_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a required science course for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1107</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:30:05 UTC</div>
+            <a href="CAC1107_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about corrosion and combu...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1108</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:30:49 UTC</div>
+            <a href="CAC1108_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia, I'm taking a general science course this ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1201</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:32:01 UTC</div>
+            <a href="CAC1201_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking a chemistry course that's requ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1202</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:32:49 UTC</div>
+            <a href="CAC1202_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about functional groups i...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1203</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:33:16 UTC</div>
+            <a href="CAC1203_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an introductory chemistry cour...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1204</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:34:22 UTC</div>
+            <a href="CAC1204_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about organic chemistry f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1205</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:34:51 UTC</div>
+            <a href="CAC1205_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about organic chemistry f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1206</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:35:40 UTC</div>
+            <a href="CAC1206_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about organic chemistry f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1207</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:36:15 UTC</div>
+            <a href="CAC1207_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about polymer chemistry f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1208</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:37:37 UTC</div>
+            <a href="CAC1208_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about plastics for my gen...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1209</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:39:30 UTC</div>
+            <a href="CAC1209_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about biomolecules for my...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1301</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:39:55 UTC</div>
+            <a href="CAC1301_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about carbohydrates for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1302</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:40:51 UTC</div>
+            <a href="CAC1302_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about lipids for my biolo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1303</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:41:31 UTC</div>
+            <a href="CAC1303_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about proteins for my bio...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1304</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:43:13 UTC</div>
+            <a href="CAC1304_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about nucleic acids for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1305</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:44:12 UTC</div>
+            <a href="CAC1305_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about vitamins and minera...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1306</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:45:08 UTC</div>
+            <a href="CAC1306_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about metabolism for my b...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1307</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:45:42 UTC</div>
+            <a href="CAC1307_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about nutrition and healt...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1308</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:47:04 UTC</div>
+            <a href="CAC1308_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about medicinal chemistry...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1401</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:47:36 UTC</div>
+            <a href="CAC1401_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand something about how ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1402</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:48:23 UTC</div>
+            <a href="CAC1402_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need help understanding this chemothera...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1403</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:49:52 UTC</div>
+            <a href="CAC1403_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about the nervous system ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1404</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:50:43 UTC</div>
+            <a href="CAC1404_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about psychoactive drugs ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1405</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:52:56 UTC</div>
+            <a href="CAC1405_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking this general science course as...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1406</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:53:56 UTC</div>
+            <a href="CAC1406_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about heart diseases and ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1407</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:54:40 UTC</div>
+            <a href="CAC1407_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I have to take this environmental science...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1501</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:55:28 UTC</div>
+            <a href="CAC1501_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an introductory plant biology ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1502</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:56:47 UTC</div>
+            <a href="CAC1502_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about soil fertility for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1503</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:57:33 UTC</div>
+            <a href="CAC1503_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about fertilizers for my ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1504</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:58:09 UTC</div>
+            <a href="CAC1504_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an environmental science cours...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1505</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 06:59:22 UTC</div>
+            <a href="CAC1505_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand something about agri...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1506</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:00:03 UTC</div>
+            <a href="CAC1506_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about agricultural practi...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1507</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:01:28 UTC</div>
+            <a href="CAC1507_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about water and air resou...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1601</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:02:16 UTC</div>
+            <a href="CAC1601_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about water consumption f...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1602</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:02:56 UTC</div>
+            <a href="CAC1602_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an environmental science cours...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1603</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:03:57 UTC</div>
+            <a href="CAC1603_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an environmental science cours...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1604</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:04:48 UTC</div>
+            <a href="CAC1604_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about Earth's atmosphere ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1605</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:07:16 UTC</div>
+            <a href="CAC1605_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about air pollution for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1606</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:08:30 UTC</div>
+            <a href="CAC1606_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about global warming for ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1607</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:10:11 UTC</div>
+            <a href="CAC1607_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I'm taking an environmental science cours...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1701</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:11:11 UTC</div>
+            <a href="CAC1701_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about fossil fuels for my...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1702</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:12:44 UTC</div>
+            <a href="CAC1702_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to understand nuclear energy for m...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1703</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:13:45 UTC</div>
+            <a href="CAC1703_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about sustainable energy ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1704</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:14:16 UTC</div>
+            <a href="CAC1704_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about hydroelectricity fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1705</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:16:05 UTC</div>
+            <a href="CAC1705_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about renewable energy so...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1706</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:17:00 UTC</div>
+            <a href="CAC1706_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about renewable energy fo...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1707</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:18:13 UTC</div>
+            <a href="CAC1707_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+        <div class="transcript-card">
+            <h3>Hi Alia. I need to learn about alternative energy ...</h3>
+            <div class="meta-item"><strong>Class ID:</strong> conceptual-chemistry-1708</div>
+            <div class="meta-item"><strong>Date:</strong> 2025-03-21 07:19:18 UTC</div>
+            <a href="CAC1708_transcript.html" class="transcript-link">View & Edit</a>
+        </div>
+
+    </div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia, I'm taking a general science course thi... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-1201</p>
+            <p><strong>UUID:</strong> fa65743c-79d6-4c21-82ba-5afe32227582</p>
+            <p><strong>Date:</strong> 2025-03-21 06:32:01 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia, I'm taking a general science course this semester. I've always been pretty science-shy, but I need to learn about organic chemistry. The textbook seems overwhelming - there are so many complex molecules and terms! Can you help me understand the basics?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I'd be happy to help you understand organic chemistry! It's actually a fascinating field that connects to many aspects of our everyday lives. Let's start with the main idea of Chapter 12 on Organic Compounds: Carbon can form a limitless number of chemical structures. This is what makes organic chemistry so special and diverse.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>A limitless number? That sounds intimidating. Why is carbon so special compared to other elements?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a great question! Carbon atoms have the rare ability to bond with themselves repeatedly. This allows for building large molecular structures. Additionally, carbon atoms can bond with atoms of other elements, which creates the possibility for an endless number of different carbon-based molecules.</p><br><p>Each of these molecules has its own unique set of physical, chemical, and biological properties. For instance, the flavor of vanilla comes from a compound called vanillin. When vanillin is absorbed by the sensory organs in your nose, you perceive the vanilla flavor. Without vanillin, there is no vanilla flavor.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Oh, that's interesting! So the taste of vanilla ice cream is basically just my body detecting this vanillin molecule? What about other flavors, like chocolate?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Exactly right! And chocolate is even more complex. Unlike vanilla, which is primarily one compound, the flavor of chocolate is generated when a wide assortment of carbon-based molecules are absorbed in your nose. One of the more significant molecules for chocolate flavor is tetramethylpyrazine.</p><br><p>This diversity of carbon structures is why life itself is based on carbon. This is also why the branch of chemistry that studies carbon-containing compounds is called organic chemistry. These compounds are closely tied to living organisms and have countless applications—from flavorings to fuels, polymers, medicines, agriculture, and more.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>I hadn't realized that chemistry explains why foods taste the way they do. That makes it seem more relevant to everyday life. So where do we start with understanding organic compounds?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Let's begin with the simplest organic compounds—those consisting of only carbon and hydrogen. These are called hydrocarbons. The simplest hydrocarbon is methane, CH₄, which has only one carbon atom per molecule. Methane is the main component of natural gas.</p><br><p>Other examples include octane (C₈H₁₈), which has eight carbons per molecule and is a component of gasoline, and polyethylene, which contains hundreds of carbon and hydrogen atoms per molecule and is used to make familiar items like milk containers and plastic bags.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>So hydrocarbons just have carbon and hydrogen atoms? Nothing else?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>That's right! Hydrocarbons contain only carbon and hydrogen atoms. These simple compounds form the foundation of organic chemistry and have many important applications in our daily lives.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>I've heard the term "natural gas" before, but I never knew it was basically methane. Are all hydrocarbons gases?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>No, not all hydrocarbons are gases. Their physical state actually depends on their size. Light hydrocarbons, such as methane (CH₄), tend to be gaseous at room temperature. Medium-sized hydrocarbons, such as octane (C₈H₁₈), are typically liquids. Heavier hydrocarbons, such as polyethylene, are solid.</p><br><p>All hydrocarbons share the characteristic of being non-polar molecules. This is important for understanding how they interact with other substances.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>Hmm, so the number of carbon atoms affects whether it's a gas, liquid, or solid? That's easier to remember than I thought. But can't carbon atoms connect in different ways? Does that matter?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>You're absolutely right! Hydrocarbons may differ in the way the carbon atoms connect to one another, and this definitely matters.</p><br><p>Let me give you an example. There are three hydrocarbons called pentane, isopentane, and neopentane. All three have the exact same molecular formula, C₅H₁₂, but they are structurally different from one another.</p><br><p>In pentane, the carbon framework is a straight chain of five carbon atoms. In isopentane, the carbon chain branches, so that the framework is a four-carbon chain branched at the second carbon. In neopentane, a central carbon atom is bonded to four surrounding carbon atoms.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>Wait, so they have the same number of atoms but they're different molecules? That's confusing. How can they be different if they have the same formula?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>That's a common point of confusion! These molecules have the same molecular formula (C₅H₁₂), which means they have the same number of the same kinds of atoms. However, the way these atoms are put together—their configuration—is different.</p><br><p>This creates different chemical structures. Molecules with the same chemical formula but different configurations are known as structural isomers. These structural isomers are truly different from each other, having different physical and chemical properties.</p><br><p>For example, pentane has a boiling point of 36°C, isopentane's boiling point is 30°C, and neopentane's is 10°C. So even though they have the same atoms, their different structures give them different properties.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>Oh, I think I understand. It's like how you could arrange five building blocks in different patterns, and each pattern would look different even though you're using the same blocks. But can these molecules change their shape?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>That's an excellent analogy with the building blocks! And yes, carbon-based molecules can have different spatial orientations, which we call conformations.</p><br><p>Think about how you can flex your wrist, elbow, and shoulder joints to move your arm through a range of positions. Similarly, organic molecules can twist and turn about their carbon–carbon single bonds and thus have a range of conformations.</p><br><p>For pentane, there are different conformations the molecule can take while still maintaining its pentane configuration. However, if you change the configuration of pentane, you no longer have pentane. Instead, you have a different structural isomer, such as isopentane, which has its own range of possible conformations.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>So the same molecule can twist and turn, but it's still the same molecule as long as the connections between atoms don't change? That makes sense. But one thing I'm curious about - how many different structural isomers can exist for a given formula?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>That's a great question! The number of possible structural isomers for a chemical formula increases rapidly as the number of carbon atoms increases.</p><br><p>For compounds having the formula C₅H₁₂, there are 3 structural isomers (as we discussed with pentane, isopentane, and neopentane). <br>For C₈H₁₈, there are 18 possible isomers.<br>For C₁₀H₂₂, there are 75 isomers.<br>And for C₂₀H₄₂, there's an astounding 366,319 different possible isomers!</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>Wow, that's mind-blowing! Over 366,000 different molecules from the same formula? No wonder organic chemistry seems complicated. How do scientists keep track of all these different structures?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Scientists use a systematic naming system to keep track of all these structures. The number of carbon atoms within a hydrocarbon is indicated by the hydrocarbon's name. For example:<br>- Methane has 1 carbon atom<br>- Ethane has 2 carbon atoms<br>- Propane has 3 carbon atoms<br>- Butane has 4 carbon atoms<br>- Pentane has 5 carbon atoms<br>- Hexane has 6 carbon atoms<br>- Heptane has 7 carbon atoms<br>- Octane has 8 carbon atoms<br>- Nonane has 9 carbon atoms<br>- Decane has 10 carbon atoms</p><br><p>When the hydrocarbon is branched, the name is based on the longest carbon chain. Smaller branches off this longest chain are written as a prefix ending in -yl. For example, a one-carbon branch would be indicated by the prefix methyl, where meth- means a single carbon.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>So if I have a six-carbon chain with a methyl group attached to the third carbon, would that be called 3-methylhexane?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>Exactly right! That's a perfect example. The compound would indeed be called 3-methylhexane because it has a methyl group branching off the third carbon of a hexane chain.</p><br><p>Similarly, if we have a structure with two methyl groups - one at the second carbon and another at the third carbon of a hexane chain - we would call it 2,3-dimethylhexane. The "di" prefix indicates that there are two methyl groups.</p><br><p>When naming these compounds, we always use the lowest possible numbers. For example, if you numbered the hexane chain from the opposite end, you'd get 4,5-dimethylhexane, which is the identical structure. But by convention, we use 2,3-dimethylhexane since those numbers are lower.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>I think I'm getting it! So neopentane, which has a central carbon with four carbons branching from it... would that be called something like tetramethylmethane?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>That's a clever guess! But neopentane actually goes by the alternate name 2,2-dimethylpropane. Here's why:</p><br><p>We identify the longest carbon chain first, which in this case is a three-carbon chain (propane). Then we note that there are two methyl groups (thus "dimethyl") and both are attached to the second carbon of the propane chain (thus "2,2"). The "2" is used twice because each methyl group needs its own number, and they happen to be on the same carbon.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>Oh, I see. That seems pretty complicated, but I guess it's a logical system once you get used to it. Where do all these hydrocarbons come from naturally? Do we make them in labs?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>Both, actually! Hydrocarbons are obtained primarily from coal and petroleum. Most of the coal and petroleum that exist today were formed between 290 million and 354 million years ago, when plant and animal matter decayed in the absence of oxygen.</p><br><p>During that time, Earth was covered with extensive swamps that periodically became submerged because they were close to sea level. The organic matter of these swamps was buried beneath layers of marine sediments and eventually transformed into either coal or petroleum.</p><br><p>Coal is a solid material containing many large, complex hydrocarbon molecules. Most coal mined today is used for steel production and for generating electricity at coal-burning power plants.</p><br><p>Petroleum, also called crude oil, is a liquid that can be separated into its hydrocarbon components through a process known as fractional distillation.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>Fractional distillation? What's that? It sounds like something from a sci-fi movie.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>It does sound fancy, but it's actually a fairly straightforward process! In fractional distillation, crude oil is heated to a temperature high enough to vaporize most of its components. The hot vapor flows into the bottom of a fractionating tower, which is warmer at the bottom than at the top.</p><br><p>As the vapor rises in the tower and cools, the various components begin to condense. Hydrocarbons that have high boiling points, such as tar, condense first at warmer temperatures. Hydrocarbons that have low boiling points, such as gasoline, travel to the cooler regions at the top of the tower before condensing.</p><br><p>Pipes drain the various liquid hydrocarbon fractions from the tower. Natural gas, which is primarily methane, does not condense. It remains a gas and is collected at the top of the tower.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>So the lighter molecules rise to the top of the tower because they stay as gases longer, right? And the heavier ones condense first and stay at the bottom?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>That's exactly right! The lighter molecules found in crude oil are the ones that rise highest within the fractionation tower. These are the molecules that have lower boiling points. So the lower the boiling point, the higher the molecules rise.</p><br><p>This behavior is explained by differences in the strength of molecular attractions. Larger hydrocarbons experience many more induced dipole-induced dipole attractions than smaller hydrocarbons do. These stronger attractions make larger hydrocarbons condense readily at high temperatures, so they're found at the bottom of the tower. Smaller molecules, with fewer attractions to neighbors, condense only at the cooler temperatures found at the top of the tower.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>This is making more sense now. So gasoline is one of these fractions from crude oil? I've noticed different octane ratings at gas pumps. What does that mean about the chemical makeup?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>You're very observant! Gasoline obtained from the fractional distillation of petroleum consists of a wide variety of hydrocarbons having similar boiling points. Some of these components burn more efficiently than others in a car engine.</p><br><p>The straight-chain hydrocarbons, such as heptane, burn too quickly, causing what's called engine knock. This happens when the fuel ignites from compression alone before the spark plug fires, disrupting the engine cycle.</p><br><p>Gasoline hydrocarbons that have more branching, such as isooctane, burn more slowly and result in the engine running more smoothly.</p><br><p>Heptane and isooctane are used as standards in assigning octane ratings to gasoline. An octane number of 100 is arbitrarily assigned to isooctane, and heptane is assigned an octane number of 0. The anti-knock performance of a particular gasoline is compared with those of various mixtures of isooctane and heptane, and an octane number is assigned.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>So higher octane ratings mean more branched hydrocarbons that burn more smoothly? Is that why premium gas costs more? Should I be using premium gas in my car?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>You've got it! Higher octane ratings mean there are more branched hydrocarbons that burn more smoothly. And yes, that's one reason premium gas costs more - it's formulated to have these specific properties.</p><br><p>But interestingly, most modern car engines are designed to run optimally on regular octane gasoline. For such cars, higher-octane gasoline may actually provide poorer performance at a greater cost. You should check your car's manual to see what octane rating the manufacturer recommends.</p><br><p>Going back to our earlier discussion of structural isomers like pentane, isopentane, and neopentane - which one do you think would have the highest octane rating?</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>Let me think... You said branched structures have higher octane ratings because they burn more smoothly. So neopentane would probably have the highest octane rating since it's the most branched one, right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>Excellent reasoning! You're absolutely correct. The structural isomer with the greatest amount of branching in the carbon framework will likely have the highest octane rating, making neopentane the clear winner among those three isomers.</p><br><p>For your information, neopentane has an octane rating of 85.5, isopentane has a rating of 93, and pentane has a rating of 61.7. This confirms the principle that more branching generally leads to higher octane ratings.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>This is really interesting! I never thought I'd understand anything about organic chemistry, but connecting it to everyday things like gasoline and food flavors makes it much more accessible. I feel like I'm getting the basics now.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>That's wonderful to hear! Organic chemistry is indeed all around us - from the foods we eat to the fuels we use and the materials that make up so many items in our daily lives.</p><br><p>What we've covered today is just the beginning of hydrocarbons. The chapter continues with unsaturated hydrocarbons and functional groups, which add even more diversity to organic compounds. Would you like to explore those topics next time?</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>Yes, I think I'd like to learn more. This wasn't nearly as intimidating as I expected. Thanks for explaining everything so clearly!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>You're very welcome! I'm glad you're feeling more confident about organic chemistry. Your questions were excellent, and you made great connections. We'll continue with unsaturated hydrocarbons and functional groups in our next session. Keep up the great work!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "fa65743c-79d6-4c21-82ba-5afe32227582", "classid": "conceptual-chemistry-1201", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia, I'm taking a general science course this semester. I've always been pretty science-shy, but I need to learn about organic chemistry. The textbook seems overwhelming - there are so many complex molecules and terms! Can you help me understand the basics?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'd be happy to help you understand organic chemistry! It's actually a fascinating field that connects to many aspects of our everyday lives. Let's start with the main idea of Chapter 12 on Organic Compounds: Carbon can form a limitless number of chemical structures. This is what makes organic chemistry so special and diverse.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": A limitless number? That sounds intimidating. Why is carbon so special compared to other elements?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question! Carbon atoms have the rare ability to bond with themselves repeatedly. This allows for building large molecular structures. Additionally, carbon atoms can bond with atoms of other elements, which creates the possibility for an endless number of different carbon-based molecules.\n\nEach of these molecules has its own unique set of physical, chemical, and biological properties. For instance, the flavor of vanilla comes from a compound called vanillin. When vanillin is absorbed by the sensory organs in your nose, you perceive the vanilla flavor. Without vanillin, there is no vanilla flavor.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, that's interesting! So the taste of vanilla ice cream is basically just my body detecting this vanillin molecule? What about other flavors, like chocolate?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly right! And chocolate is even more complex. Unlike vanilla, which is primarily one compound, the flavor of chocolate is generated when a wide assortment of carbon-based molecules are absorbed in your nose. One of the more significant molecules for chocolate flavor is tetramethylpyrazine.\n\nThis diversity of carbon structures is why life itself is based on carbon. This is also why the branch of chemistry that studies carbon-containing compounds is called organic chemistry. These compounds are closely tied to living organisms and have countless applications\u2014from flavorings to fuels, polymers, medicines, agriculture, and more.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I hadn't realized that chemistry explains why foods taste the way they do. That makes it seem more relevant to everyday life. So where do we start with understanding organic compounds?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let's begin with the simplest organic compounds\u2014those consisting of only carbon and hydrogen. These are called hydrocarbons. The simplest hydrocarbon is methane, CH\u2084, which has only one carbon atom per molecule. Methane is the main component of natural gas.\n\nOther examples include octane (C\u2088H\u2081\u2088), which has eight carbons per molecule and is a component of gasoline, and polyethylene, which contains hundreds of carbon and hydrogen atoms per molecule and is used to make familiar items like milk containers and plastic bags.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So hydrocarbons just have carbon and hydrogen atoms? Nothing else?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's right! Hydrocarbons contain only carbon and hydrogen atoms. These simple compounds form the foundation of organic chemistry and have many important applications in our daily lives.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've heard the term \"natural gas\" before, but I never knew it was basically methane. Are all hydrocarbons gases?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": No, not all hydrocarbons are gases. Their physical state actually depends on their size. Light hydrocarbons, such as methane (CH\u2084), tend to be gaseous at room temperature. Medium-sized hydrocarbons, such as octane (C\u2088H\u2081\u2088), are typically liquids. Heavier hydrocarbons, such as polyethylene, are solid.\n\nAll hydrocarbons share the characteristic of being non-polar molecules. This is important for understanding how they interact with other substances.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hmm, so the number of carbon atoms affects whether it's a gas, liquid, or solid? That's easier to remember than I thought. But can't carbon atoms connect in different ways? Does that matter?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're absolutely right! Hydrocarbons may differ in the way the carbon atoms connect to one another, and this definitely matters.\n\nLet me give you an example. There are three hydrocarbons called pentane, isopentane, and neopentane. All three have the exact same molecular formula, C\u2085H\u2081\u2082, but they are structurally different from one another.\n\nIn pentane, the carbon framework is a straight chain of five carbon atoms. In isopentane, the carbon chain branches, so that the framework is a four-carbon chain branched at the second carbon. In neopentane, a central carbon atom is bonded to four surrounding carbon atoms.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so they have the same number of atoms but they're different molecules? That's confusing. How can they be different if they have the same formula?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a common point of confusion! These molecules have the same molecular formula (C\u2085H\u2081\u2082), which means they have the same number of the same kinds of atoms. However, the way these atoms are put together\u2014their configuration\u2014is different.\n\nThis creates different chemical structures. Molecules with the same chemical formula but different configurations are known as structural isomers. These structural isomers are truly different from each other, having different physical and chemical properties.\n\nFor example, pentane has a boiling point of 36\u00b0C, isopentane's boiling point is 30\u00b0C, and neopentane's is 10\u00b0C. So even though they have the same atoms, their different structures give them different properties.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I think I understand. It's like how you could arrange five building blocks in different patterns, and each pattern would look different even though you're using the same blocks. But can these molecules change their shape?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent analogy with the building blocks! And yes, carbon-based molecules can have different spatial orientations, which we call conformations.\n\nThink about how you can flex your wrist, elbow, and shoulder joints to move your arm through a range of positions. Similarly, organic molecules can twist and turn about their carbon\u2013carbon single bonds and thus have a range of conformations.\n\nFor pentane, there are different conformations the molecule can take while still maintaining its pentane configuration. However, if you change the configuration of pentane, you no longer have pentane. Instead, you have a different structural isomer, such as isopentane, which has its own range of possible conformations.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the same molecule can twist and turn, but it's still the same molecule as long as the connections between atoms don't change? That makes sense. But one thing I'm curious about - how many different structural isomers can exist for a given formula?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question! The number of possible structural isomers for a chemical formula increases rapidly as the number of carbon atoms increases.\n\nFor compounds having the formula C\u2085H\u2081\u2082, there are 3 structural isomers (as we discussed with pentane, isopentane, and neopentane). \nFor C\u2088H\u2081\u2088, there are 18 possible isomers.\nFor C\u2081\u2080H\u2082\u2082, there are 75 isomers.\nAnd for C\u2082\u2080H\u2084\u2082, there's an astounding 366,319 different possible isomers!", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's mind-blowing! Over 366,000 different molecules from the same formula? No wonder organic chemistry seems complicated. How do scientists keep track of all these different structures?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Scientists use a systematic naming system to keep track of all these structures. The number of carbon atoms within a hydrocarbon is indicated by the hydrocarbon's name. For example:\n- Methane has 1 carbon atom\n- Ethane has 2 carbon atoms\n- Propane has 3 carbon atoms\n- Butane has 4 carbon atoms\n- Pentane has 5 carbon atoms\n- Hexane has 6 carbon atoms\n- Heptane has 7 carbon atoms\n- Octane has 8 carbon atoms\n- Nonane has 9 carbon atoms\n- Decane has 10 carbon atoms\n\nWhen the hydrocarbon is branched, the name is based on the longest carbon chain. Smaller branches off this longest chain are written as a prefix ending in -yl. For example, a one-carbon branch would be indicated by the prefix methyl, where meth- means a single carbon.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So if I have a six-carbon chain with a methyl group attached to the third carbon, would that be called 3-methylhexane?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly right! That's a perfect example. The compound would indeed be called 3-methylhexane because it has a methyl group branching off the third carbon of a hexane chain.\n\nSimilarly, if we have a structure with two methyl groups - one at the second carbon and another at the third carbon of a hexane chain - we would call it 2,3-dimethylhexane. The \"di\" prefix indicates that there are two methyl groups.\n\nWhen naming these compounds, we always use the lowest possible numbers. For example, if you numbered the hexane chain from the opposite end, you'd get 4,5-dimethylhexane, which is the identical structure. But by convention, we use 2,3-dimethylhexane since those numbers are lower.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I think I'm getting it! So neopentane, which has a central carbon with four carbons branching from it... would that be called something like tetramethylmethane?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a clever guess! But neopentane actually goes by the alternate name 2,2-dimethylpropane. Here's why:\n\nWe identify the longest carbon chain first, which in this case is a three-carbon chain (propane). Then we note that there are two methyl groups (thus \"dimethyl\") and both are attached to the second carbon of the propane chain (thus \"2,2\"). The \"2\" is used twice because each methyl group needs its own number, and they happen to be on the same carbon.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I see. That seems pretty complicated, but I guess it's a logical system once you get used to it. Where do all these hydrocarbons come from naturally? Do we make them in labs?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Both, actually! Hydrocarbons are obtained primarily from coal and petroleum. Most of the coal and petroleum that exist today were formed between 290 million and 354 million years ago, when plant and animal matter decayed in the absence of oxygen.\n\nDuring that time, Earth was covered with extensive swamps that periodically became submerged because they were close to sea level. The organic matter of these swamps was buried beneath layers of marine sediments and eventually transformed into either coal or petroleum.\n\nCoal is a solid material containing many large, complex hydrocarbon molecules. Most coal mined today is used for steel production and for generating electricity at coal-burning power plants.\n\nPetroleum, also called crude oil, is a liquid that can be separated into its hydrocarbon components through a process known as fractional distillation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Fractional distillation? What's that? It sounds like something from a sci-fi movie.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": It does sound fancy, but it's actually a fairly straightforward process! In fractional distillation, crude oil is heated to a temperature high enough to vaporize most of its components. The hot vapor flows into the bottom of a fractionating tower, which is warmer at the bottom than at the top.\n\nAs the vapor rises in the tower and cools, the various components begin to condense. Hydrocarbons that have high boiling points, such as tar, condense first at warmer temperatures. Hydrocarbons that have low boiling points, such as gasoline, travel to the cooler regions at the top of the tower before condensing.\n\nPipes drain the various liquid hydrocarbon fractions from the tower. Natural gas, which is primarily methane, does not condense. It remains a gas and is collected at the top of the tower.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the lighter molecules rise to the top of the tower because they stay as gases longer, right? And the heavier ones condense first and stay at the bottom?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's exactly right! The lighter molecules found in crude oil are the ones that rise highest within the fractionation tower. These are the molecules that have lower boiling points. So the lower the boiling point, the higher the molecules rise.\n\nThis behavior is explained by differences in the strength of molecular attractions. Larger hydrocarbons experience many more induced dipole-induced dipole attractions than smaller hydrocarbons do. These stronger attractions make larger hydrocarbons condense readily at high temperatures, so they're found at the bottom of the tower. Smaller molecules, with fewer attractions to neighbors, condense only at the cooler temperatures found at the top of the tower.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is making more sense now. So gasoline is one of these fractions from crude oil? I've noticed different octane ratings at gas pumps. What does that mean about the chemical makeup?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're very observant! Gasoline obtained from the fractional distillation of petroleum consists of a wide variety of hydrocarbons having similar boiling points. Some of these components burn more efficiently than others in a car engine.\n\nThe straight-chain hydrocarbons, such as heptane, burn too quickly, causing what's called engine knock. This happens when the fuel ignites from compression alone before the spark plug fires, disrupting the engine cycle.\n\nGasoline hydrocarbons that have more branching, such as isooctane, burn more slowly and result in the engine running more smoothly.\n\nHeptane and isooctane are used as standards in assigning octane ratings to gasoline. An octane number of 100 is arbitrarily assigned to isooctane, and heptane is assigned an octane number of 0. The anti-knock performance of a particular gasoline is compared with those of various mixtures of isooctane and heptane, and an octane number is assigned.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So higher octane ratings mean more branched hydrocarbons that burn more smoothly? Is that why premium gas costs more? Should I be using premium gas in my car?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've got it! Higher octane ratings mean there are more branched hydrocarbons that burn more smoothly. And yes, that's one reason premium gas costs more - it's formulated to have these specific properties.\n\nBut interestingly, most modern car engines are designed to run optimally on regular octane gasoline. For such cars, higher-octane gasoline may actually provide poorer performance at a greater cost. You should check your car's manual to see what octane rating the manufacturer recommends.\n\nGoing back to our earlier discussion of structural isomers like pentane, isopentane, and neopentane - which one do you think would have the highest octane rating?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Let me think... You said branched structures have higher octane ratings because they burn more smoothly. So neopentane would probably have the highest octane rating since it's the most branched one, right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent reasoning! You're absolutely correct. The structural isomer with the greatest amount of branching in the carbon framework will likely have the highest octane rating, making neopentane the clear winner among those three isomers.\n\nFor your information, neopentane has an octane rating of 85.5, isopentane has a rating of 93, and pentane has a rating of 61.7. This confirms the principle that more branching generally leads to higher octane ratings.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is really interesting! I never thought I'd understand anything about organic chemistry, but connecting it to everyday things like gasoline and food flavors makes it much more accessible. I feel like I'm getting the basics now.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's wonderful to hear! Organic chemistry is indeed all around us - from the foods we eat to the fuels we use and the materials that make up so many items in our daily lives.\n\nWhat we've covered today is just the beginning of hydrocarbons. The chapter continues with unsaturated hydrocarbons and functional groups, which add even more diversity to organic compounds. Would you like to explore those topics next time?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Yes, I think I'd like to learn more. This wasn't nearly as intimidating as I expected. Thanks for explaining everything so clearly!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're very welcome! I'm glad you're feeling more confident about organic chemistry. Your questions were excellent, and you made great connections. We'll continue with unsaturated hydrocarbons and functional groups in our next session. Keep up the great work!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742538721.267881, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC1201_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

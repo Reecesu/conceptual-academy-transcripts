@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I'm taking an environmental science cou... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-1701</p>
+            <p><strong>UUID:</strong> b0d1139a-7a82-45fb-b26e-333dcceaccd5</p>
+            <p><strong>Date:</strong> 2025-03-21 07:11:11 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I'm taking an environmental science course this semester, and we're starting a unit on energy sources. I've always been kind of intimidated by science classes, to be honest. I barely got through high school chemistry. Could you help me understand the basics of energy sources?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I'd be happy to help you with that! We're going to explore Chapter 17, which is all about capturing energy. The main idea is that dirty energy is most convenient, while clean energy is most abundant.</p><br><p>Before we dive in, did you know that the Sun is our major source of energy not because it's so hot, but because it's so big?</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>Really? I always thought the Sun was just super hot, and that's why it gives us so much energy. How big is it compared to Earth?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a common misconception! While the Sun's surface temperature is about 6000°C, which is certainly hot, that's actually comparable to some welding torches here on Earth. The primary reason we get so much energy from the Sun is its enormous size.</p><br><p>If you were to look at the Earth next to the Sun, our planet would appear as just a tiny dot. In fact, the Earth is so small by comparison that if we represented it on a photo of the Sun, it would be just a small blue dot. This gives you a sense of the enormous energy wealth at the heart of our solar system.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Wow, I never thought of it that way. So the Sun is basically a gigantic energy source for us. Are there energy sources that don't come from the Sun?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Excellent question! Yes, there are several energy sources that don't depend on the Sun, including nuclear energy, geothermal energy, and tidal energy. However, many energy sources we use daily are indirectly solar-powered.</p><br><p>For instance, when we burn plant material, we're actually releasing solar energy that was captured through photosynthesis. Similarly, when we burn fossil fuels, we're using the decayed remains of ancient photosynthetic plants, which also captured solar energy. Even hydroelectric dams, windmills, and photovoltaic cells are all driven by solar radiation.</p><br><p>Energy is abundant all around us. The challenge is figuring out how to best capture and utilize it. Let's start by looking at how energy is delivered to us through electricity.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>That makes sense. I use electricity every day but never really thought about where it comes from. How exactly do we get electricity?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>That's a great place to start. Section 17.1 focuses on energy through electricity. All usable energy, regardless of its source, is delivered to us in one of two forms: fuel or electricity.</p><br><p>What makes electricity so special is the ease with which it can be used to transmit energy across distances and to many locations simultaneously. This property makes electricity one of our most convenient forms of energy. However, producing electricity requires the input of some other source of energy, such as burning fuel.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>So electricity isn't really an energy source itself? I think I've been misunderstanding that.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>That's a very important insight! Electricity is more accurately thought of as a carrier of energy rather than a source of energy. It's energy that's readily transported through wires.</p><br><p>When you use electricity to run a lightbulb, the electricity itself isn't the source of that energy. Rather, the electricity is merely delivering energy that was generated by an electric generator, which received energy from some non-electric source, like a fossil fuel or a waterfall.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>That makes sense. So how does an electric generator work? Is it complicated?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>At its core, electricity is the flow of electric charge. It's generated when a metal wire is forced to move through a magnetic field. Power companies coil the wire into many loops and rotate these loops through powerful magnetic fields to generate enough electricity to power cities.</p><br><p>Let me describe the basic anatomy of an electric generator: Imagine a looped wire rotating through a magnetic field. This motion causes electrons in the wire to slosh back and forth. Because the electrons are moving, they possess kinetic energy and therefore have the capacity to do work.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>So the moving wire creates the electricity? What makes the wire move in the first place?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>Excellent question! The many loops of wire wrapped around an iron core form what's called an armature. This armature is connected to an assembly of paddle wheels called a turbine.</p><br><p>The turbine can be moved by various energy sources:<br>- Energy from wind or falling water can cause the turbine (and thus the armature) to rotate<br>- Most commercial turbines are steam turbines, meaning they're driven by steam, which requires an energy source to boil water - usually a fossil fuel or nuclear fuel<br>- There are also more recent and efficient gas turbines, which are driven not by steam but by the hot combustion products of vaporized alcohols and lightweight hydrocarbons</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>I've heard people talk about watts when discussing electricity, but I'm not really sure what that means. Like, I know my light bulbs are different watts, but what is a watt exactly?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>That's a great question about a concept many people use without fully understanding!</p><br><p>Power is defined as the rate at which electrical energy (or any other form of energy) is expended. Here's a helpful analogy: if energy is money, then power is the rate at which that money is spent.</p><br><p>Electric power is measured in watts, where 1 watt equals 1 joule per second:<br>1 watt = 1 joule/1 second</p><br><p>A lot of watts means that a lot of energy is being consumed quickly. For example, a 100-watt lightbulb consumes 100 joules of energy each second, while a 40-watt bulb consumes only 40 joules each second. The lower the wattage of the bulb, the less energy you're consuming per second.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>Oh, that makes sense! So my 60-watt bulb is using less energy than my 100-watt bulb. How much power does a typical home use?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>The typical U.S. household consumes electrical energy at an average rate of about 800 joules per second, or 800 watts. For a small city of 100,000 households, this adds up to a rate of 80 million watts, or 80 megawatts (MW).</p><br><p>However, this is just the average rate of energy consumption. To meet peak demands, electric power plants must sometimes quadruple their average output. This is why small cities that average 80 MW require electric power plants that can produce energy at a power rating of 300 megawatts or higher.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>Wow, that's a lot of energy! Can our power plants actually produce that much?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Yes, these needs are easily met by present-day power plants. A typical coal-fired plant produces around 500 megawatts of electrical energy, a large nuclear plant can produce about 1500 megawatts, and a large hydroelectric dam can produce more than 10,000 megawatts.</p><br><p>One factor affecting the cost of electricity is the source of the energy. Fossil fuels and nuclear fuels produce hundreds of megawatts of power from a single power plant and can serve large areas, including cities. Therefore, economies of scale make electricity from fossil fuels and nuclear fuels relatively inexpensive.</p><br><p>Electricity from sources that aren't so easily centralized, such as wind energy, have traditionally been more expensive. However, this gap has narrowed significantly as technology has improved and the cost of fossil fuels has increased.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>I've heard news stories about power outages affecting entire regions. How does that happen if we have so many power plants?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>That's a great observation that brings us to an important topic: our aging electric power grid.</p><br><p>Today's electric power grid had its beginnings in the late 1800s when Thomas Edison built the first public electric power station to service parts of New York City. He laid copper wires through existing culverts to reach customers within a 2-mile radius of his power station, which could reach no farther because it operated using direct current (DC).</p><br><p>Soon, power stations were developed that served electricity using alternating current (AC), which can be efficiently transmitted through wires hundreds of miles long. In the United States, large service territories were developed using alternating currents. Initially, each territory operated independently, but as the system grew, operators started to share resources by connecting their networks.</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>So all the power stations are connected? That seems complicated.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>It is indeed complex. The total length of the North American electric power grid, as developed over the past 100 years, is an estimated 450,000 miles!</p><br><p>It's important to understand that electricity is an on-demand commodity. When you flick on a light switch, the nearest power station instantly works a little harder to provide energy for that light. An advantage of the power grid is that if the demand for electricity at one station becomes excessive, electric power can be taken from the next nearest power station. The grid acts as a buffer, allowing peak demand at one location to be offset by lower demand at another.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>That sounds like a good system. So why do we still have blackouts sometimes?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>That's one of the disadvantages of the interconnected grid – the potential for region-wide blackouts. When a transmission line goes down due to a violent storm or equipment failure, the electrical energy that was supposed to pass through that line must go somewhere. It naturally flows into adjacent transmission lines that are already carrying heavy loads.</p><br><p>As this happens, the voltage peaks beyond the capacity of the power lines, which are then tripped by circuit breakers to shut down. This causes a further buildup of electrical energy in the remaining lines, which also start shutting down. This process continues at an accelerating rate until power stations can shut down their generators. Within minutes, an entire region can lose power because of a single failure at one location.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>That sounds like a domino effect. Couldn't we build a better system to prevent that?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>You're absolutely right about the domino effect! Ideally, the power grid would be built using the latest materials and equipped with computerized sensors throughout the system to monitor energy flow. These sensors would allow for a quick and effective response to any potential issues within the grid. This is what electricity advocates call a "smart grid."</p><br><p>Unfortunately, that's not what we currently have. Instead, our "modern" power grid is a patchwork of wires put together over the past century. Some parts of the grid are new and capable, but most parts are aging and already pushed to their limits.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>That doesn't sound good. Is anyone working on fixing this problem?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>According to the American Society of Civil Engineers (ASCE), from 2000 to 2010, the United States expended about $63 billion each year on upgrades to the power grid, including building and upkeep of power stations and transmission lines. However, this is about $75 billion short of what's actually needed.</p><br><p>With continued underinvestment in our electrical infrastructure, the ASCE projects that by 2040, we'll need to come up with another $730 billion (in 2010 dollars) to bring the system into good repair. Without this investment, we can expect an electric power grid that becomes less and less reliable. This would be unfortunate since our economy and lifestyle are becoming more dependent on this convenient form of energy.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>I had no idea our infrastructure was in such bad shape. It seems like we take electricity for granted until something goes wrong. Is it just the electric grid that's underfunded, or are there other infrastructure problems too?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>You've hit on an important point. Like its electric power grid, the transportation infrastructure of the United States is woefully underfunded as well. This includes 4 million miles of roads, 600,000 highway bridges, 117,000 miles of rail, and 19,000 airports, most of which were built in the decades after World War II.</p><br><p>Congressional studies estimate a shortfall of about $134 billion each year just for maintaining existing systems. If the goal is also to improve these systems, then the annual shortfall is about $189 billion.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>Wow, I'm starting to see how all these energy and infrastructure issues are connected. This isn't as intimidating as I thought it would be. I'm actually finding it interesting to understand how our energy systems work. Thanks for explaining it all so clearly!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>You're welcome! I'm glad you're finding this interesting. Understanding energy systems is crucial for making informed decisions about our future. You've made excellent observations today, especially about the connections between different aspects of our energy infrastructure. We've covered the basics of electricity generation and distribution, and in our next session, we can explore more about specific energy sources like fossil fuels and sustainable alternatives if you'd like. Is there anything particular about what we've discussed today that you'd like me to clarify further?</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "b0d1139a-7a82-45fb-b26e-333dcceaccd5", "classid": "conceptual-chemistry-1701", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I'm taking an environmental science course this semester, and we're starting a unit on energy sources. I've always been kind of intimidated by science classes, to be honest. I barely got through high school chemistry. Could you help me understand the basics of energy sources?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'd be happy to help you with that! We're going to explore Chapter 17, which is all about capturing energy. The main idea is that dirty energy is most convenient, while clean energy is most abundant.\n\nBefore we dive in, did you know that the Sun is our major source of energy not because it's so hot, but because it's so big?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Really? I always thought the Sun was just super hot, and that's why it gives us so much energy. How big is it compared to Earth?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a common misconception! While the Sun's surface temperature is about 6000\u00b0C, which is certainly hot, that's actually comparable to some welding torches here on Earth. The primary reason we get so much energy from the Sun is its enormous size.\n\nIf you were to look at the Earth next to the Sun, our planet would appear as just a tiny dot. In fact, the Earth is so small by comparison that if we represented it on a photo of the Sun, it would be just a small blue dot. This gives you a sense of the enormous energy wealth at the heart of our solar system.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, I never thought of it that way. So the Sun is basically a gigantic energy source for us. Are there energy sources that don't come from the Sun?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent question! Yes, there are several energy sources that don't depend on the Sun, including nuclear energy, geothermal energy, and tidal energy. However, many energy sources we use daily are indirectly solar-powered.\n\nFor instance, when we burn plant material, we're actually releasing solar energy that was captured through photosynthesis. Similarly, when we burn fossil fuels, we're using the decayed remains of ancient photosynthetic plants, which also captured solar energy. Even hydroelectric dams, windmills, and photovoltaic cells are all driven by solar radiation.\n\nEnergy is abundant all around us. The challenge is figuring out how to best capture and utilize it. Let's start by looking at how energy is delivered to us through electricity.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. I use electricity every day but never really thought about where it comes from. How exactly do we get electricity?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great place to start. Section 17.1 focuses on energy through electricity. All usable energy, regardless of its source, is delivered to us in one of two forms: fuel or electricity.\n\nWhat makes electricity so special is the ease with which it can be used to transmit energy across distances and to many locations simultaneously. This property makes electricity one of our most convenient forms of energy. However, producing electricity requires the input of some other source of energy, such as burning fuel.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So electricity isn't really an energy source itself? I think I've been misunderstanding that.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a very important insight! Electricity is more accurately thought of as a carrier of energy rather than a source of energy. It's energy that's readily transported through wires.\n\nWhen you use electricity to run a lightbulb, the electricity itself isn't the source of that energy. Rather, the electricity is merely delivering energy that was generated by an electric generator, which received energy from some non-electric source, like a fossil fuel or a waterfall.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That makes sense. So how does an electric generator work? Is it complicated?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": At its core, electricity is the flow of electric charge. It's generated when a metal wire is forced to move through a magnetic field. Power companies coil the wire into many loops and rotate these loops through powerful magnetic fields to generate enough electricity to power cities.\n\nLet me describe the basic anatomy of an electric generator: Imagine a looped wire rotating through a magnetic field. This motion causes electrons in the wire to slosh back and forth. Because the electrons are moving, they possess kinetic energy and therefore have the capacity to do work.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the moving wire creates the electricity? What makes the wire move in the first place?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Excellent question! The many loops of wire wrapped around an iron core form what's called an armature. This armature is connected to an assembly of paddle wheels called a turbine.\n\nThe turbine can be moved by various energy sources:\n- Energy from wind or falling water can cause the turbine (and thus the armature) to rotate\n- Most commercial turbines are steam turbines, meaning they're driven by steam, which requires an energy source to boil water - usually a fossil fuel or nuclear fuel\n- There are also more recent and efficient gas turbines, which are driven not by steam but by the hot combustion products of vaporized alcohols and lightweight hydrocarbons", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've heard people talk about watts when discussing electricity, but I'm not really sure what that means. Like, I know my light bulbs are different watts, but what is a watt exactly?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great question about a concept many people use without fully understanding!\n\nPower is defined as the rate at which electrical energy (or any other form of energy) is expended. Here's a helpful analogy: if energy is money, then power is the rate at which that money is spent.\n\nElectric power is measured in watts, where 1 watt equals 1 joule per second:\n1 watt = 1 joule/1 second\n\nA lot of watts means that a lot of energy is being consumed quickly. For example, a 100-watt lightbulb consumes 100 joules of energy each second, while a 40-watt bulb consumes only 40 joules each second. The lower the wattage of the bulb, the less energy you're consuming per second.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, that makes sense! So my 60-watt bulb is using less energy than my 100-watt bulb. How much power does a typical home use?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The typical U.S. household consumes electrical energy at an average rate of about 800 joules per second, or 800 watts. For a small city of 100,000 households, this adds up to a rate of 80 million watts, or 80 megawatts (MW).\n\nHowever, this is just the average rate of energy consumption. To meet peak demands, electric power plants must sometimes quadruple their average output. This is why small cities that average 80 MW require electric power plants that can produce energy at a power rating of 300 megawatts or higher.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's a lot of energy! Can our power plants actually produce that much?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, these needs are easily met by present-day power plants. A typical coal-fired plant produces around 500 megawatts of electrical energy, a large nuclear plant can produce about 1500 megawatts, and a large hydroelectric dam can produce more than 10,000 megawatts.\n\nOne factor affecting the cost of electricity is the source of the energy. Fossil fuels and nuclear fuels produce hundreds of megawatts of power from a single power plant and can serve large areas, including cities. Therefore, economies of scale make electricity from fossil fuels and nuclear fuels relatively inexpensive.\n\nElectricity from sources that aren't so easily centralized, such as wind energy, have traditionally been more expensive. However, this gap has narrowed significantly as technology has improved and the cost of fossil fuels has increased.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I've heard news stories about power outages affecting entire regions. How does that happen if we have so many power plants?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a great observation that brings us to an important topic: our aging electric power grid.\n\nToday's electric power grid had its beginnings in the late 1800s when Thomas Edison built the first public electric power station to service parts of New York City. He laid copper wires through existing culverts to reach customers within a 2-mile radius of his power station, which could reach no farther because it operated using direct current (DC).\n\nSoon, power stations were developed that served electricity using alternating current (AC), which can be efficiently transmitted through wires hundreds of miles long. In the United States, large service territories were developed using alternating currents. Initially, each territory operated independently, but as the system grew, operators started to share resources by connecting their networks.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So all the power stations are connected? That seems complicated.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": It is indeed complex. The total length of the North American electric power grid, as developed over the past 100 years, is an estimated 450,000 miles!\n\nIt's important to understand that electricity is an on-demand commodity. When you flick on a light switch, the nearest power station instantly works a little harder to provide energy for that light. An advantage of the power grid is that if the demand for electricity at one station becomes excessive, electric power can be taken from the next nearest power station. The grid acts as a buffer, allowing peak demand at one location to be offset by lower demand at another.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds like a good system. So why do we still have blackouts sometimes?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's one of the disadvantages of the interconnected grid \u2013 the potential for region-wide blackouts. When a transmission line goes down due to a violent storm or equipment failure, the electrical energy that was supposed to pass through that line must go somewhere. It naturally flows into adjacent transmission lines that are already carrying heavy loads.\n\nAs this happens, the voltage peaks beyond the capacity of the power lines, which are then tripped by circuit breakers to shut down. This causes a further buildup of electrical energy in the remaining lines, which also start shutting down. This process continues at an accelerating rate until power stations can shut down their generators. Within minutes, an entire region can lose power because of a single failure at one location.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds like a domino effect. Couldn't we build a better system to prevent that?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're absolutely right about the domino effect! Ideally, the power grid would be built using the latest materials and equipped with computerized sensors throughout the system to monitor energy flow. These sensors would allow for a quick and effective response to any potential issues within the grid. This is what electricity advocates call a \"smart grid.\"\n\nUnfortunately, that's not what we currently have. Instead, our \"modern\" power grid is a patchwork of wires put together over the past century. Some parts of the grid are new and capable, but most parts are aging and already pushed to their limits.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That doesn't sound good. Is anyone working on fixing this problem?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": According to the American Society of Civil Engineers (ASCE), from 2000 to 2010, the United States expended about $63 billion each year on upgrades to the power grid, including building and upkeep of power stations and transmission lines. However, this is about $75 billion short of what's actually needed.\n\nWith continued underinvestment in our electrical infrastructure, the ASCE projects that by 2040, we'll need to come up with another $730 billion (in 2010 dollars) to bring the system into good repair. Without this investment, we can expect an electric power grid that becomes less and less reliable. This would be unfortunate since our economy and lifestyle are becoming more dependent on this convenient form of energy.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I had no idea our infrastructure was in such bad shape. It seems like we take electricity for granted until something goes wrong. Is it just the electric grid that's underfunded, or are there other infrastructure problems too?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've hit on an important point. Like its electric power grid, the transportation infrastructure of the United States is woefully underfunded as well. This includes 4 million miles of roads, 600,000 highway bridges, 117,000 miles of rail, and 19,000 airports, most of which were built in the decades after World War II.\n\nCongressional studies estimate a shortfall of about $134 billion each year just for maintaining existing systems. If the goal is also to improve these systems, then the annual shortfall is about $189 billion.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, I'm starting to see how all these energy and infrastructure issues are connected. This isn't as intimidating as I thought it would be. I'm actually finding it interesting to understand how our energy systems work. Thanks for explaining it all so clearly!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're welcome! I'm glad you're finding this interesting. Understanding energy systems is crucial for making informed decisions about our future. You've made excellent observations today, especially about the connections between different aspects of our energy infrastructure. We've covered the basics of electricity generation and distribution, and in our next session, we can explore more about specific energy sources like fossil fuels and sustainable alternatives if you'd like. Is there anything particular about what we've discussed today that you'd like me to clarify further?", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742541071.325712, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC1701_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>

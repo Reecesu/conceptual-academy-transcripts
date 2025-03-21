@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>: Hi Alia. I need to learn about proteins for my b... - Conceptual Academy</title>
+    <style>
+        :root {
+            --student-color: #E3F2FD;
+            --student-text: #0D47A1;
+            --assistant-color: #FFFFFF;
+            --assistant-text: #333333;
+            --background: #f5f5f5;
+            --header: #2c3e50;
+            --accent: #4CAF50;
+            --button-primary: #4CAF50;
+            --button-secondary: #607D8B;
+            --button-danger: #F44336;
+            --button-text: #FFFFFF;
+            --input-border: #DDDDDD;
+            --modal-bg: #FFFFFF;
+            --overlay: rgba(0, 0, 0, 0.5);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: var(--background);
+        }
+        
+        header {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: var(--header);
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .meta {
+            color: #666;
+            font-size: 0.9em;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .meta p {
+            margin: 5px 0;
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 85%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border: 10px solid transparent;
+        }
+        
+        .user {
+            align-self: flex-end;
+            background-color: var(--student-color);
+            color: var(--student-text);
+        }
+        
+        .user::after {
+            right: 15px;
+            border-top-color: var(--student-color);
+            border-bottom: 0;
+        }
+        
+        .assistant {
+            align-self: flex-start;
+            background-color: var(--assistant-color);
+            color: var(--assistant-text);
+        }
+        
+        .assistant::after {
+            left: 15px;
+            border-top-color: var(--assistant-color);
+            border-bottom: 0;
+        }
+        
+        .role {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            white-space: pre-wrap;
+        }
+        
+        .content p {
+            margin: 0 0 15px 0;
+        }
+        
+        .content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .reference {
+            background-color: #FFFDE7;
+            padding: 10px;
+            border-left: 3px solid #FFC107;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+        
+        .code-block {
+            background-color: #f4f4f4;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            overflow-x: auto;
+        }
+        
+        .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-button, .save-button, .cancel-button, .add-button, .export-button {
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .edit-button {
+            background-color: var(--button-secondary);
+            color: var(--button-text);
+        }
+        
+        .save-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+        }
+        
+        .cancel-button {
+            background-color: var(--button-danger);
+            color: var(--button-text);
+        }
+        
+        .add-button, .export-button {
+            background-color: var(--button-primary);
+            color: var(--button-text);
+            padding: 8px 16px;
+            font-size: 1em;
+            margin-left: auto;
+        }
+        
+        .export-button {
+            background-color: var(--button-secondary);
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        [contenteditable="true"] {
+            border: 1px solid var(--input-border);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .editing {
+            border: 2px solid var(--accent);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--overlay);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal {
+            background-color: var(--modal-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .modal h2 {
+            margin-top: 0;
+            color: var(--header);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1em;
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            margin-bottom: 20px;
+            justify-content: flex-end;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+            z-index: 1001;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.8em;
+            padding: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --student-color: #1A3F6C;
+                --student-text: #E3F2FD;
+                --assistant-color: #2A2A2A;
+                --assistant-text: #FAFAFA;
+                --background: #121212;
+                --header: #81D4FA;
+                --accent: #66BB6A;
+                --button-primary: #66BB6A;
+                --button-secondary: #78909C;
+                --button-danger: #EF5350;
+                --button-text: #FAFAFA;
+                --input-border: #444444;
+                --modal-bg: #2A2A2A;
+                --overlay: rgba(0, 0, 0, 0.7);
+            }
+            
+            body {
+                color: #FAFAFA;
+            }
+            
+            header {
+                background-color: #2A2A2A;
+            }
+            
+            .code-block {
+                background-color: #1E1E1E;
+                color: #E0E0E0;
+            }
+            
+            .reference {
+                background-color: #2C2A13;
+                border-left-color: #B3912F;
+            }
+            
+            [contenteditable="true"] {
+                background-color: rgba(55, 55, 55, 0.5);
+            }
+            
+            .editing {
+                background-color: rgba(55, 55, 55, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conceptual Academy Transcript</h1>
+        <div class="meta">
+            <p><strong>Class ID:</strong> conceptual-chemistry-1304</p>
+            <p><strong>UUID:</strong> b355e338-37f7-4ebd-867e-2ef8e8930440</p>
+            <p><strong>Date:</strong> 2025-03-21 06:43:13 UTC</p>
+        </div>
+    </header>
+    
+    <div class="controls">
+        <button class="export-button" id="exportButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export JSON
+        </button>
+        <button class="add-button" id="addMessageButton">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add Message
+        </button>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+
+        <div class="message assistant" data-index="0" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(0)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-0"><p>Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?</p></div>
+        </div>
+
+        <div class="message user" data-index="1" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(1)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-1"><p>Hi Alia. I need to learn about proteins for my biology class. I've always struggled with science, especially chemistry-related topics, so I'm a bit nervous about this.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="2" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(2)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-2"><p>I understand your concerns. Many students find biochemistry intimidating at first, but I'm here to guide you through it step by step. Let's explore proteins together. Proteins are large polymeric biomolecules made of monomer units called amino acids. An amino acid consists of an amine group and a carboxylic acid group bonded to the same carbon atom. A side group is also attached to this same carbon atom.</p></div>
+        </div>
+
+        <div class="message user" data-index="3" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(3)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-3"><p>Wait, what's a "polymeric biomolecule"? That already sounds complicated.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="4" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(4)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-4"><p>That's a good question. A polymer is simply a large molecule made up of many repeating smaller units connected together - like a train with many identical cars. "Bio" means it relates to living organisms. So a polymeric biomolecule is just a large biological molecule made of many smaller repeating units. In the case of proteins, those units are amino acids.</p></div>
+        </div>
+
+        <div class="message user" data-index="5" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(5)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-5"><p>Oh, that makes more sense. So amino acids are the building blocks. You mentioned they have amine groups and carboxylic acid groups. What do those look like?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="6" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(6)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-6"><p>Let me describe the structure. If you could visualize Figure 13.15 from your textbook, you'd see that an amino acid has a central carbon atom. Attached to this carbon are an amine group (NH₂), a carboxylic acid group (COOH), a hydrogen atom, and a side group represented by the letter R. This R group is what makes each amino acid different from all others.</p></div>
+        </div>
+
+        <div class="message user" data-index="7" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(7)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-7"><p>So the R is like a variable that changes depending on which amino acid we're talking about?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="8" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(8)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-8"><p>Exactly! You've got it. There are 20 different amino acids that make up proteins, and they differ from one another by the chemical identity of their side groups. Some side groups are very simple, like in glycine where the R is just a hydrogen atom. Others are more complex, containing rings or chains of carbon atoms with various functional groups.</p></div>
+        </div>
+
+        <div class="message user" data-index="9" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(9)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-9"><p>20 different amino acids doesn't sound like that many. How do we get so many different proteins from just 20 building blocks?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="10" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(10)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-10"><p>That's an excellent question! It's all about the combinations. Think about our alphabet - with just 26 letters, we can create countless words and sentences. Similarly, these 20 amino acids can be arranged in any sequence and in chains of varying lengths. For example, the number of possible 20-unit polypeptides from our set of 20 amino acids is a staggering 2.43 × 10¹⁸! When proteins contain over 100 amino acids, which many do, the possible combinations become virtually infinite. This diversity is exactly what is needed for building a living organism.</p></div>
+        </div>
+
+        <div class="message user" data-index="11" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(11)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-11"><p>Wow, that's a lot of possibilities! But how do these amino acids actually connect together?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="12" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(12)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-12"><p>Amino acids are linked together by what we call peptide bonds. These bonds form through a condensation reaction between the carboxylic acid end of one amino acid and the amine end of another amino acid. During this reaction, a water molecule is removed - that's why it's called a condensation reaction.</p></div>
+        </div>
+
+        <div class="message user" data-index="13" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(13)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-13"><p>Oh, I think I've heard of condensation in chemistry before. Isn't that when water forms on a cold window on a humid day?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="14" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(14)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-14"><p>That's a different kind of condensation - the physical change from gas to liquid. In biochemistry, a condensation reaction refers to a chemical reaction where two molecules join together with the loss of a small molecule, typically water. This is what happens when amino acids link up to form peptides.</p></div>
+        </div>
+
+        <div class="message user" data-index="15" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(15)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-15"><p>So when amino acids link up, what do we call the resulting molecules?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="16" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(16)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-16"><p>The terminology depends on how many amino acids are linked together. A chain of two amino acids is called a dipeptide, three is a tripeptide, four is a tetrapeptide, and so on. When we have ten or more amino acids linked together, we call it a polypeptide. Proteins are naturally occurring polypeptides that have some biological function, and they usually consist of large numbers of amino acids, often up to several hundred.</p></div>
+        </div>
+
+        <div class="message user" data-index="17" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(17)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-17"><p>That's a lot of amino acids! Can you give me an example of how big a protein can be?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="18" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(18)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-18"><p>Certainly! One protein found in milk called casein has the molecular formula C₁₈₆₄H₃₀₁₂O₅₇₆N₄₆₈S₂₁. As you can see from this formula, proteins can be incredibly large and complex molecules.</p></div>
+        </div>
+
+        <div class="message user" data-index="19" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(19)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-19"><p>That formula is intimidating! Where do we find proteins in our bodies?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="20" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(20)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-20"><p>Proteins are found throughout our bodies in both dissolved and solid forms. Dissolved proteins reside in the liquid found inside cells and in other body fluids like blood. Solid proteins form structures like skin, muscles, hair, nails, and horns. The human body contains many thousands of different proteins, each with specific functions.</p></div>
+        </div>
+
+        <div class="message user" data-index="21" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(21)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-21"><p>I never realized my hair and nails were made of proteins. That's kind of cool! How does a protein know what shape to take? Is it just random?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="22" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(22)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-22"><p>Not random at all - protein structure is highly specific and determined by molecular attractions. We describe protein structure on four different levels. Would you like me to explain these levels?</p></div>
+        </div>
+
+        <div class="message user" data-index="23" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(23)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-23"><p>Yes, please. That would be helpful.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="24" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(24)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-24"><p>The first level is the primary structure, which is simply the sequence of amino acids in the polypeptide chain - the order in which they're connected.</p><br><p>The secondary structure describes how various short portions of the chain are organized. They can either wrap into a coil called an alpha helix or fold into a thin pleated sheet.</p><br><p>The tertiary structure is the way in which an entire polypeptide chain may either twist into a long fiber or bend into a globular clump.</p><br><p>Finally, the quaternary structure describes how separate protein chains may join to form one larger complex.</p><br><p>Each level of structure is determined by the level before it, which means that, ultimately, it's the sequence of amino acids that creates the overall protein shape. This final shape is maintained both by chemical bonds and by weaker molecular attractions between amino acid side groups.</p></div>
+        </div>
+
+        <div class="message user" data-index="25" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(25)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-25"><p>That sounds really complicated. How does the protein know which shape to take? Does it just try different shapes until it finds the right one?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="26" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(26)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-26"><p>The protein doesn't "know" which shape to take in a conscious sense, but its folding is not random either. The shape is determined by the chemical properties of the amino acids in the chain and their interactions with each other and with the surrounding environment.</p><br><p>Think of it like this: if you have magnets of different strengths arranged in a specific sequence on a string, they would naturally pull and push against each other to form a certain shape. Similarly, the side groups of amino acids have different properties - some are attracted to water, others repel it; some are positively charged, others negatively charged; some can form special bonds with specific other amino acids.</p><br><p>These interactions cause the protein to fold into its most stable configuration automatically. It's like the protein finds its "lowest energy state" - the most comfortable arrangement where all the attractive and repulsive forces are balanced.</p></div>
+        </div>
+
+        <div class="message user" data-index="27" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(27)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-27"><p>That helps. So if the sequence of amino acids changes even a little bit, could that mess up the whole protein?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="28" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(28)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-28"><p>That's a very insightful question! Yes, in some cases, a slight variation in the amino acid sequence can result in a life-threatening condition. For example, some people have a version of hemoglobin—a protein found in red blood cells—that has a single incorrect amino acid out of about 300. That seemingly minor error is responsible for sickle-cell anemia, an inherited condition with painful and often lethal effects.</p></div>
+        </div>
+
+        <div class="message user" data-index="29" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(29)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-29"><p>Just one wrong amino acid out of 300 can cause such a serious disease? That's scary.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="30" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(30)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-30"><p>It demonstrates how precisely proteins must be constructed for proper function. In this case, that single amino acid change affects the hemoglobin's shape, causing red blood cells to become curved like a sickle (a curved harvesting tool) rather than maintaining their normal disc shape. These sickled cells can block blood vessels and break down more easily than normal cells.</p><br><p>However, it's worth noting that not all changes are so dramatic. Many proteins can tolerate some variations in their amino acid sequence without losing function. It depends on where the change occurs and what amino acid is substituted.</p></div>
+        </div>
+
+        <div class="message user" data-index="31" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(31)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-31"><p>I see. You mentioned earlier that proteins have different shapes like helices and sheets. Can you explain more about what causes these shapes?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="32" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(32)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-32"><p>Certainly. The secondary structure of proteins - those alpha helices and pleated sheets - is caused by attractions between neighboring amino acids in the polypeptide chain.</p><br><p>The alpha-helix form tends to occur when simpler amino acids, such as glycine and alanine, are grouped together along the polypeptide chain. The shape of the alpha helix is maintained by hydrogen bonds between successive turns of the spiral. Proteins containing many alpha helices, such as wool, can be stretched because of the springlike properties of the alpha helix.</p><br><p>The pleated-sheet version forms when predominantly nonpolar amino acids, such as phenylalanine and valine, are grouped together. Proteins containing many pleated sheets, such as silk, are strong and flexible but not easily stretched.</p><br><p>It's important to note that secondary structure can vary from one portion of a polypeptide chain to another. For example, one part of a given chain may have a helical secondary structure while another part of the same chain has a pleated-sheet secondary structure.</p></div>
+        </div>
+
+        <div class="message user" data-index="33" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(33)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-33"><p>That's interesting about wool and silk! I never knew their properties came from protein structures. What about the tertiary structure? How does that work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="34" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(34)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-34"><p>The tertiary structure refers to the way an entire chain is shaped. Like secondary structure, tertiary structure is maintained by various electrical attractions between amino acid side groups.</p><br><p>For some proteins, these attractions include disulfide bonds between opposing cysteine amino acids. Also important are ionic bonds (also known as salt bridges) that occur between oppositely charged ions. Hydrogen bonding between side groups can also contribute to tertiary structure, as can induced dipole–induced dipole attractions between nonpolar side groups, such as those found in phenylalanine and valine. Because attractions of this last type tend to exclude water, they are also known as hydrophobic attractions.</p></div>
+        </div>
+
+        <div class="message user" data-index="35" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(35)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-35"><p>That's a lot of different kinds of bonds! So some parts of proteins like water and others don't?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="36" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(36)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-36"><p>Exactly! That observation leads to an important principle in protein folding. Hydrophilic (water-loving) attractions between a protein and an aqueous medium, such as cytoplasm or blood, also help maintain tertiary structure.</p><br><p>In a protein dissolved in an aqueous medium, the polypeptide chain is folded in a compact way so that nonpolar side groups (which don't interact well with water) are on the inside of the molecule, and polar side groups (which do interact well with water) are on the outside, where they interact with the water. The tertiary structure of this sort of protein is said to be globular. Globular proteins tend to be made of many different types of amino acids.</p></div>
+        </div>
+
+        <div class="message user" data-index="37" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(37)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-37"><p>So it's like the protein is trying to hide its water-hating parts on the inside and show its water-loving parts on the outside? That makes sense. You mentioned fiber-like proteins earlier - how do those work?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="38" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(38)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-38"><p>You're understanding this very well! Yes, the two simplest amino acids are glycine and alanine. Proteins made primarily of these two amino acids tend to form alpha helices, which can align to create long fibers. The tertiary structures of these sorts of proteins are said to be fibrous.</p><br><p>An important example of a fibrous tertiary structure is keratin, the protein that is the main component of hair and fingernails. The strength of keratin is established primarily by a number of crosslinks between adjacent alpha helices. In general, thick hair has more disulfide crosslinks than does fine hair. Also, fingernails are hard because of extensive disulfide crosslinking.</p></div>
+        </div>
+
+        <div class="message user" data-index="39" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(39)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-39"><p>Wait, so the reason some people have thicker hair than others is because of these disulfide crosslinks in the keratin protein?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="40" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(40)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-40"><p>That's correct! And these disulfide crosslinks also enable hair to hold a particular shape, such as a curl. This is the science behind permanent waves in hair styling.</p><br><p>In a permanent wave, the hair is first treated with a reducing agent that cleaves some of the disulfide crosslinks. This is usually a smelly step, because some of the sulfur is reduced to odorous hydrogen sulfide. Cleaving disulfide crosslinks allows the keratin to become more flexible.</p><br><p>The hair is then set into the desired shape, using rollers if the desired shape is curls or a flat surface if the desired shape is straight. An oxidizing agent is then applied to restore the disulfide crosslinks, which hold the hair in its new orientation.</p></div>
+        </div>
+
+        <div class="message user" data-index="41" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(41)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-41"><p>So that's why perms smell bad! And that's also why perms last longer than just wetting your hair and styling it?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="42" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(42)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-42"><p>Precisely! When keratin gets wet, the hydrogen bonds between adjacent alpha helices are disrupted, which is why fingernails soften in water. Hair also softens in water. As water molecules slip between the alpha helices, the polypeptide strands slide past one another to the extent permitted by the disulfide crosslinks.</p><br><p>As water molecules evaporate, hydrogen bonds between alpha helices are reestablished, and the hair toughens to its original shape—unless, of course, the hair is mechanically held in a different shape by, for example, rollers. Hair fashioned by wetting maintains its new shape only temporarily, however, because disulfide crosslinks ultimately pull the hair back to its natural look.</p><br><p>Interestingly, a small amount of water in hair enhances the molecular attractions between alpha helices. Therefore, curls hold longer in humid climates than in dry climates.</p></div>
+        </div>
+
+        <div class="message user" data-index="43" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(43)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-43"><p>That explains why my hair gets frizzy when it's humid outside! There must be something about the moisture in the air affecting those protein structures.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="44" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(44)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-44"><p>You've made an excellent connection there! Now, regarding the quaternary structure - many proteins consist of two or more polypeptide chains. Such proteins have a quaternary structure resulting from bonding and interactions among these chains.</p><br><p>A good example is hemoglobin, the oxygen-holding component of red blood cells. It is a complex of four polypeptides inside which four iron-bearing heme groups are tightly nestled. These heme groups are what allow hemoglobin to carry oxygen throughout your body.</p></div>
+        </div>
+
+        <div class="message user" data-index="45" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(45)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-45"><p>So let me see if I understand all the structure levels. For hemoglobin, the primary structure would be the sequence of amino acids in each chain. The secondary structure would be how parts of each chain form alpha helices. The tertiary structure would be how each chain folds up into its final shape. And the quaternary structure would be how the four chains come together. Is that right?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="46" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(46)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-46"><p>That's absolutely correct! You've understood the four levels of protein structure perfectly. Hemoglobin's primary structure is its sequence of amino acids along each polypeptide. The twisting of each polypeptide into an alpha helix is its secondary structure. The folding up of the full length of each alpha helix into a globular shape is its tertiary structure. And the combined four polypeptides form the quaternary structure.</p></div>
+        </div>
+
+        <div class="message user" data-index="47" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(47)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-47"><p>I'm getting this better than I expected! But I'm curious - can proteins lose their structure? What happens if a protein gets too hot, for example?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="48" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(48)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-48"><p>That's another excellent question. Proteins are functional only under very specific conditions, such as at a particular pH and temperature. Changes in these conditions can disrupt the chemical attractions within a protein and thereby cause a loss of structure, which necessarily means a loss of biological function. A protein that has lost its structure is said to be denatured.</p><br><p>A classic example is a hard-boiled egg. The egg white consists mainly of proteins that have been denatured by heat. These denatured proteins can in no way support the development of a chick. The same atoms are there, but, as usual, it is the arrangement of atoms and their spatial orientations that make all the difference.</p></div>
+        </div>
+
+        <div class="message user" data-index="49" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(49)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-49"><p>I never thought about a boiled egg that way before! So cooking food often denatures the proteins in it?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="50" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(50)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-50"><p>Yes, that's correct. Cooking often involves denaturing proteins, which can make food more digestible or safe to eat. Heat isn't the only way to denature proteins - changes in pH, salinity, or exposure to certain chemicals can also cause denaturation.</p></div>
+        </div>
+
+        <div class="message user" data-index="51" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(51)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-51"><p>Are there proteins that do special jobs in the body? Like specific functions?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="52" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(52)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-52"><p>Absolutely! One important class of functional proteins is enzymes, which are biological catalysts. Enzymes speed up biochemical reactions, and their function has everything to do with their structure.</p><br><p>If you wad up a piece of paper, you'll find many nooks and crannies in the paper wad. In a similar fashion, there are nooks and crannies on the surface of an enzyme. Some of these sites, called receptor sites, are special in that reactant molecules, called substrates, are able to fit inside them. Like a hand in a glove, a substrate molecule must have the right shape in order to fit a receptor site.</p><br><p>Molecular attractions, such as hydrogen bonding, then hold the substrate molecule in the receptor site in an optimal position for reacting. The resulting product molecule or molecules are then released, freeing up the receptor site for other substrate molecules.</p></div>
+        </div>
+
+        <div class="message user" data-index="53" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(53)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-53"><p>So enzymes are like special tools that help chemical reactions happen? And each enzyme has a specific shape that fits specific molecules?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="54" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(54)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-54"><p>That's an excellent analogy! Enzymes are indeed like specialized tools that facilitate specific chemical reactions. The "lock and key" model is often used to describe how enzymes work - the substrate is the key that fits into the lock (the enzyme's receptor site).</p><br><p>For example, there's an enzyme called sucrase that breaks down sucrose (table sugar) to its monosaccharide units. Once sucrose binds to the empty receptor site on the sucrase, the enzyme facilitates the breaking of the covalent bond that links the glucose and fructose units together.</p><br><p>It does so by holding the sucrose molecule in a certain conformation and then changing the electronic characteristics of this covalent bond so that it breaks easily when attacked by water molecules. In the final step, the individual glucose and fructose units are released from the enzyme, which is then free to catalyze the splitting of another sucrose molecule.</p></div>
+        </div>
+
+        <div class="message user" data-index="55" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(55)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-55"><p>That's fascinating! So our bodies are basically running thousands of chemical reactions all the time using these enzyme proteins as tools?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="56" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(56)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-56"><p>Precisely! While some enzymes, such as sucrase, catalyze the splitting of substrate molecules, others catalyze the joining together of substrate molecules. In all cases, enzymes are so efficient that a single enzyme molecule may act on thousands or even millions of substrate molecules per second. Without enzymes, most biochemical reactions would not occur at rates rapid enough to support life.</p></div>
+        </div>
+
+        <div class="message user" data-index="57" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(57)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-57"><p>Are there things that can stop enzymes from working?</p></div>
+        </div>
+
+        <div class="message assistant" data-index="58" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(58)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-58"><p>Yes, a chemical that interferes with an enzyme's activity is called an inhibitor. Inhibitors work by binding to an enzyme and thereby preventing a substrate from binding. They are important regulators of cell metabolism.</p><br><p>In many instances, an inhibitor is the very product created in an enzyme-catalyzed reaction. Once the enzyme produces a sufficient concentration of product, it begins to shut down because the product molecules function as inhibitors. When the product concentrations diminish enough, the inhibition stops and the enzyme can resume catalyzing the reaction.</p><br><p>Many drugs act either by inhibiting enzymes or by mimicking an enzyme's natural substrate. This is a common mechanism of drug action that we'll explore more in later discussions.</p></div>
+        </div>
+
+        <div class="message user" data-index="59" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(59)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-59"><p>This is all making much more sense now. I was intimidated by proteins at first, but breaking it down into these different aspects - the amino acids, the different structural levels, and the functions like in enzymes - has really helped me understand. I think I could even explain some of this to my friends now!</p></div>
+        </div>
+
+        <div class="message assistant" data-index="60" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(60)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-60"><p>That's wonderful to hear! You've made excellent progress in understanding proteins. From being hesitant at the beginning to now grasping complex concepts like enzyme function and protein structure, you've come a long way. Being able to explain these concepts to others is indeed a great way to solidify your understanding.</p><br><p>Would you like to review any particular aspect of proteins that we've discussed, or shall we summarize what we've covered?</p></div>
+        </div>
+
+        <div class="message user" data-index="61" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(61)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-61"><p>A quick summary would be helpful to make sure I've got all the main points.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="62" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(62)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-62"><p>Here's a summary of what we've covered about proteins:</p><br><p>1. Proteins are large polymeric biomolecules made of amino acid monomers.<br>2. There are 20 different amino acids that differ in their side groups.<br>3. Amino acids link together through peptide bonds formed in condensation reactions.<br>4. Proteins have four levels of structure:<br>   - Primary: The sequence of amino acids<br>   - Secondary: Local formations like alpha helices and pleated sheets<br>   - Tertiary: The overall 3D shape of the entire polypeptide<br>   - Quaternary: How multiple polypeptide chains arrange together</p><br><p>5. Protein structure is maintained by various bonds and attractions:<br>   - Disulfide bonds<br>   - Ionic bonds/salt bridges<br>   - Hydrogen bonds<br>   - Hydrophobic interactions</p><br><p>6. Proteins can be:<br>   - Globular (compact, water-soluble)<br>   - Fibrous (elongated, water-insoluble, like keratin in hair)</p><br><p>7. Proteins can be denatured by changes in temperature, pH, or other conditions.</p><br><p>8. Enzymes are special proteins that catalyze biochemical reactions:<br>   - They have specific receptor sites for substrate molecules<br>   - They dramatically increase reaction rates<br>   - Their activity can be regulated by inhibitors</p><br><p>Does this summary help solidify the main concepts?</p></div>
+        </div>
+
+        <div class="message user" data-index="63" data-role="user">
+            <div class="role">
+                <span>Student</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(63)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-63"><p>Yes, that's really helpful! I feel much more confident about this topic now. Thanks for explaining everything in a way that makes sense. Science doesn't seem quite as intimidating when it's broken down like this.</p></div>
+        </div>
+
+        <div class="message assistant" data-index="64" data-role="assistant">
+            <div class="role">
+                <span>Alia</span>
+                <div class="edit-buttons">
+                    <button class="edit-button" onclick="editMessage(64)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="content" id="content-64"><p>I'm delighted to hear that! Making science accessible and understandable is exactly what we aim to do. Remember that even complex topics become manageable when approached step by step. If you have any more questions about proteins or other scientific concepts in the future, I'm here to help. Keep building your confidence in science - you're doing great!</p></div>
+        </div>
+
+    </div>
+    
+    <!-- Modal for adding new message -->
+    <div class="modal-overlay" id="addMessageModal">
+        <div class="modal">
+            <h2>Add New Message</h2>
+            <div class="form-group">
+                <label for="messageRole">Speaker:</label>
+                <select id="messageRole">
+                    <option value="user">Student</option>
+                    <option value="assistant">Alia</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="messageContent">Message:</label>
+                <textarea id="messageContent" placeholder="Enter message text..."></textarea>
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeAddModal()">Cancel</button>
+                <button class="save-button" onclick="saveNewMessage()">Add Message</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">Changes saved!</div>
+    
+    <footer>
+        <p>Generated by Transcript Converter with Editing Support</p>
+    </footer>
+
+    <script>
+        // Store the original JSON data
+        const originalData = JSON.parse(`{"UUID": "b355e338-37f7-4ebd-867e-2ef8e8930440", "classid": "conceptual-chemistry-1304", "chat_history": [{"role": "assistant", "content": ": Welcome to Conceptual Academy! I'm Alia, and I'm here to support the learning of core science concepts. Let's get started. How can I help you today?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Hi Alia. I need to learn about proteins for my biology class. I've always struggled with science, especially chemistry-related topics, so I'm a bit nervous about this.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I understand your concerns. Many students find biochemistry intimidating at first, but I'm here to guide you through it step by step. Let's explore proteins together. Proteins are large polymeric biomolecules made of monomer units called amino acids. An amino acid consists of an amine group and a carboxylic acid group bonded to the same carbon atom. A side group is also attached to this same carbon atom.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, what's a \"polymeric biomolecule\"? That already sounds complicated.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a good question. A polymer is simply a large molecule made up of many repeating smaller units connected together - like a train with many identical cars. \"Bio\" means it relates to living organisms. So a polymeric biomolecule is just a large biological molecule made of many smaller repeating units. In the case of proteins, those units are amino acids.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, that makes more sense. So amino acids are the building blocks. You mentioned they have amine groups and carboxylic acid groups. What do those look like?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Let me describe the structure. If you could visualize Figure 13.15 from your textbook, you'd see that an amino acid has a central carbon atom. Attached to this carbon are an amine group (NH\u2082), a carboxylic acid group (COOH), a hydrogen atom, and a side group represented by the letter R. This R group is what makes each amino acid different from all others.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So the R is like a variable that changes depending on which amino acid we're talking about?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! You've got it. There are 20 different amino acids that make up proteins, and they differ from one another by the chemical identity of their side groups. Some side groups are very simple, like in glycine where the R is just a hydrogen atom. Others are more complex, containing rings or chains of carbon atoms with various functional groups.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": 20 different amino acids doesn't sound like that many. How do we get so many different proteins from just 20 building blocks?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent question! It's all about the combinations. Think about our alphabet - with just 26 letters, we can create countless words and sentences. Similarly, these 20 amino acids can be arranged in any sequence and in chains of varying lengths. For example, the number of possible 20-unit polypeptides from our set of 20 amino acids is a staggering 2.43 \u00d7 10\u00b9\u2078! When proteins contain over 100 amino acids, which many do, the possible combinations become virtually infinite. This diversity is exactly what is needed for building a living organism.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wow, that's a lot of possibilities! But how do these amino acids actually connect together?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Amino acids are linked together by what we call peptide bonds. These bonds form through a condensation reaction between the carboxylic acid end of one amino acid and the amine end of another amino acid. During this reaction, a water molecule is removed - that's why it's called a condensation reaction.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Oh, I think I've heard of condensation in chemistry before. Isn't that when water forms on a cold window on a humid day?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a different kind of condensation - the physical change from gas to liquid. In biochemistry, a condensation reaction refers to a chemical reaction where two molecules join together with the loss of a small molecule, typically water. This is what happens when amino acids link up to form peptides.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So when amino acids link up, what do we call the resulting molecules?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The terminology depends on how many amino acids are linked together. A chain of two amino acids is called a dipeptide, three is a tripeptide, four is a tetrapeptide, and so on. When we have ten or more amino acids linked together, we call it a polypeptide. Proteins are naturally occurring polypeptides that have some biological function, and they usually consist of large numbers of amino acids, often up to several hundred.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's a lot of amino acids! Can you give me an example of how big a protein can be?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Certainly! One protein found in milk called casein has the molecular formula C\u2081\u2088\u2086\u2084H\u2083\u2080\u2081\u2082O\u2085\u2087\u2086N\u2084\u2086\u2088S\u2082\u2081. As you can see from this formula, proteins can be incredibly large and complex molecules.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That formula is intimidating! Where do we find proteins in our bodies?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Proteins are found throughout our bodies in both dissolved and solid forms. Dissolved proteins reside in the liquid found inside cells and in other body fluids like blood. Solid proteins form structures like skin, muscles, hair, nails, and horns. The human body contains many thousands of different proteins, each with specific functions.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I never realized my hair and nails were made of proteins. That's kind of cool! How does a protein know what shape to take? Is it just random?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Not random at all - protein structure is highly specific and determined by molecular attractions. We describe protein structure on four different levels. Would you like me to explain these levels?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Yes, please. That would be helpful.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The first level is the primary structure, which is simply the sequence of amino acids in the polypeptide chain - the order in which they're connected.\n\nThe secondary structure describes how various short portions of the chain are organized. They can either wrap into a coil called an alpha helix or fold into a thin pleated sheet.\n\nThe tertiary structure is the way in which an entire polypeptide chain may either twist into a long fiber or bend into a globular clump.\n\nFinally, the quaternary structure describes how separate protein chains may join to form one larger complex.\n\nEach level of structure is determined by the level before it, which means that, ultimately, it's the sequence of amino acids that creates the overall protein shape. This final shape is maintained both by chemical bonds and by weaker molecular attractions between amino acid side groups.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That sounds really complicated. How does the protein know which shape to take? Does it just try different shapes until it finds the right one?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The protein doesn't \"know\" which shape to take in a conscious sense, but its folding is not random either. The shape is determined by the chemical properties of the amino acids in the chain and their interactions with each other and with the surrounding environment.\n\nThink of it like this: if you have magnets of different strengths arranged in a specific sequence on a string, they would naturally pull and push against each other to form a certain shape. Similarly, the side groups of amino acids have different properties - some are attracted to water, others repel it; some are positively charged, others negatively charged; some can form special bonds with specific other amino acids.\n\nThese interactions cause the protein to fold into its most stable configuration automatically. It's like the protein finds its \"lowest energy state\" - the most comfortable arrangement where all the attractive and repulsive forces are balanced.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That helps. So if the sequence of amino acids changes even a little bit, could that mess up the whole protein?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's a very insightful question! Yes, in some cases, a slight variation in the amino acid sequence can result in a life-threatening condition. For example, some people have a version of hemoglobin\u2014a protein found in red blood cells\u2014that has a single incorrect amino acid out of about 300. That seemingly minor error is responsible for sickle-cell anemia, an inherited condition with painful and often lethal effects.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Just one wrong amino acid out of 300 can cause such a serious disease? That's scary.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": It demonstrates how precisely proteins must be constructed for proper function. In this case, that single amino acid change affects the hemoglobin's shape, causing red blood cells to become curved like a sickle (a curved harvesting tool) rather than maintaining their normal disc shape. These sickled cells can block blood vessels and break down more easily than normal cells.\n\nHowever, it's worth noting that not all changes are so dramatic. Many proteins can tolerate some variations in their amino acid sequence without losing function. It depends on where the change occurs and what amino acid is substituted.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I see. You mentioned earlier that proteins have different shapes like helices and sheets. Can you explain more about what causes these shapes?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Certainly. The secondary structure of proteins - those alpha helices and pleated sheets - is caused by attractions between neighboring amino acids in the polypeptide chain.\n\nThe alpha-helix form tends to occur when simpler amino acids, such as glycine and alanine, are grouped together along the polypeptide chain. The shape of the alpha helix is maintained by hydrogen bonds between successive turns of the spiral. Proteins containing many alpha helices, such as wool, can be stretched because of the springlike properties of the alpha helix.\n\nThe pleated-sheet version forms when predominantly nonpolar amino acids, such as phenylalanine and valine, are grouped together. Proteins containing many pleated sheets, such as silk, are strong and flexible but not easily stretched.\n\nIt's important to note that secondary structure can vary from one portion of a polypeptide chain to another. For example, one part of a given chain may have a helical secondary structure while another part of the same chain has a pleated-sheet secondary structure.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's interesting about wool and silk! I never knew their properties came from protein structures. What about the tertiary structure? How does that work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": The tertiary structure refers to the way an entire chain is shaped. Like secondary structure, tertiary structure is maintained by various electrical attractions between amino acid side groups.\n\nFor some proteins, these attractions include disulfide bonds between opposing cysteine amino acids. Also important are ionic bonds (also known as salt bridges) that occur between oppositely charged ions. Hydrogen bonding between side groups can also contribute to tertiary structure, as can induced dipole\u2013induced dipole attractions between nonpolar side groups, such as those found in phenylalanine and valine. Because attractions of this last type tend to exclude water, they are also known as hydrophobic attractions.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's a lot of different kinds of bonds! So some parts of proteins like water and others don't?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Exactly! That observation leads to an important principle in protein folding. Hydrophilic (water-loving) attractions between a protein and an aqueous medium, such as cytoplasm or blood, also help maintain tertiary structure.\n\nIn a protein dissolved in an aqueous medium, the polypeptide chain is folded in a compact way so that nonpolar side groups (which don't interact well with water) are on the inside of the molecule, and polar side groups (which do interact well with water) are on the outside, where they interact with the water. The tertiary structure of this sort of protein is said to be globular. Globular proteins tend to be made of many different types of amino acids.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So it's like the protein is trying to hide its water-hating parts on the inside and show its water-loving parts on the outside? That makes sense. You mentioned fiber-like proteins earlier - how do those work?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You're understanding this very well! Yes, the two simplest amino acids are glycine and alanine. Proteins made primarily of these two amino acids tend to form alpha helices, which can align to create long fibers. The tertiary structures of these sorts of proteins are said to be fibrous.\n\nAn important example of a fibrous tertiary structure is keratin, the protein that is the main component of hair and fingernails. The strength of keratin is established primarily by a number of crosslinks between adjacent alpha helices. In general, thick hair has more disulfide crosslinks than does fine hair. Also, fingernails are hard because of extensive disulfide crosslinking.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Wait, so the reason some people have thicker hair than others is because of these disulfide crosslinks in the keratin protein?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's correct! And these disulfide crosslinks also enable hair to hold a particular shape, such as a curl. This is the science behind permanent waves in hair styling.\n\nIn a permanent wave, the hair is first treated with a reducing agent that cleaves some of the disulfide crosslinks. This is usually a smelly step, because some of the sulfur is reduced to odorous hydrogen sulfide. Cleaving disulfide crosslinks allows the keratin to become more flexible.\n\nThe hair is then set into the desired shape, using rollers if the desired shape is curls or a flat surface if the desired shape is straight. An oxidizing agent is then applied to restore the disulfide crosslinks, which hold the hair in its new orientation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So that's why perms smell bad! And that's also why perms last longer than just wetting your hair and styling it?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Precisely! When keratin gets wet, the hydrogen bonds between adjacent alpha helices are disrupted, which is why fingernails soften in water. Hair also softens in water. As water molecules slip between the alpha helices, the polypeptide strands slide past one another to the extent permitted by the disulfide crosslinks.\n\nAs water molecules evaporate, hydrogen bonds between alpha helices are reestablished, and the hair toughens to its original shape\u2014unless, of course, the hair is mechanically held in a different shape by, for example, rollers. Hair fashioned by wetting maintains its new shape only temporarily, however, because disulfide crosslinks ultimately pull the hair back to its natural look.\n\nInterestingly, a small amount of water in hair enhances the molecular attractions between alpha helices. Therefore, curls hold longer in humid climates than in dry climates.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That explains why my hair gets frizzy when it's humid outside! There must be something about the moisture in the air affecting those protein structures.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": You've made an excellent connection there! Now, regarding the quaternary structure - many proteins consist of two or more polypeptide chains. Such proteins have a quaternary structure resulting from bonding and interactions among these chains.\n\nA good example is hemoglobin, the oxygen-holding component of red blood cells. It is a complex of four polypeptides inside which four iron-bearing heme groups are tightly nestled. These heme groups are what allow hemoglobin to carry oxygen throughout your body.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So let me see if I understand all the structure levels. For hemoglobin, the primary structure would be the sequence of amino acids in each chain. The secondary structure would be how parts of each chain form alpha helices. The tertiary structure would be how each chain folds up into its final shape. And the quaternary structure would be how the four chains come together. Is that right?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's absolutely correct! You've understood the four levels of protein structure perfectly. Hemoglobin's primary structure is its sequence of amino acids along each polypeptide. The twisting of each polypeptide into an alpha helix is its secondary structure. The folding up of the full length of each alpha helix into a globular shape is its tertiary structure. And the combined four polypeptides form the quaternary structure.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I'm getting this better than I expected! But I'm curious - can proteins lose their structure? What happens if a protein gets too hot, for example?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's another excellent question. Proteins are functional only under very specific conditions, such as at a particular pH and temperature. Changes in these conditions can disrupt the chemical attractions within a protein and thereby cause a loss of structure, which necessarily means a loss of biological function. A protein that has lost its structure is said to be denatured.\n\nA classic example is a hard-boiled egg. The egg white consists mainly of proteins that have been denatured by heat. These denatured proteins can in no way support the development of a chick. The same atoms are there, but, as usual, it is the arrangement of atoms and their spatial orientations that make all the difference.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": I never thought about a boiled egg that way before! So cooking food often denatures the proteins in it?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, that's correct. Cooking often involves denaturing proteins, which can make food more digestible or safe to eat. Heat isn't the only way to denature proteins - changes in pH, salinity, or exposure to certain chemicals can also cause denaturation.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Are there proteins that do special jobs in the body? Like specific functions?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Absolutely! One important class of functional proteins is enzymes, which are biological catalysts. Enzymes speed up biochemical reactions, and their function has everything to do with their structure.\n\nIf you wad up a piece of paper, you'll find many nooks and crannies in the paper wad. In a similar fashion, there are nooks and crannies on the surface of an enzyme. Some of these sites, called receptor sites, are special in that reactant molecules, called substrates, are able to fit inside them. Like a hand in a glove, a substrate molecule must have the right shape in order to fit a receptor site.\n\nMolecular attractions, such as hydrogen bonding, then hold the substrate molecule in the receptor site in an optimal position for reacting. The resulting product molecule or molecules are then released, freeing up the receptor site for other substrate molecules.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": So enzymes are like special tools that help chemical reactions happen? And each enzyme has a specific shape that fits specific molecules?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's an excellent analogy! Enzymes are indeed like specialized tools that facilitate specific chemical reactions. The \"lock and key\" model is often used to describe how enzymes work - the substrate is the key that fits into the lock (the enzyme's receptor site).\n\nFor example, there's an enzyme called sucrase that breaks down sucrose (table sugar) to its monosaccharide units. Once sucrose binds to the empty receptor site on the sucrase, the enzyme facilitates the breaking of the covalent bond that links the glucose and fructose units together.\n\nIt does so by holding the sucrose molecule in a certain conformation and then changing the electronic characteristics of this covalent bond so that it breaks easily when attacked by water molecules. In the final step, the individual glucose and fructose units are released from the enzyme, which is then free to catalyze the splitting of another sucrose molecule.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": That's fascinating! So our bodies are basically running thousands of chemical reactions all the time using these enzyme proteins as tools?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Precisely! While some enzymes, such as sucrase, catalyze the splitting of substrate molecules, others catalyze the joining together of substrate molecules. In all cases, enzymes are so efficient that a single enzyme molecule may act on thousands or even millions of substrate molecules per second. Without enzymes, most biochemical reactions would not occur at rates rapid enough to support life.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Are there things that can stop enzymes from working?", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Yes, a chemical that interferes with an enzyme's activity is called an inhibitor. Inhibitors work by binding to an enzyme and thereby preventing a substrate from binding. They are important regulators of cell metabolism.\n\nIn many instances, an inhibitor is the very product created in an enzyme-catalyzed reaction. Once the enzyme produces a sufficient concentration of product, it begins to shut down because the product molecules function as inhibitors. When the product concentrations diminish enough, the inhibition stops and the enzyme can resume catalyzing the reaction.\n\nMany drugs act either by inhibiting enzymes or by mimicking an enzyme's natural substrate. This is a common mechanism of drug action that we'll explore more in later discussions.", "image_summary": false, "feedback": null}, {"role": "user", "content": ": This is all making much more sense now. I was intimidated by proteins at first, but breaking it down into these different aspects - the amino acids, the different structural levels, and the functions like in enzymes - has really helped me understand. I think I could even explain some of this to my friends now!", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": That's wonderful to hear! You've made excellent progress in understanding proteins. From being hesitant at the beginning to now grasping complex concepts like enzyme function and protein structure, you've come a long way. Being able to explain these concepts to others is indeed a great way to solidify your understanding.\n\nWould you like to review any particular aspect of proteins that we've discussed, or shall we summarize what we've covered?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": A quick summary would be helpful to make sure I've got all the main points.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": Here's a summary of what we've covered about proteins:\n\n1. Proteins are large polymeric biomolecules made of amino acid monomers.\n2. There are 20 different amino acids that differ in their side groups.\n3. Amino acids link together through peptide bonds formed in condensation reactions.\n4. Proteins have four levels of structure:\n   - Primary: The sequence of amino acids\n   - Secondary: Local formations like alpha helices and pleated sheets\n   - Tertiary: The overall 3D shape of the entire polypeptide\n   - Quaternary: How multiple polypeptide chains arrange together\n\n5. Protein structure is maintained by various bonds and attractions:\n   - Disulfide bonds\n   - Ionic bonds/salt bridges\n   - Hydrogen bonds\n   - Hydrophobic interactions\n\n6. Proteins can be:\n   - Globular (compact, water-soluble)\n   - Fibrous (elongated, water-insoluble, like keratin in hair)\n\n7. Proteins can be denatured by changes in temperature, pH, or other conditions.\n\n8. Enzymes are special proteins that catalyze biochemical reactions:\n   - They have specific receptor sites for substrate molecules\n   - They dramatically increase reaction rates\n   - Their activity can be regulated by inhibitors\n\nDoes this summary help solidify the main concepts?", "image_summary": false, "feedback": null}, {"role": "user", "content": ": Yes, that's really helpful! I feel much more confident about this topic now. Thanks for explaining everything in a way that makes sense. Science doesn't seem quite as intimidating when it's broken down like this.", "image_summary": false, "feedback": null}, {"role": "assistant", "content": ": I'm delighted to hear that! Making science accessible and understandable is exactly what we aim to do. Remember that even complex topics become manageable when approached step by step. If you have any more questions about proteins or other scientific concepts in the future, I'm here to help. Keep building your confidence in science - you're doing great!", "image_summary": false, "feedback": null}], "version": "1.0", "utc_timestamp": 1742539393.031149, "full_hash": ""}`);
+
+        // Store the original file path
+        const originalFilePath = "C:\\Users\\sucho\\OneDrive\\Desktop\\Delphi\\clients\\conceptual academy\\aim\\data\\output\\CAC1304_transcript.json";
+
+    
+        // Clone the data for modifications
+        let currentData = JSON.parse(JSON.stringify(originalData));
+        
+        // Track if changes have been made
+        let hasChanges = false;
+        
+        // Editing functions
+        function editMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            const role = messageElement.dataset.role;
+            
+            // Store the original content for cancellation
+            contentElement.dataset.original = contentElement.innerHTML;
+            
+            // Make content editable
+            contentElement.contentEditable = true;
+            contentElement.classList.add('editing');
+            contentElement.focus();
+            
+            // Replace edit button with save/cancel buttons
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="save-button" onclick="saveMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    Save
+                </button>
+                <button class="cancel-button" onclick="cancelEdit(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                    Cancel
+                </button>
+            `;
+        }
+        
+        function saveMessage(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Get the edited content
+            let rawContent = contentElement.innerHTML;
+            
+            // Update the data
+            let content = convertToPlainText(rawContent);
+            
+            // Update the internal data structure
+            currentData.chat_history[index].content = content;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+            
+            // Show notification
+            showNotification("Message saved!");
+            hasChanges = true;
+        }
+        
+        function cancelEdit(index) {
+            const contentElement = document.getElementById(`content-${index}`);
+            const messageElement = contentElement.closest('.message');
+            
+            // Restore original content
+            contentElement.innerHTML = contentElement.dataset.original;
+            
+            // Make non-editable again
+            contentElement.contentEditable = false;
+            contentElement.classList.remove('editing');
+            
+            // Restore edit button
+            const buttonsContainer = messageElement.querySelector('.edit-buttons');
+            buttonsContainer.innerHTML = `
+                <button class="edit-button" onclick="editMessage(${index})">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    Edit
+                </button>
+            `;
+        }
+        
+        // Add new message functions
+        document.getElementById('addMessageButton').addEventListener('click', function() {
+            document.getElementById('addMessageModal').style.display = 'flex';
+        });
+        
+        function closeAddModal() {
+            document.getElementById('addMessageModal').style.display = 'none';
+            document.getElementById('messageContent').value = '';
+        }
+        
+        function saveNewMessage() {
+            const role = document.getElementById('messageRole').value;
+            const content = document.getElementById('messageContent').value;
+            
+            if (!content.trim()) {
+                alert('Please enter a message.');
+                return;
+            }
+            
+            // Add to data structure
+            const newMessage = {
+                role: role,
+                content: content,
+                image_summary: false,
+                feedback: null
+            };
+            
+            currentData.chat_history.push(newMessage);
+            
+            // Add to UI
+            const chatContainer = document.getElementById('chatContainer');
+            const index = currentData.chat_history.length - 1;
+            
+            const formattedContent = content
+                .split('\n\n')
+                .filter(p => p.trim())
+                .map(p => `<p>${p}</p>`)
+                .join('');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.dataset.index = index;
+            messageDiv.dataset.role = role;
+            
+            const roleDisplay = role === 'user' ? 'Student' : 'Alia';
+            
+            messageDiv.innerHTML = `
+                <div class="role">
+                    <span>${roleDisplay}</span>
+                    <div class="edit-buttons">
+                        <button class="edit-button" onclick="editMessage(${index})">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                </div>
+                <div class="content" id="content-${index}">${formattedContent}</div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            
+            // Close modal and clear form
+            closeAddModal();
+            
+            // Show notification
+            showNotification("Message added!");
+            hasChanges = true;
+            
+            // Scroll to the new message
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Helper functions
+        function convertToPlainText(html) {
+            // Convert HTML back to plain text format appropriate for the JSON
+            let text = html
+                .replace(/<div class="reference"><strong>(.*?)<\/strong>(.*?)<\/div>/g, '[Referencing $1$2]')
+                .replace(/<pre class="code-block"><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```')
+                .replace(/<p>(.*?)<\/p>/g, '$1\n\n')
+                .replace(/<br>/g, '\n');
+            
+            // Clean up any remaining HTML tags
+            text = text.replace(/<[^>]*>/g, '');
+            
+            // Trim excess whitespace and ensure proper paragraph breaks
+            text = text.replace(/\n{3,}/g, '\n\n').trim();
+            
+            return text;
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export JSON function
+        document.getElementById('exportButton').addEventListener('click', function() {
+            if (!hasChanges && confirm('No changes have been made. Export original file anyway?') === false) {
+                return;
+            }
+            
+            // Update timestamp
+            currentData.utc_timestamp = Date.now() / 1000;
+            
+            // Create downloadable file
+            const jsonString = JSON.stringify(currentData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = originalFilePath.split('/').pop().split('\\').pop();
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            
+            showNotification("JSON exported!");
+        });
+        
+        // Handle beforeunload to warn about unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasChanges) {
+                const message = 'You have unsaved changes. Are you sure you want to leave?';
+                e.returnValue = message;
+                return message;
+            }
+        });
+    </script>
+</body>
+</html>
